@@ -1,12 +1,4 @@
 export const networks = {
-  1: {
-    name: 'Ethereum Mainnet',
-    id: 'mainnet',
-  },
-  4: {
-    name: 'Rinkeby Testnet',
-    id: 'rinkeby',
-  },
   137: {
     name: 'Polygon Mainnet',
     id: 'matic',
@@ -18,10 +10,6 @@ export const networks = {
 }
 
 export const test_networks = {
-  4: {
-    name: 'Rinkeby Testnet',
-    id: 'rinkeby',
-  },
   80001: {
     name: 'Polygon Testnet',
     id: 'mumbai',
