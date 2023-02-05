@@ -1,0 +1,16 @@
+import Wagmi from '../../components/Wagmi'
+import React from 'react'
+import { wrapper } from '@/redux/store'
+import AdminComp from '@/components/admin'
+
+const AdminPage = () => {
+  return (
+    <Wagmi>
+      <div className="container flex h-screen items-center justify-center bg-yellow-200 font-bold text-black">
+        <AdminComp></AdminComp>
+      </div>
+    </Wagmi>
+  )
+}
+
+export default wrapper.withRedux(AdminPage)

@@ -13,14 +13,14 @@ const ClaimPage = () => {
   return (
     <div
       className="
-      flex
       container
-      bg-yellow-200
-      text-black
-      font-bold
-      h-screen 
+      flex
+      h-screen
       items-center
       justify-center
+      bg-yellow-200 
+      font-bold
+      text-black
     "
     >
       <div className="text text-center text-4xl underline ">Hello Men!</div>
