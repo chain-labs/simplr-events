@@ -7,7 +7,7 @@ import { ProvideAuth } from '@arcana/auth-react'
 import { AuthProvider, CHAIN } from '@arcana/auth'
 
 const provider = new AuthProvider(`${ARCANA_APP_ADDRESS}`, {
-  position: 'left',
+  position: 'right',
   theme: 'light',
   alwaysVisible: true,
   network: 'testnet',
