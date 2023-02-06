@@ -35,7 +35,6 @@ const VerifyDetailsSection = ({
   return (
     <div>
       <div className="mb-4">
-        <h2 className="text-xl font-semibold">Step1:</h2>
         <p>
           Verify your details before moving ahead. It is important that the
           following details are correct.

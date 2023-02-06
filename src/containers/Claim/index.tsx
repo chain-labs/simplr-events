@@ -25,7 +25,6 @@ const ClaimComponent = ({ query }: { query: QueryProps }) => {
             style={{ objectFit: 'contain' }}
           />
         </div>
-        <div></div>
       </div>
       <TicketClaimSection query={query} />
     </div>

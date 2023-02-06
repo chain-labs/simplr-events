@@ -15,7 +15,15 @@ const TicketClaimSection = ({ query }: { query: QueryProps }) => {
   }
   return (
     <div className="border-red container mt-4 border-l-4 border-l-emerald-400 bg-white pb-12 shadow-md ">
-      <div className="mb-14 flex flex-row items-center justify-center bg-white pt-4 pb-12 shadow-md">
+      <div className="container mb-4 px-4 py-6 shadow-md">
+        <h1
+          className="text-center text-5xl font-bold text-green-300"
+          style={{ WebkitTextStroke: '1px black' }}
+        >
+          {query.eventname}
+        </h1>
+      </div>
+      <div className="mb-4 flex flex-row items-center justify-center bg-white pt-2 pb-6">
         <RoundedStep stepNumber={STEPS.VERIFY_URL} current={step} />
         <DottedCrumb active={step > STEPS.VERIFY_URL} />
         <RoundedStep stepNumber={STEPS.CONNECT_WALLET} current={step} />
@@ -23,14 +31,6 @@ const TicketClaimSection = ({ query }: { query: QueryProps }) => {
         <RoundedStep stepNumber={STEPS.ENCRYPT_DATA} current={step} />
         <DottedCrumb active={step > STEPS.ENCRYPT_DATA} />
         <RoundedStep stepNumber={STEPS.EXAMPLE} current={step} />
-      </div>
-      <div className="container mb-4 px-4">
-        <h1
-          className="border-b pb-4 text-5xl font-bold text-purple-400"
-          style={{ WebkitTextStroke: '1px black' }}
-        >
-          {query.eventname}
-        </h1>
       </div>
       <div className="container w-screen px-4 text-black ">
         {getClaimComponent(step)}

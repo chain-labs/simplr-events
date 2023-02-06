@@ -15,7 +15,7 @@ const RoundedStep = ({
           current > stepNumber
             ? 'border-green-300'
             : current === stepNumber
-            ? 'border-gray-500'
+            ? 'border-yellow-500'
             : 'border-gray-300'
         }`}
       >
@@ -24,7 +24,7 @@ const RoundedStep = ({
             current > stepNumber
               ? 'text-green-300'
               : current === stepNumber
-              ? 'text-gray-500'
+              ? 'text-yellow-500'
               : 'text-gray-300'
           }`}
         >
