@@ -13,7 +13,7 @@ const TicketClaimSection = ({ query }: { query: QueryProps }) => {
     if (step === STEPS.VERIFY_URL) {
       return <VerifyDetailsSection query={query} setStep={setStep} />
     } else if (step === STEPS.CONNECT_WALLET) {
-      return <ConnectArcana />
+      return <ConnectArcana setStep={setStep} />
     }
   }
   return (
