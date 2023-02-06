@@ -19,10 +19,7 @@ const TicketClaimSection = ({ query }: { query: QueryProps }) => {
   return (
     <div className="border-red container mt-4 border-l-4 border-l-emerald-400 bg-white pb-12 shadow-md ">
       <div className="container mb-4 px-4 py-6 shadow-md">
-        <h1
-          className="text-center text-5xl font-bold text-green-300"
-          style={{ WebkitTextStroke: '1px black' }}
-        >
+        <h1 className="text-center text-5xl font-bold text-black">
           {query.eventname}
         </h1>
       </div>
