@@ -34,7 +34,6 @@ const RoundedStep = ({
       <h2
         className={`absolute top-full left-1/2 w-16 -translate-x-1/2 text-xs`}
       >
-        {/* @ts-expect-error implicit any type on the object */}
         {STEP_NAME[stepNumber]}
       </h2>
     </div>
