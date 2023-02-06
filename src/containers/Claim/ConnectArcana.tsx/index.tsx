@@ -71,7 +71,6 @@ const ConnectArcana = ({ setStep }: { setStep: (number) => void }) => {
             else={
               <button
                 className="flex items-center gap-x-4 rounded-full bg-blue-300 py-2 px-4 font-bold text-white"
-                onClick={handleConnect}
                 disabled
               >
                 <div className="animate-spin-slow">
