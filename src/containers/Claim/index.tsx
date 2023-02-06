@@ -9,7 +9,8 @@ import { AuthProvider, CHAIN } from '@arcana/auth'
 const provider = new AuthProvider(`${ARCANA_APP_ADDRESS}`, {
   position: 'left',
   theme: 'light',
-  alwaysVisible: false,
+  alwaysVisible: true,
+  network: 'testnet',
   chainConfig: {
     chainId: CHAIN.POLYGON_MUMBAI_TESTNET,
     rpcUrl: '',
@@ -28,18 +29,20 @@ const ClaimComponent = ({ query }: { query: QueryProps }) => {
         bg-slate-200
         `}
     >
-      <div className="container flex justify-between bg-white py-6 px-1 shadow-md sm:px-0">
-        <div className="relative h-6 w-28 overflow-x-visible sm:h-8">
-          <Image
-            src={LOGO_URL}
-            fill
-            alt="logo image"
-            style={{ objectFit: 'contain' }}
-          />
+      <ProvideAuth provider={provider}>
+        <div className="container flex justify-between bg-white py-6 px-1 shadow-md sm:px-0">
+          <div className="relative h-6 w-28 overflow-x-visible sm:h-8">
+            <Image
+              src={LOGO_URL}
+              fill
+              alt="logo image"
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
         </div>
-      </div>
 
-      <TicketClaimSection query={query} />
+        <TicketClaimSection query={query} />
+      </ProvideAuth>
     </div>
   )
 }

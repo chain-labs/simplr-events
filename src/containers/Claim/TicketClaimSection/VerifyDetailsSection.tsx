@@ -35,10 +35,10 @@ const VerifyDetailsSection = ({
   return (
     <div>
       <div className="mb-4">
-        <p>
+        <h3 className="font-semibold">
           Verify your details before moving ahead. It is important that the
           following details are correct.
-        </p>
+        </h3>
       </div>
       <div className="mb-2 flex items-center">
         <If

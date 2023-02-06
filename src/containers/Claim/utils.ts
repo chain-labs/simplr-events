@@ -1,7 +1,7 @@
 import { client } from '@/components/ApolloClient'
 import { FETCH_TREE_CID_QUERY } from '@/graphql/query/fetchTreeCid'
 import axios from 'axios'
-import { keccak256, toUtf8Bytes } from 'ethers'
+import { ethers } from 'ethers'
 import { QueryProps } from './types'
 
 export const FETCH_TREE_CID = async (id: string) => {
@@ -25,7 +25,9 @@ export const verifyQueryDetails = async (query: QueryProps, cid: string) => {
   const merkleHashes: string[] = await getMerkleHashes(cid)
   const { firstname, lastname, batchid, eventname, emailid } = query
   const concatenatedString = `${emailid}-${lastname}-${firstname}-${batchid}-${eventname}`
-  const hash = keccak256(toUtf8Bytes(concatenatedString))
+  const hash = ethers.utils.keccak256(
+    ethers.utils.toUtf8Bytes(concatenatedString),
+  )
   const index = merkleHashes.findIndex((h) => h === hash)
   if (index != -1) {
     return true

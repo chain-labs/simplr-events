@@ -7,7 +7,7 @@ export const STEPS = {
 
 export const STEP_NAME = {
   1: 'Verify User Details',
-  2: 'Connect Wallet',
+  2: 'Login',
   3: 'Encrypting Data',
   4: 'Example Step',
 }

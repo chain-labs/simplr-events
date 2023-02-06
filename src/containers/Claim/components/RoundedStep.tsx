@@ -15,7 +15,7 @@ const RoundedStep = ({
           current > stepNumber
             ? 'border-green-400'
             : current === stepNumber
-            ? 'border-yellow-500'
+            ? 'border-blue-600'
             : 'border-gray-300'
         }`}
       >
@@ -24,7 +24,7 @@ const RoundedStep = ({
             current > stepNumber
               ? 'text-green-400'
               : current === stepNumber
-              ? 'text-yellow-500'
+              ? 'text-blue-600'
               : 'text-gray-300'
           }`}
         >
@@ -32,7 +32,7 @@ const RoundedStep = ({
         </h3>
       </div>
       <h2
-        className={`absolute top-full left-1/2 w-16 -translate-x-1/2 text-xs`}
+        className={`absolute top-full left-1/2 w-16 -translate-x-1/2 text-xs font-medium`}
       >
         {STEP_NAME[stepNumber]}
       </h2>
