@@ -13,7 +13,7 @@ const RoundedStep = ({
       <div
         className={`flex h-10 w-10 items-center justify-center rounded-full  border-2 ${
           current > stepNumber
-            ? 'border-green-300'
+            ? 'border-green-400'
             : current === stepNumber
             ? 'border-yellow-500'
             : 'border-gray-300'
@@ -22,7 +22,7 @@ const RoundedStep = ({
         <h3
           className={`text-2xl ${
             current > stepNumber
-              ? 'text-green-300'
+              ? 'text-green-400'
               : current === stepNumber
               ? 'text-yellow-500'
               : 'text-gray-300'
