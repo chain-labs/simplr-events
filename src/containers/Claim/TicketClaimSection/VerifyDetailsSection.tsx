@@ -27,7 +27,7 @@ const VerifyDetailsSection = ({
         })
         setTimeout(() => {
           setChecked(true)
-        }, 3000)
+        }, 1000)
       })
     }
   }, [query])

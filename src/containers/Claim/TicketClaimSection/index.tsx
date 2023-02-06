@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import DottedCrumb from '../components/DottedCrumb'
 import RoundedStep from '../components/RoundedStep'
+import ConnectArcana from '../ConnectArcana.tsx'
 import { STEPS } from '../constants'
 import { QueryProps } from '../types'
 import VerifyDetailsSection from './VerifyDetailsSection'
@@ -11,6 +12,8 @@ const TicketClaimSection = ({ query }: { query: QueryProps }) => {
   const getClaimComponent = (step) => {
     if (step === STEPS.VERIFY_URL) {
       return <VerifyDetailsSection query={query} setStep={setStep} />
+    } else if (step === STEPS.CONNECT_WALLET) {
+      return <ConnectArcana />
     }
   }
   return (

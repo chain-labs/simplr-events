@@ -1,8 +1,20 @@
 import React from 'react'
-import { LOGO_URL } from '@/utils/constants'
+import { ARCANA_APP_ADDRESS, LOGO_URL } from '@/utils/constants'
 import Image from 'next/image'
 import TicketClaimSection from './TicketClaimSection'
 import { QueryProps } from './types'
+import { ProvideAuth } from '@arcana/auth-react'
+import { AuthProvider, CHAIN } from '@arcana/auth'
+
+const provider = new AuthProvider(`${ARCANA_APP_ADDRESS}`, {
+  position: 'left',
+  theme: 'light',
+  alwaysVisible: false,
+  chainConfig: {
+    chainId: CHAIN.POLYGON_MUMBAI_TESTNET,
+    rpcUrl: '',
+  },
+})
 
 const ClaimComponent = ({ query }: { query: QueryProps }) => {
   return (
@@ -26,6 +38,7 @@ const ClaimComponent = ({ query }: { query: QueryProps }) => {
           />
         </div>
       </div>
+
       <TicketClaimSection query={query} />
     </div>
   )
