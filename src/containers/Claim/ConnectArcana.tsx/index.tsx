@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '@arcana/auth-react'
 import { ethers, providers } from 'ethers'
-import { ChevronRight, GoogleFill } from 'akar-icons'
+import { ArrowCycle, ChevronRight, GoogleFill } from 'akar-icons'
 import If from '@/components/If'
 import { STEPS } from '../constants'
 import Image from 'next/image'
@@ -12,9 +12,11 @@ const ConnectArcana = ({ setStep }: { setStep: (number) => void }) => {
   const [provider, setProvider] = useState<providers.Web3Provider>()
   const [signer, setSigner] = useState<providers.JsonRpcSigner>()
   const [user, setUser] = useState<string>()
+  const [loggingIn, setLoggingIn] = useState(false)
 
   const handleConnect = async (e) => {
     e.preventDefault()
+    setLoggingIn(true)
     const arcanaProvider = await auth.loginWithSocial('google')
     const provider = new ethers.providers.Web3Provider(arcanaProvider)
     const signer = provider.getSigner()
@@ -35,16 +37,15 @@ const ConnectArcana = ({ setStep }: { setStep: (number) => void }) => {
 
   useEffect(() => {
     if (signer) {
-      console.log({ signer: signer.getAddress() })
       signer.getAddress().then((user) => setUser(user))
     }
   }, [signer])
 
   useEffect(() => {
-    if (provider) {
-      console.log({ provider })
+    if (user) {
+      setLoggingIn(false)
     }
-  }, [provider])
+  }, [user])
 
   return (
     <div>
@@ -56,13 +57,30 @@ const ConnectArcana = ({ setStep }: { setStep: (number) => void }) => {
       <If
         condition={!user}
         then={
-          <button
-            className="flex items-center gap-x-4 rounded-full bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
-            onClick={handleConnect}
-          >
-            <GoogleFill />
-            Login with Google
-          </button>
+          <If
+            condition={!loggingIn}
+            then={
+              <button
+                className="flex items-center gap-x-4 rounded-full bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+                onClick={handleConnect}
+              >
+                <GoogleFill />
+                Login with Google
+              </button>
+            }
+            else={
+              <button
+                className="flex items-center gap-x-4 rounded-full bg-blue-300 py-2 px-4 font-bold text-white"
+                onClick={handleConnect}
+                disabled
+              >
+                <div className="animate-spin-slow">
+                  <ArrowCycle strokeWidth={2} size={18} />
+                </div>
+                Signing In
+              </button>
+            }
+          />
         }
         else={
           <div>
