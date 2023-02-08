@@ -1,8 +1,8 @@
-import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "@next/font/google";
+import Head from 'next/head'
+import Image from 'next/image'
+import { Inter } from '@next/font/google'
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   return (
@@ -13,9 +13,9 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="w-full h-screen bg-yellow-200 text-black flex justify-center items-center">
+      <main className="flex h-screen w-full items-center justify-center bg-yellow-200 text-black">
         <h1 className="text-sm font-bold underline">Hello world!</h1>
       </main>
     </>
-  );
+  )
 }
