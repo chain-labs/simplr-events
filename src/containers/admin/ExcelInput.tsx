@@ -82,10 +82,10 @@ const HomeComponent = () => {
                         scope="row"
                         className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                       >
-                        {data.Name}
+                        {data.firstName}
                       </th>
-                      <td className="px-6 py-4"> {data.Name}</td>
-                      <td className="px-6 py-4"> {data.Email}</td>
+                      <td className="px-6 py-4"> {data.lastName}</td>
+                      <td className="px-6 py-4"> {data.email}</td>
                       <td className="px-6 py-4">
                         <a
                           href="#"
