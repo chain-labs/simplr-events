@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { read, utils, writeFile } from 'xlsx'
+import { getHashes, sendDataToIPFS } from './utils'
 
 const HomeComponent = () => {
   const [parsedData, setParsedData] = useState([])
+  const userInputHashes = []
 
   const handleImport = ($event) => {
     const files = $event.target.files
@@ -20,6 +22,22 @@ const HomeComponent = () => {
       }
       reader.readAsArrayBuffer(file)
     }
+  }
+
+  const handleHashes = async () => {
+    await parsedData.map(async (data, index) => {
+      console.log(data)
+      const dataExample = {
+        firstname: data.firstName,
+        lastname: data.lastName,
+        emailid: data.email,
+        batchid: '1',
+        eventname: 'Vivacity:2023',
+      }
+      await getHashes(dataExample).then((res) => userInputHashes.push(res))
+    })
+    console.log(userInputHashes)
+    await sendDataToIPFS(userInputHashes)
   }
 
   const handleExport = () => {
@@ -99,10 +117,13 @@ const HomeComponent = () => {
                 : ''}
             </tbody>
           </table>
+          {parsedData.length !== 0 ? (
+            <button onClick={handleHashes}>Confirm</button>
+          ) : (
+            ''
+          )}
         </div>
       </div>
-      {/* </div> */}
-      {/* <div onClick={handleRemove}>remove</div> */}
     </div>
   )
 }
