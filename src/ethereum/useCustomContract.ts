@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react'
 import contracts from '../contracts.json'
 import { ProviderProps } from './types'
 
-export const getContractDetails = (contractName) => {
-  const network = contracts['4']
+export const getContractDetails = () => {
+  const network = contracts['80001']
   const contractDetails =
-    network[Object.keys(network)[0]].contracts[contractName]
+    network[Object.keys(network)[0]].contracts.SimplrEvents
   return contractDetails.abi
 }
 
@@ -21,7 +21,7 @@ const useCustomContract = (
   useEffect(() => {
     if (providers.Provider.isProvider(provider) && contractAddress) {
       try {
-        const abi = getContractDetails(contractName)
+        const abi = getContractDetails()
         setContract(new ethers.Contract(contractAddress, abi, provider))
       } catch (error) {
         setContract(undefined)

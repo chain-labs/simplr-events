@@ -2,7 +2,7 @@
 import { ethers, providers } from 'ethers'
 import { useEffect, useState } from 'react'
 import contracts from '../contracts.json'
-import { networks } from 'src/redux/user/types'
+import { networks } from '../redux/user/types'
 import { ProviderProps } from './types'
 
 const useContract = (

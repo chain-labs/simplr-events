@@ -1,6 +1,11 @@
 import { ethers } from 'ethers'
 import { QueryProps } from './types'
 import axios from 'axios'
+import { GET_CURRENT_BATCH_ID_QUERY } from '@/graphql/query/getCurrentBatchId'
+import { client } from '@/components/ApolloClient'
+import MerkleTree from 'merkletreejs'
+import { keccak256 } from 'ethers/lib/utils'
+import { SERVER_URL } from '@/utils/constants'
 
 const PINATA_KEY_SECRET =
   '7c02de12e4bb768fd27a10a6692863056e5542354c20c2a875de0b1703b9445f'
@@ -8,6 +13,7 @@ const PINATA_KEY = '10fda7f374970f218067'
 const PINATA_URL = 'https://api.pinata.cloud/'
 
 export const getHashes = async (query: QueryProps) => {
+  console.log(query.batchid)
   const { firstname, lastname, batchid, eventname, emailid } = query
   const concatenatedString = `${emailid}-${lastname}-${firstname}-${batchid}-${eventname}`
   const hash = ethers.utils.keccak256(
@@ -16,11 +22,18 @@ export const getHashes = async (query: QueryProps) => {
   return hash
 }
 
+export const GET_CURRENT_BATCH_ID = async () => {
+  const { data } = await client.query({
+    query: GET_CURRENT_BATCH_ID_QUERY,
+  })
+  return data
+}
+
 export const sendDataToIPFS = async (hashedData) => {
   const data = JSON.stringify(hashedData)
   console.log(data)
 
-  const res = await axios
+  const cid = await axios
     .post(`${PINATA_URL}pinning/pinJSONToIPFS`, data, {
       headers: {
         pinata_api_key: PINATA_KEY,
@@ -28,12 +41,32 @@ export const sendDataToIPFS = async (hashedData) => {
       },
     })
     .then(function (response) {
-      //handle response here
-      console.log(response)
+      return response.data.IpfsHash
     })
     .catch(function (error) {
-      //handle error here
       console.log(error)
     })
+  return cid
+}
+
+export const getMerkleTreeRoot = async (hashes) => {
+  const leafs = hashes.map((entry) => ethers.utils.keccak256(entry))
+  const tree = await new MerkleTree(leafs, keccak256, { sortPairs: true })
+  const MerkleRoot = '0x' + tree.getRoot().toString('hex')
+  return MerkleRoot
+}
+
+export const sendDataToServer = async (data) => {
+  const res = await axios
+    .post(`${SERVER_URL}/addBatch`, data, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+    })
+    .then((response) => {
+      return response
+    })
   console.log(res)
+  return res
 }

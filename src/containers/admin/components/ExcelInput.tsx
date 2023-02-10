@@ -1,53 +1,60 @@
-import React, { useState } from 'react'
-import { read, utils, writeFile } from 'xlsx'
-import { getHashes, sendDataToIPFS } from './utils'
+import {
+  addBatch,
+  addExcelData,
+  batchSelector,
+  CsvState,
+  removeBatch,
+} from '@/redux/batch'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import React, { useState, useEffect, useRef } from 'react'
+import { read, utils } from 'xlsx'
+import ConfirmButton from './ConfirmButton'
 
 const HomeComponent = () => {
-  const [parsedData, setParsedData] = useState([])
-  const userInputHashes = []
+  const [parsedData, setParsedData] = useState<CsvState[]>([])
+  const [file, setFile] = useState()
+  const [inputKey, setInputKey] = useState()
+  const dispatch = useAppDispatch()
+  const batch = useAppSelector(batchSelector)
+  const ref = useRef()
 
-  const handleImport = ($event) => {
-    const files = $event.target.files
-    if (files.length) {
-      const file = files[0]
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        const wb = read(event.target.result)
-        const sheets = wb.SheetNames
+  useEffect(() => {
+    dispatch(addExcelData(parsedData))
+  }, [parsedData])
 
-        if (sheets.length) {
-          const rows = utils.sheet_to_json(wb.Sheets[sheets[0]])
-          setParsedData(rows)
-        }
-      }
-      reader.readAsArrayBuffer(file)
+  useEffect(() => {
+    if (file) {
+      readFile()
     }
-  }
+  }, [file])
 
-  const handleHashes = async () => {
-    await parsedData.map(async (data, index) => {
-      console.log(data)
-      const dataExample = {
-        firstname: data.firstName,
-        lastname: data.lastName,
-        emailid: data.email,
-        batchid: '1',
-        eventname: 'Vivacity:2023',
+  const readFile = () => {
+    // setInputKey('')
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const wb = read(event.target.result)
+      const sheets = wb.SheetNames
+      console.log(sheets, event.target.result)
+
+      if (sheets.length) {
+        const rows: CsvState[] = utils.sheet_to_json(wb.Sheets[sheets[0]])
+        setParsedData(rows)
       }
-      await getHashes(dataExample).then((res) => userInputHashes.push(res))
-    })
-    console.log(userInputHashes)
-    await sendDataToIPFS(userInputHashes)
+    }
+    reader.readAsArrayBuffer(file)
+  }
+  const handleRemoveFile = () => {
+    ref.current.value = ''
+    dispatch(removeBatch())
+    // setInputKey(Date.now().toString())
   }
 
-  const handleExport = () => {
-    const headings = [['Email', 'Name', 'Number']]
-    const wb = utils.book_new()
-    const ws = utils.json_to_sheet([])
-    utils.sheet_add_aoa(ws, headings)
-    utils.sheet_add_json(ws, parsedData, { origin: 'A2', skipHeader: true })
-    utils.book_append_sheet(wb, ws, 'Report')
-    writeFile(wb, 'Movie Report.xlsx')
+  const handleImport = async ($event) => {
+    setFile($event.target.files.length ? $event.target.files[0] : '')
+    // const files = $event.target.files
+    // if (files.length) {
+    //   await setFile(files[0])
+    // }
   }
 
   return (
@@ -55,21 +62,23 @@ const HomeComponent = () => {
       <div className="flex-1 p-3">
         <div className="col-md-6">
           <div className="input-group">
-            <div className="custom-file">
+            <div className="custom-file flex">
               <input
                 type="file"
-                className="block w-full text-sm text-slate-500 file:mr-4 file:rounded-full file:border-0 file:bg-violet-50 file:py-2 file:px-4 file:text-sm file:font-semibold file:text-violet-700 hover:file:bg-violet-100"
+                className="block w-full text-sm text-slate-500 file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-blue-50 file:py-2 file:px-4 file:text-sm file:font-semibold file:text-blue-800 hover:file:bg-blue-100"
                 name="file"
                 id="inputGroupFile"
+                key={inputKey}
+                ref={ref}
                 required
                 onChange={handleImport}
                 accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
               />
+              <button onClick={handleRemoveFile}>Remove</button>
             </div>
           </div>
         </div>
       </div>
-      {/* <div className="row"> */}
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
@@ -90,8 +99,8 @@ const HomeComponent = () => {
               </tr>
             </thead>
             <tbody>
-              {parsedData.length
-                ? parsedData.map((data, index) => (
+              {batch?.inputParams.length
+                ? batch.inputParams.map((data, index) => (
                     <tr
                       className="border-b bg-white dark:border-gray-700 dark:bg-gray-900"
                       key={index}
@@ -117,11 +126,7 @@ const HomeComponent = () => {
                 : ''}
             </tbody>
           </table>
-          {parsedData.length !== 0 ? (
-            <button onClick={handleHashes}>Confirm</button>
-          ) : (
-            ''
-          )}
+          <ConfirmButton />
         </div>
       </div>
     </div>
@@ -129,3 +134,13 @@ const HomeComponent = () => {
 }
 
 export default HomeComponent
+
+// const handleExport = () => {
+//   const headings = [['Email', 'Name', 'Number']]
+//   const wb = utils.book_new()
+//   const ws = utils.json_to_sheet([])
+//   utils.sheet_add_aoa(ws, headings)
+//   utils.sheet_add_json(ws, parsedData, { origin: 'A2', skipHeader: true })
+//   utils.book_append_sheet(wb, ws, 'Report')
+//   writeFile(wb, 'Movie Report.xlsx')
+// }
