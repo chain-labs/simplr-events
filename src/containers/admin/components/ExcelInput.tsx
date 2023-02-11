@@ -20,7 +20,8 @@ const HomeComponent = () => {
 
   useEffect(() => {
     dispatch(addExcelData(parsedData))
-  }, [parsedData])
+    console.log(ref)
+  }, [parsedData, ref])
 
   useEffect(() => {
     if (file) {
@@ -44,6 +45,7 @@ const HomeComponent = () => {
     reader.readAsArrayBuffer(file)
   }
   const handleRemoveFile = () => {
+    //@ts-ignore
     ref.current.value = ''
     dispatch(removeBatch())
     // setInputKey(Date.now().toString())
@@ -59,25 +61,25 @@ const HomeComponent = () => {
 
   return (
     <div>
-      <div className="flex-1 p-3">
-        <div className="col-md-6">
-          <div className="input-group">
-            <div className="custom-file flex">
-              <input
-                type="file"
-                className="block w-full text-sm text-slate-500 file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-blue-50 file:py-2 file:px-4 file:text-sm file:font-semibold file:text-blue-800 hover:file:bg-blue-100"
-                name="file"
-                id="inputGroupFile"
-                key={inputKey}
-                ref={ref}
-                required
-                onChange={handleImport}
-                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-              />
-              <button onClick={handleRemoveFile}>Remove</button>
-            </div>
+      <div className="m-5 flex-1 p-3">
+        {/* <div className="col-md-6"> */}
+        <div className="input-group">
+          <div className="custom-file flex">
+            <input
+              type="file"
+              className="block w-full text-sm text-slate-500 file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-blue-50 file:py-2 file:px-4 file:text-sm file:font-semibold file:text-blue-800 hover:file:bg-blue-100"
+              name="file"
+              id="inputGroupFile"
+              key={inputKey}
+              ref={ref}
+              required
+              onChange={handleImport}
+              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+            />
+            <button onClick={() => handleRemoveFile()}>Remove</button>
           </div>
         </div>
+        {/* </div> */}
       </div>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">

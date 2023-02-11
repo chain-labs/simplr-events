@@ -23,6 +23,7 @@ const ConfirmButton = () => {
   const provider = useProvider()
   const [contract, setContract] = useState<ethers.Contract>()
   const [loading, setLoading] = useState<boolean>()
+  // const [nextBatchId, setNextBatchId] = useState<number>()
 
   const user = useAppSelector(userSelector)
   const id = '0x40c5d0cac2b8533c67cf5f08146886c7a3efeca7'
@@ -46,25 +47,29 @@ const ConfirmButton = () => {
   }, [batch])
 
   const addExcelInputData = async () => {
+    let num
     setLoading(true)
-    GET_CURRENT_BATCH_ID().then((data) => {
-      const num = parseInt(data.batches[0].batchId) + 1
+    await GET_CURRENT_BATCH_ID().then((data) => {
+      num = parseInt(data.batches[0].batchId) + 1
+      console.log(data.batches[0].batchId + 1)
+      console.log(num)
       dispatch(addBatchId(num))
     })
-    await handleHashes()
+    handleHashes(num)
   }
 
-  const handleHashes = async () => {
-    console.log(batch.batchId)
+  const handleHashes = async (nextBatchId) => {
+    console.log(nextBatchId)
     const serverData = {
       inputParams: batch.inputParams,
-      batchId: batch.batchId,
-      eventName: batch.eventName,
+      batchId: nextBatchId,
+      eventName: 'Vivacity:2023',
       contractAddress: '0x40c5d0cac2b8533c67cf5f08146886c7a3efeca7',
       addBatchTimestamp: Date.now(),
     }
     // const res = await sendDataToServer(serverData)
     // console.log(res)
+    console.log('ServerData:', serverData)
 
     await batch?.inputParams?.map(async (data, index) => {
       console.log(data)
@@ -72,31 +77,25 @@ const ConfirmButton = () => {
         firstname: data.firstName,
         lastname: data.lastName,
         emailid: data.email,
-        batchid: batch.batchId.toString(),
+        batchid: nextBatchId.toString(),
         eventname: 'Vivacity:2023',
       }
-      await getHashes(dataExample).then((res) => userInputHashes.push(res))
+      getHashes(dataExample).then((res) => userInputHashes.push(res))
     })
     console.log(userInputHashes)
-    const cid = await sendDataToIPFS(userInputHashes).then((id) => {
-      return id
-    })
+    const cid = await sendDataToIPFS(userInputHashes)
     console.log(cid)
-    const merkleRoot = await getMerkleTreeRoot(userInputHashes).then((root) => {
-      return root
-    })
+    const merkleRoot = await getMerkleTreeRoot(userInputHashes)
     setLoading(false)
-    // dispatch(removeBatch())
 
-    // const res = await addBatchToContract(merkleRoot, cid).then((response) => {
-    //   return response
-    // })
-    // console.log(res)
+    const res = await addBatchToContract(merkleRoot, cid).then((response) => {
+      return response
+    })
   }
 
   const addBatchToContract = async (root, cid) => {
-    console.log('Inputs:', 'merkleRoot:', root, 'cid:', id)
-    const transaction = await contract
+    console.log('Inputs:', 'merkleRoot:', root, 'cid:', cid)
+    const transaction = contract
       ?.connect(signer)
       ?.addBatch(root, cid, { value: 0 })
       .then((res) => console.log(res))
@@ -119,6 +118,7 @@ const ConfirmButton = () => {
             <button
               type="button"
               onClick={addExcelInputData}
+              disabled={loading}
               className={`mr-2 rounded-lg bg-blue-700 px-5 py-3 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:${
                 loading ? 'true' : 'false'
               } cursor-progress:${loading ? 'true' : 'false'}`}

@@ -41,6 +41,7 @@ export const sendDataToIPFS = async (hashedData) => {
       },
     })
     .then(function (response) {
+      console.log('Hash:', response.data.IpfsHash)
       return response.data.IpfsHash
     })
     .catch(function (error) {
