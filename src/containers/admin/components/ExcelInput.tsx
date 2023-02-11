@@ -1,5 +1,8 @@
+import If from '@/components/If'
+import ConnectWallet from '@/components/Navbar/ConnectWallet'
 import {
   addBatch,
+  addBatchId,
   addExcelData,
   addKey,
   batchSelector,
@@ -7,15 +10,18 @@ import {
   removeBatch,
 } from '@/redux/batch'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
+import { userSelector } from '@/redux/user'
+import { userAgent } from 'next/server'
 import React, { useState, useEffect, useRef } from 'react'
 import { read, utils } from 'xlsx'
+import { GET_CURRENT_BATCH_ID } from '../utils'
 import ConfirmButton from './ConfirmButton'
 import TableData from './TableData'
 
 const HomeComponent = () => {
   const [parsedData, setParsedData] = useState<CsvState[]>([])
   const [file, setFile] = useState()
-  const [inputKey, setInputKey] = useState('')
+  const user = useAppSelector(userSelector)
   const dispatch = useAppDispatch()
   const ref = useRef()
   const batch = useAppSelector(batchSelector)
@@ -24,6 +30,16 @@ const HomeComponent = () => {
     dispatch(addExcelData(parsedData))
     console.log(ref)
   }, [parsedData, ref])
+
+  useEffect(() => {
+    let num
+    GET_CURRENT_BATCH_ID().then((data) => {
+      num = parseInt(data.batches[0].batchId) + 1
+      console.log(data.batches[0].batchId + 1)
+      console.log(num)
+      dispatch(addBatchId(num))
+    })
+  }, [])
 
   useEffect(() => {
     if (file) {
@@ -46,7 +62,7 @@ const HomeComponent = () => {
     reader.readAsArrayBuffer(file)
   }
   const handleRemoveFile = () => {
-    dispatch(addKey(Math.random().toString(36)))
+    dispatch(addKey())
     // setInputKey(num)
     dispatch(removeBatch())
   }
@@ -77,7 +93,13 @@ const HomeComponent = () => {
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <TableData />
-          <ConfirmButton />
+          <div className="m-3 flex justify-end p-1">
+            <If
+              condition={user.exists}
+              then={<ConfirmButton />}
+              else={<ConnectWallet />}
+            />
+          </div>
         </div>
       </div>
     </div>

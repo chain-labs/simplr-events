@@ -1,14 +1,17 @@
 import If from '@/components/If'
-import useContract from '@/ethereum/useContract'
-import useCustomContract, {
-  getContractDetails,
-} from '@/ethereum/useCustomContract'
+import { getContractDetails } from '@/ethereum/useCustomContract'
 import useEthers from '@/ethereum/useEthers'
-import { addBatchId, addKey, batchSelector, removeBatch } from '@/redux/batch'
+import {
+  addBatchId,
+  addKey,
+  batchSelector,
+  incrementBatchId,
+  removeBatch,
+} from '@/redux/batch'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { userSelector } from '@/redux/user'
 import axios from 'axios'
-import { BigNumber, ethers } from 'ethers'
+import { ethers } from 'ethers'
 import React, { useEffect, useState } from 'react'
 import { useProvider, useSigner } from 'wagmi'
 import {
@@ -47,14 +50,9 @@ const ConfirmButton = () => {
   }, [batch])
 
   const addExcelInputData = async () => {
-    let num
     setLoading(true)
-    await GET_CURRENT_BATCH_ID().then((data) => {
-      num = parseInt(data.batches[0].batchId) + 1
-      console.log(data.batches[0].batchId + 1)
-      console.log(num)
-      dispatch(addBatchId(num))
-    })
+    const num = batch.batchId
+    console.log(batch.batchId)
     handleHashes(num)
   }
 
@@ -98,8 +96,13 @@ const ConfirmButton = () => {
     const transaction = contract
       ?.connect(signer)
       ?.addBatch(root, cid, { value: 0 })
-      .then((res) => console.log(res))
+      .then((res) => {
+        console.log(res)
+        dispatch(incrementBatchId())
+      })
       .catch((err) => console.log(err))
+    dispatch(addKey())
+    dispatch(removeBatch())
   }
 
   return (
@@ -107,7 +110,7 @@ const ConfirmButton = () => {
       <If
         condition={batch.inputParams.length !== 0}
         then={
-          <div className="m-3 flex justify-end p-1">
+          <div>
             {/* <button
               type="button"
               onClick={addExcelInputData}
@@ -117,11 +120,11 @@ const ConfirmButton = () => {
             </button> */}
             <button
               type="button"
-              onClick={addExcelInputData}
-              disabled={loading}
-              className={`mr-2 rounded-lg bg-blue-700 px-5 py-3 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:${
-                loading ? 'true' : 'false'
-              } cursor-progress:${loading ? 'true' : 'false'}`}
+              onClick={
+                !loading && user.exists ? () => addExcelInputData() : () => ''
+              }
+              disabled={!user.exists || loading}
+              className={`disabled:hover:empty: mr-2 rounded-lg bg-blue-700 px-5 py-3 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:cursor-not-allowed dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 `}
             >
               {loading ? 'Loading' : 'Add Data'}
             </button>

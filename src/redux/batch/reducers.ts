@@ -7,6 +7,7 @@ import {
   addExcelData,
   addKey,
   removeKey,
+  incrementBatchId,
 } from './actions'
 
 export type CsvState = {
@@ -46,7 +47,6 @@ export const batchReducer = createReducer(initialState, (builder) => {
     .addCase(removeBatch, (state) => {
       state.eventName = ''
       state.addBatchTimestamp = 0
-      state.batchId = 0
       state.contractAddress = ''
       state.inputParams = []
       return state
@@ -55,12 +55,16 @@ export const batchReducer = createReducer(initialState, (builder) => {
       state.batchId = action.payload
       return state
     })
+    .addCase(incrementBatchId, (state) => {
+      state.batchId = state.batchId + 1
+      return state
+    })
     .addCase(addExcelData, (state, action) => {
       state.inputParams = action.payload
       return state
     })
-    .addCase(addKey, (state, action) => {
-      state.key = action.payload
+    .addCase(addKey, (state) => {
+      state.key = Math.random().toString(36)
       return state
     })
     .addCase(removeKey, (state) => {

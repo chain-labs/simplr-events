@@ -1,15 +1,15 @@
 export const SUBGRAPH_ENDPOINT = process.env.NEXT_PUBLIC_SUBGRAPH_ENDPOINT
 export const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_LOCAL_URL
 export const CHAIN_NETWORK = process.env.NEXT_PUBLIC_CHAIN_NETWORK
-export const TEST_NETWORK = process.env.NEXT_PUBLIC_TEST_NETWORK
+export const TEST_ENV = process.env.NEXT_PUBLIC_TEST_ENV
 export const CONTRACT_ADDRESS = `${process.env.NEXT_PUBLIC_CONTRACT_ADDRESS}`
 
 export const getNetwork = () => {
   switch (CHAIN_NETWORK) {
     case 'eth':
-      return TEST_NETWORK ? 'goerli' : 'mainnet'
+      return TEST_ENV ? 'goerli' : 'mainnet'
     case 'polygon':
-      return TEST_NETWORK ? 'mumbai' : 'polygon'
+      return TEST_ENV ? 'mumbai' : 'polygon'
   }
 }
 

@@ -1,17 +1,35 @@
-import React from 'react'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import React, { useEffect } from 'react'
+import {
+  ConnectButton,
+  useAccountModal,
+  useChainModal,
+  useConnectModal,
+} from '@rainbow-me/rainbowkit'
 import '@rainbow-me/rainbowkit/styles.css'
+import { useAccount } from 'wagmi'
+import { useAppDispatch } from '@/redux/hooks'
+import { setUser } from '@/redux/user'
 
 const ConnectWallet = () => {
+  const dispatch = useAppDispatch()
+  const { openConnectModal } = useConnectModal()
+  const { openAccountModal } = useAccountModal()
+  const { openChainModal } = useChainModal()
+  const account = useAccount()
+
+  useEffect(() => {
+    if (account?.address) {
+      dispatch(setUser(account.address))
+    }
+  }, [account])
+
   return (
     <div>
       <ConnectButton.Custom>
         {({
           account,
           chain,
-          openAccountModal,
-          openChainModal,
-          openConnectModal,
+
           authenticationStatus,
           mounted,
         }) => {
@@ -75,9 +93,9 @@ const ConnectWallet = () => {
                       {chain.name}
                     </button>
                     <button onClick={openAccountModal} type="button">
-                      {account.displayName}
-                      {account.displayBalance
-                        ? ` (${account.displayBalance})`
+                      {account?.displayName}
+                      {account?.displayBalance
+                        ? ` (${account?.displayBalance})`
                         : ''}
                     </button>
                   </div>
