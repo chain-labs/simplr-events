@@ -1,19 +1,29 @@
 import { useState } from 'react'
 import DottedCrumb from '../components/DottedCrumb'
 import RoundedStep from '../components/RoundedStep'
-import ConnectArcana from '../ConnectArcana.tsx'
+import ConnectArcana from './ConnectArcana.tsx'
 import { STEPS } from '../constants'
 import { QueryProps } from '../types'
 import VerifyDetailsSection from './VerifyDetailsSection'
+import DataEncryptionSection from './DataEncryptionSection'
 
 const TicketClaimSection = ({ query }: { query: QueryProps }) => {
   const [step, setStep] = useState<number>(STEPS.VERIFY_URL)
+  const [checkbox, setCheckbox] = useState(false)
 
   const getClaimComponent = (step) => {
     if (step === STEPS.VERIFY_URL) {
       return <VerifyDetailsSection query={query} setStep={setStep} />
     } else if (step === STEPS.CONNECT_WALLET) {
-      return <ConnectArcana setStep={setStep} />
+      return (
+        <ConnectArcana
+          setStep={setStep}
+          checkbox={checkbox}
+          setCheckbox={setCheckbox}
+        />
+      )
+    } else if (step === STEPS.ENCRYPT_DATA) {
+      return <DataEncryptionSection setStep={setStep} query={query} />
     }
   }
   return (

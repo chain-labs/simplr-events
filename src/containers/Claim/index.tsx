@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ARCANA_APP_ADDRESS, LOGO_URL } from '@/utils/constants'
 import Image from 'next/image'
 import TicketClaimSection from './TicketClaimSection'
@@ -40,7 +40,6 @@ const ClaimComponent = ({ query }: { query: QueryProps }) => {
             />
           </div>
         </div>
-
         <TicketClaimSection query={query} />
       </ProvideAuth>
     </div>

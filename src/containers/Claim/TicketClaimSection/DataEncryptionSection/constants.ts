@@ -1,0 +1,6 @@
+export const ENCRYPTION_STEPS = {
+  GET_SIGNATURE: 1,
+  ENCRYPTING: 2,
+  MINT_TICKET: 3,
+  CLAIM_TICKET: 4,
+}

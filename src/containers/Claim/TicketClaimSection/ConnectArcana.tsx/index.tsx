@@ -3,11 +3,25 @@ import { useAuth } from '@arcana/auth-react'
 import { ethers, providers } from 'ethers'
 import { ArrowCycle, ChevronRight, GoogleFill } from 'akar-icons'
 import If from '@/components/If'
-import { STEPS } from '../constants'
+import { STEPS } from '../../constants'
 import Image from 'next/image'
 
-const ConnectArcana = ({ setStep }: { setStep: (number) => void }) => {
+const ConnectArcana = ({
+  setStep,
+  checkbox,
+  setCheckbox,
+}: {
+  setStep: (number) => void
+  checkbox: boolean
+  setCheckbox: (boolean) => void
+}) => {
   const auth = useAuth()
+
+  useEffect(() => {
+    if (auth.isLoggedIn) {
+      auth.logout()
+    }
+  }, [])
 
   const [provider, setProvider] = useState<providers.Web3Provider>()
   const [signer, setSigner] = useState<providers.JsonRpcSigner>()
@@ -51,35 +65,55 @@ const ConnectArcana = ({ setStep }: { setStep: (number) => void }) => {
     <div>
       <div className="my-6">
         <h2 className="font-semibold">
-          Login to Web3 using your Google Account.
+          Login to Web3 using your Google Account before you can claim your
+          ticket.
         </h2>
       </div>
       <If
         condition={!user}
         then={
-          <If
-            condition={!loggingIn}
-            then={
-              <button
-                className="flex items-center gap-x-4 rounded-full bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
-                onClick={handleConnect}
+          <React.Fragment>
+            <div className="mb-2 flex">
+              <input
+                // checked
+                id="checked-checkbox"
+                type="checkbox"
+                value={`${checkbox}`}
+                onChange={() => setCheckbox(!checkbox)}
+                className="mt-1 h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-600"
+              />
+              <label
+                htmlFor="checked-checkbox"
+                className="ml-2 text-sm font-medium text-black"
               >
-                <GoogleFill />
-                Login with Google
-              </button>
-            }
-            else={
-              <button
-                className="flex items-center gap-x-4 rounded-full bg-blue-300 py-2 px-4 font-bold text-white"
-                disabled
-              >
-                <div className="animate-spin-slow">
-                  <ArrowCycle strokeWidth={2} size={18} />
-                </div>
-                Signing In
-              </button>
-            }
-          />
+                By selecting this checkbox you agree to allow Simplr to send you
+                education and newsletters about the Web3
+              </label>
+            </div>
+            <If
+              condition={!loggingIn}
+              then={
+                <button
+                  className="flex items-center gap-x-4 rounded-full bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+                  onClick={handleConnect}
+                >
+                  <GoogleFill />
+                  Login with Google
+                </button>
+              }
+              else={
+                <button
+                  className="flex items-center gap-x-4 rounded-full bg-blue-300 py-2 px-4 font-bold text-white"
+                  disabled
+                >
+                  <div className="animate-spin-slow">
+                    <ArrowCycle strokeWidth={2} size={18} />
+                  </div>
+                  Signing In
+                </button>
+              }
+            />
+          </React.Fragment>
         }
         else={
           <div>

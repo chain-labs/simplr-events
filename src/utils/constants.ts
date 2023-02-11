@@ -1,3 +1,15 @@
+import axios from 'axios'
+
+const toBoolean = (condition: string) => {
+  if (condition.toLowerCase() === 'true') {
+    return true
+  } else if (condition.toLowerCase() === 'false') {
+    return false
+  } else {
+    return false
+  }
+}
+
 export const LOGO_URL =
   'https://ik.imagekit.io/chainlabs/Simplr_Collection_Dapp/simplr-logo__v0Tmlq6M.png?ik-sdk-version=javascript-1.4.3&updatedAt=1675703009631'
 export const BACKGROUND_MEDIA =
@@ -5,3 +17,40 @@ export const BACKGROUND_MEDIA =
 export const SUBGRAPH_ENDPOINT = process.env.NEXT_PUBLIC_SUBGRAPH_ENDPOINT
 
 export const ARCANA_APP_ADDRESS = process.env.NEXT_PUBLIC_ARCANA_APP_ADDRESS
+
+export const NFT_STORAGE_TOKEN = process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN
+
+export const GELATO_API_KEY = process.env.NEXT_PUBLIC_GELATO_API_KEY
+
+export const TEST_NETWORK = toBoolean(process.env.NEXT_PUBLIC_TEST_NETWORK)
+
+export const getNetwork = (): {
+  chainIdHex: string
+  chainId: string
+  blockExplorer: string
+  unit: string
+  name: string
+} => {
+  if (TEST_NETWORK) {
+    return {
+      name: 'mumbai',
+      chainIdHex: '0x13881',
+      chainId: '80001',
+      blockExplorer: 'https://mumbai.polygonscan.com/',
+      unit: 'MATIC',
+    }
+  } else {
+    return {
+      name: 'matic',
+      chainIdHex: '0x89',
+      chainId: '137',
+      blockExplorer: 'https://polygonscan.com/',
+      unit: 'MATIC',
+    }
+  }
+}
+
+export const SIMPLR_ADDRESS = '0x63ae231DE70393E6Eea8CeE9622D84960ebBcd13'
+
+export const RELAY_TASK_CHECK_ENDPOINT =
+  'https://relay.gelato.digital/tasks/status/'
