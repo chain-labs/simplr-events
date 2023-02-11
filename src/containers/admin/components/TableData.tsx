@@ -1,0 +1,59 @@
+import { batchSelector } from '@/redux/batch'
+import { useAppSelector } from '@/redux/hooks'
+import React from 'react'
+
+const TableData = () => {
+  const batch = useAppSelector(batchSelector)
+
+  return (
+    <div>
+      <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+        <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+            <th scope="col" className="px-6 py-3">
+              First Name
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Last Name
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Email
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Action
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {batch?.inputParams.length
+            ? batch.inputParams.map((data, index) => (
+                <tr
+                  className="border-b bg-white dark:border-gray-700 dark:bg-gray-900"
+                  key={index}
+                >
+                  <th
+                    scope="row"
+                    className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+                  >
+                    {data.firstName}
+                  </th>
+                  <td className="px-6 py-4"> {data.lastName}</td>
+                  <td className="px-6 py-4"> {data.email}</td>
+                  <td className="px-6 py-4">
+                    <a
+                      href="#"
+                      className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                    >
+                      Edit
+                    </a>
+                  </td>
+                </tr>
+              ))
+            : ''}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+export default TableData

@@ -4,7 +4,7 @@ import useCustomContract, {
   getContractDetails,
 } from '@/ethereum/useCustomContract'
 import useEthers from '@/ethereum/useEthers'
-import { addBatchId, batchSelector, removeBatch } from '@/redux/batch'
+import { addBatchId, addKey, batchSelector, removeBatch } from '@/redux/batch'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { userSelector } from '@/redux/user'
 import axios from 'axios'
@@ -63,12 +63,12 @@ const ConfirmButton = () => {
     const serverData = {
       inputParams: batch.inputParams,
       batchId: nextBatchId,
-      eventName: 'Vivacity:2023',
+      eventName: 'Vivacity 2023',
       contractAddress: '0x40c5d0cac2b8533c67cf5f08146886c7a3efeca7',
       addBatchTimestamp: Date.now(),
     }
-    // const res = await sendDataToServer(serverData)
-    // console.log(res)
+    // const response = await sendDataToServer(serverData)
+    // console.log(response)
     console.log('ServerData:', serverData)
 
     await batch?.inputParams?.map(async (data, index) => {
@@ -78,7 +78,7 @@ const ConfirmButton = () => {
         lastname: data.lastName,
         emailid: data.email,
         batchid: nextBatchId.toString(),
-        eventname: 'Vivacity:2023',
+        eventname: 'Vivacity 2023',
       }
       getHashes(dataExample).then((res) => userInputHashes.push(res))
     })

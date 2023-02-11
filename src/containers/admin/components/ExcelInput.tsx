@@ -1,6 +1,7 @@
 import {
   addBatch,
   addExcelData,
+  addKey,
   batchSelector,
   CsvState,
   removeBatch,
@@ -9,14 +10,15 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import React, { useState, useEffect, useRef } from 'react'
 import { read, utils } from 'xlsx'
 import ConfirmButton from './ConfirmButton'
+import TableData from './TableData'
 
 const HomeComponent = () => {
   const [parsedData, setParsedData] = useState<CsvState[]>([])
   const [file, setFile] = useState()
-  const [inputKey, setInputKey] = useState()
+  const [inputKey, setInputKey] = useState('')
   const dispatch = useAppDispatch()
-  const batch = useAppSelector(batchSelector)
   const ref = useRef()
+  const batch = useAppSelector(batchSelector)
 
   useEffect(() => {
     dispatch(addExcelData(parsedData))
@@ -30,7 +32,6 @@ const HomeComponent = () => {
   }, [file])
 
   const readFile = () => {
-    // setInputKey('')
     const reader = new FileReader()
     reader.onload = (event) => {
       const wb = read(event.target.result)
@@ -45,24 +46,18 @@ const HomeComponent = () => {
     reader.readAsArrayBuffer(file)
   }
   const handleRemoveFile = () => {
-    //@ts-ignore
-    ref.current.value = ''
+    dispatch(addKey(Math.random().toString(36)))
+    // setInputKey(num)
     dispatch(removeBatch())
-    // setInputKey(Date.now().toString())
   }
 
   const handleImport = async ($event) => {
     setFile($event.target.files.length ? $event.target.files[0] : '')
-    // const files = $event.target.files
-    // if (files.length) {
-    //   await setFile(files[0])
-    // }
   }
 
   return (
     <div>
       <div className="m-5 flex-1 p-3">
-        {/* <div className="col-md-6"> */}
         <div className="input-group">
           <div className="custom-file flex">
             <input
@@ -70,8 +65,7 @@ const HomeComponent = () => {
               className="block w-full text-sm text-slate-500 file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-blue-50 file:py-2 file:px-4 file:text-sm file:font-semibold file:text-blue-800 hover:file:bg-blue-100"
               name="file"
               id="inputGroupFile"
-              key={inputKey}
-              ref={ref}
+              key={batch.key}
               required
               onChange={handleImport}
               accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
@@ -79,55 +73,10 @@ const HomeComponent = () => {
             <button onClick={() => handleRemoveFile()}>Remove</button>
           </div>
         </div>
-        {/* </div> */}
       </div>
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-          <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-            <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                <th scope="col" className="px-6 py-3">
-                  First Name
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Last Name
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Email
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {batch?.inputParams.length
-                ? batch.inputParams.map((data, index) => (
-                    <tr
-                      className="border-b bg-white dark:border-gray-700 dark:bg-gray-900"
-                      key={index}
-                    >
-                      <th
-                        scope="row"
-                        className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
-                      >
-                        {data.firstName}
-                      </th>
-                      <td className="px-6 py-4"> {data.lastName}</td>
-                      <td className="px-6 py-4"> {data.email}</td>
-                      <td className="px-6 py-4">
-                        <a
-                          href="#"
-                          className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                        >
-                          Edit
-                        </a>
-                      </td>
-                    </tr>
-                  ))
-                : ''}
-            </tbody>
-          </table>
+          <TableData />
           <ConfirmButton />
         </div>
       </div>

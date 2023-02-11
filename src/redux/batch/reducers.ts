@@ -1,6 +1,13 @@
 import { createReducer } from '@reduxjs/toolkit'
 
-import { addBatch, removeBatch, addBatchId, addExcelData } from './actions'
+import {
+  addBatch,
+  removeBatch,
+  addBatchId,
+  addExcelData,
+  addKey,
+  removeKey,
+} from './actions'
 
 export type CsvState = {
   firstName: string
@@ -16,6 +23,7 @@ export type BatchState = {
   eventName: string
   contractAddress: string
   addBatchTimestamp: number
+  key: string
 }
 
 const initialState: BatchState = {
@@ -24,6 +32,7 @@ const initialState: BatchState = {
   eventName: '',
   contractAddress: '',
   addBatchTimestamp: 0,
+  key: '',
 }
 
 export const batchReducer = createReducer(initialState, (builder) => {
@@ -48,6 +57,14 @@ export const batchReducer = createReducer(initialState, (builder) => {
     })
     .addCase(addExcelData, (state, action) => {
       state.inputParams = action.payload
+      return state
+    })
+    .addCase(addKey, (state, action) => {
+      state.key = action.payload
+      return state
+    })
+    .addCase(removeKey, (state) => {
+      state.key = ''
       return state
     })
 })
