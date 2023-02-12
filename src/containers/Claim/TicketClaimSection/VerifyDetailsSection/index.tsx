@@ -1,5 +1,4 @@
 import If from '@/components/If'
-import { useAuth } from '@arcana/auth-react'
 import { ArrowCycle, ChevronRight } from 'akar-icons'
 import React from 'react'
 

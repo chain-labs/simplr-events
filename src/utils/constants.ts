@@ -1,5 +1,3 @@
-import axios from 'axios'
-
 const toBoolean = (condition: string) => {
   if (condition.toLowerCase() === 'true') {
     return true

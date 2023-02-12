@@ -4,7 +4,7 @@ import axios from 'axios'
 import LitJsSdk from '@lit-protocol/sdk-browser'
 import { BytesLike, ethers } from 'ethers'
 import { QueryProps } from './types'
-import { NFTStorage, Blob } from 'nft.storage'
+import { NFTStorage } from 'nft.storage'
 import {
   NFT_STORAGE_TOKEN,
   RELAY_TASK_CHECK_ENDPOINT,
