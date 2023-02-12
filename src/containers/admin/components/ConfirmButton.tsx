@@ -2,7 +2,6 @@ import If from '@/components/If'
 import { getContractDetails } from '@/ethereum/useCustomContract'
 import useEthers from '@/ethereum/useEthers'
 import {
-  addBatchId,
   addKey,
   batchSelector,
   incrementBatchId,
@@ -17,22 +16,19 @@ import { useProvider, useSigner } from 'wagmi'
 import {
   getHashes,
   getMerkleTreeRoot,
-  GET_CURRENT_BATCH_ID,
   sendDataToIPFS,
   sendDataToServer,
 } from '../utils'
+import toast from 'react-hot-toast'
 
 const ConfirmButton = () => {
   const provider = useProvider()
   const [contract, setContract] = useState<ethers.Contract>()
   const [loading, setLoading] = useState<boolean>()
-  // const [nextBatchId, setNextBatchId] = useState<number>()
-
   const user = useAppSelector(userSelector)
   const id = '0x40c5d0cac2b8533c67cf5f08146886c7a3efeca7'
   const contractName = 'Event'
   const { data: signer } = useSigner()
-
   const userInputHashes = []
   const batch = useAppSelector(batchSelector)
   const dispatch = useAppDispatch()
@@ -44,10 +40,6 @@ const ConfirmButton = () => {
       setContract(contract)
     }
   }, [id, provider, contractName, signer])
-
-  useEffect(() => {
-    console.log(batch.inputParams)
-  }, [batch])
 
   const addExcelInputData = async () => {
     setLoading(true)
@@ -84,7 +76,6 @@ const ConfirmButton = () => {
     const cid = await sendDataToIPFS(userInputHashes)
     console.log(cid)
     const merkleRoot = await getMerkleTreeRoot(userInputHashes)
-    setLoading(false)
 
     const res = await addBatchToContract(merkleRoot, cid).then((response) => {
       return response
@@ -98,9 +89,18 @@ const ConfirmButton = () => {
       ?.addBatch(root, cid, { value: 0 })
       .then((res) => {
         console.log(res)
+        toast(`🎉 Succesfully added batch`)
         dispatch(incrementBatchId())
+        setLoading(false)
+        setTimeout(removeCurrentBatch, 3000)
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        toast(`❌ Something went wrong! Please Try Again`)
+        setLoading(false)
+      })
+  }
+
+  const removeCurrentBatch = () => {
     dispatch(addKey())
     dispatch(removeBatch())
   }
@@ -114,7 +114,7 @@ const ConfirmButton = () => {
             {/* <button
               type="button"
               onClick={addExcelInputData}
-              className="mr-2 rounded-lg bg-blue-700 px-5 py-4 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              className="mr-2 rounded-lg bg-violet-700 px-5 py-4 text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300 dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800"
             >
               Add Data
             </button> */}
@@ -124,7 +124,7 @@ const ConfirmButton = () => {
                 !loading && user.exists ? () => addExcelInputData() : () => ''
               }
               disabled={!user.exists || loading}
-              className={`disabled:hover:empty: mr-2 rounded-lg bg-blue-700 px-5 py-3 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:cursor-not-allowed dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 `}
+              className={`disabled:hover:empty: mr-2 rounded-lg bg-violet-700 px-5 py-3 text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300 disabled:cursor-not-allowed dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 `}
             >
               {loading ? 'Loading' : 'Add Data'}
             </button>

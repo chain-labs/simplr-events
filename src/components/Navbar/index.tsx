@@ -8,13 +8,13 @@ const Navbar = () => {
         <div className="container mx-auto flex flex-wrap items-center justify-between">
           <div className="flex items-center">
             <img
-              src="https://flowbite.com/docs/images/logo.svg"
+              src="https://ik.imagekit.io/chainlabs/Simplr_Collection_Dapp/simplr-logo__v0Tmlq6M.png?ik-sdk-version=javascript-1.4.3&updatedAt=1675703009631"
               className="mr-3 h-6 sm:h-9"
               alt="Flowbite Logo"
             ></img>
-            <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+            {/* <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
               VivaCity 2023
-            </span>
+            </span> */}
           </div>
           <div className="flex md:order-2">
             <ConnectWallet />

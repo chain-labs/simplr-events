@@ -19,9 +19,6 @@ const TableData = () => {
             <th scope="col" className="px-6 py-3">
               Email
             </th>
-            <th scope="col" className="px-6 py-3">
-              Action
-            </th>
           </tr>
         </thead>
         <tbody>
@@ -39,14 +36,6 @@ const TableData = () => {
                   </th>
                   <td className="px-6 py-4"> {data.lastName}</td>
                   <td className="px-6 py-4"> {data.email}</td>
-                  <td className="px-6 py-4">
-                    <a
-                      href="#"
-                      className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                    >
-                      Edit
-                    </a>
-                  </td>
                 </tr>
               ))
             : ''}

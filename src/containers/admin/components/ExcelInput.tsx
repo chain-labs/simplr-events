@@ -78,7 +78,7 @@ const HomeComponent = () => {
           <div className="custom-file flex">
             <input
               type="file"
-              className="block w-full text-sm text-slate-500 file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-blue-50 file:py-2 file:px-4 file:text-sm file:font-semibold file:text-blue-800 hover:file:bg-blue-100"
+              className="block w-full text-sm text-slate-500 file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-violet-50 file:py-2 file:px-4 file:text-sm file:font-semibold file:text-violet-800 hover:file:bg-violet-100"
               name="file"
               id="inputGroupFile"
               key={batch.key}
