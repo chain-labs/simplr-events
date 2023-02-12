@@ -6,6 +6,7 @@ import { client } from '@/components/ApolloClient'
 import MerkleTree from 'merkletreejs'
 import { keccak256 } from 'ethers/lib/utils'
 import { SERVER_URL } from '@/utils/constants'
+import { GET_ALLOWED_MINTERS_QUERY } from '@/graphql/query/getAllowedMinters'
 
 const PINATA_KEY_SECRET =
   '7c02de12e4bb768fd27a10a6692863056e5542354c20c2a875de0b1703b9445f'
@@ -25,6 +26,12 @@ export const getHashes = async (query: QueryProps) => {
 export const GET_CURRENT_BATCH_ID = async () => {
   const { data } = await client.query({
     query: GET_CURRENT_BATCH_ID_QUERY,
+  })
+  return data
+}
+export const GET_ALLOWED_MINTERS = async () => {
+  const { data } = await client.query({
+    query: GET_ALLOWED_MINTERS_QUERY,
   })
   return data
 }

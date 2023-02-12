@@ -94,11 +94,7 @@ const HomeComponent = () => {
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <TableData />
           <div className="m-3 flex justify-end p-1">
-            <If
-              condition={user.exists}
-              then={<ConfirmButton />}
-              else={<ConnectWallet />}
-            />
+            <ConfirmButton />
           </div>
         </div>
       </div>

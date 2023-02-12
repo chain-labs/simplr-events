@@ -16,15 +16,17 @@ import { useProvider, useSigner } from 'wagmi'
 import {
   getHashes,
   getMerkleTreeRoot,
+  GET_ALLOWED_MINTERS,
   sendDataToIPFS,
   sendDataToServer,
 } from '../utils'
 import toast from 'react-hot-toast'
+import ConnectWallet from '@/components/Navbar/ConnectWallet'
 
 const ConfirmButton = () => {
   const provider = useProvider()
   const [contract, setContract] = useState<ethers.Contract>()
-  const [loading, setLoading] = useState<boolean>()
+  const [loading, setLoading] = useState<boolean>(false)
   const user = useAppSelector(userSelector)
   const id = '0x40c5d0cac2b8533c67cf5f08146886c7a3efeca7'
   const contractName = 'Event'
@@ -32,6 +34,7 @@ const ConfirmButton = () => {
   const userInputHashes = []
   const batch = useAppSelector(batchSelector)
   const dispatch = useAppDispatch()
+  const [allowed, setAllowed] = useState<boolean>(false)
 
   useEffect(() => {
     if (id && provider && contractName) {
@@ -41,10 +44,21 @@ const ConfirmButton = () => {
     }
   }, [id, provider, contractName, signer])
 
+  useEffect(() => {
+    if (user.exists) {
+      GET_ALLOWED_MINTERS().then((data) => {
+        data.minters.map((minter) => {
+          if (minter.address.address === user.address.toLowerCase()) {
+            setAllowed(true)
+          }
+        })
+      })
+    }
+  }, [user])
+
   const addExcelInputData = async () => {
     setLoading(true)
     const num = batch.batchId
-    console.log(batch.batchId)
     handleHashes(num)
   }
 
@@ -59,10 +73,8 @@ const ConfirmButton = () => {
     }
     // const response = await sendDataToServer(serverData)
     // console.log(response)
-    console.log('ServerData:', serverData)
 
     await batch?.inputParams?.map(async (data, index) => {
-      console.log(data)
       const dataExample = {
         firstname: data.firstName,
         lastname: data.lastName,
@@ -72,11 +84,8 @@ const ConfirmButton = () => {
       }
       getHashes(dataExample).then((res) => userInputHashes.push(res))
     })
-    console.log(userInputHashes)
     const cid = await sendDataToIPFS(userInputHashes)
-    console.log(cid)
     const merkleRoot = await getMerkleTreeRoot(userInputHashes)
-
     const res = await addBatchToContract(merkleRoot, cid).then((response) => {
       return response
     })
@@ -108,7 +117,7 @@ const ConfirmButton = () => {
   return (
     <div>
       <If
-        condition={batch.inputParams.length !== 0}
+        condition={user.exists && batch.inputParams.length !== 0}
         then={
           <div>
             {/* <button
@@ -118,12 +127,13 @@ const ConfirmButton = () => {
             >
               Add Data
             </button> */}
+
             <button
               type="button"
               onClick={
                 !loading && user.exists ? () => addExcelInputData() : () => ''
               }
-              disabled={!user.exists || loading}
+              disabled={!allowed || loading}
               className={`disabled:hover:empty: mr-2 rounded-lg bg-violet-700 px-5 py-3 text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300 disabled:cursor-not-allowed dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 `}
             >
               {loading ? 'Loading' : 'Add Data'}
@@ -131,6 +141,7 @@ const ConfirmButton = () => {
           </div>
         }
       />
+      <If condition={!user.exists} then={<ConnectWallet />} />
     </div>
   )
 }
