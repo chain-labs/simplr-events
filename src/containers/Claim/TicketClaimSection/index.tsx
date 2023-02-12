@@ -5,7 +5,8 @@ import ConnectArcana from './ConnectArcana.tsx'
 import { STEPS } from '../constants'
 import { QueryProps } from '../types'
 import VerifyDetailsSection from './VerifyDetailsSection'
-import DataEncryptionSection from './DataEncryptionSection'
+import DataEncryptionSection from './ClaimSection'
+import TicketFinal from './TicketFinal'
 
 const TicketClaimSection = ({ query }: { query: QueryProps }) => {
   const [step, setStep] = useState<number>(STEPS.VERIFY_URL)
@@ -24,10 +25,12 @@ const TicketClaimSection = ({ query }: { query: QueryProps }) => {
       )
     } else if (step === STEPS.ENCRYPT_DATA) {
       return <DataEncryptionSection setStep={setStep} query={query} />
+    } else if (step === STEPS.FINISH) {
+      return <TicketFinal />
     }
   }
   return (
-    <div className="border-red container mt-4 border-l-4 border-l-emerald-400 bg-white pb-12 shadow-md ">
+    <div className="border-red container mt-4 flex-1 border-l-4 border-l-emerald-400 bg-white pb-12 shadow-md">
       <div className="container mb-4 px-4 py-6 shadow-md">
         <h1 className="text-center text-5xl font-bold text-black">
           {query.eventname}
@@ -40,7 +43,7 @@ const TicketClaimSection = ({ query }: { query: QueryProps }) => {
         <DottedCrumb active={step > STEPS.CONNECT_WALLET} />
         <RoundedStep stepNumber={STEPS.ENCRYPT_DATA} current={step} />
         <DottedCrumb active={step > STEPS.ENCRYPT_DATA} />
-        <RoundedStep stepNumber={STEPS.EXAMPLE} current={step} />
+        <RoundedStep stepNumber={STEPS.FINISH} current={step} />
       </div>
       <div className="container w-screen px-4 text-black ">
         {getClaimComponent(step)}

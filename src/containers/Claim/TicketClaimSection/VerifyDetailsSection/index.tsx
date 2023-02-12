@@ -16,7 +16,6 @@ const VerifyDetailsSection = ({
   query: QueryProps
   setStep: (arg0: number) => void
 }) => {
-  const auth = useAuth()
   const [verified, setVerified] = useState(false)
   const [checked, setChecked] = useState(false)
 

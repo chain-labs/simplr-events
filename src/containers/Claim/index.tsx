@@ -30,17 +30,19 @@ const ClaimComponent = ({ query }: { query: QueryProps }) => {
         `}
     >
       <ProvideAuth provider={provider}>
-        <div className="container flex justify-between bg-white py-6 px-1 shadow-md sm:px-0">
-          <div className="relative h-6 w-28 overflow-x-visible sm:h-8">
-            <Image
-              src={LOGO_URL}
-              fill
-              alt="logo image"
-              style={{ objectFit: 'contain' }}
-            />
+        <div className="flex min-h-screen flex-col pb-6">
+          <div className="container flex justify-between bg-white py-6 px-1 shadow-md sm:px-0">
+            <div className="relative h-6 w-28 overflow-x-visible sm:h-8">
+              <Image
+                src={LOGO_URL}
+                fill
+                alt="logo image"
+                style={{ objectFit: 'contain' }}
+              />
+            </div>
           </div>
+          <TicketClaimSection query={query} />
         </div>
-        <TicketClaimSection query={query} />
       </ProvideAuth>
     </div>
   )

@@ -54,3 +54,5 @@ export const SIMPLR_ADDRESS = '0x63ae231DE70393E6Eea8CeE9622D84960ebBcd13'
 
 export const RELAY_TASK_CHECK_ENDPOINT =
   'https://relay.gelato.digital/tasks/status/'
+
+export const SERVER_ENDPOINT = process.env.NEXT_PUBLIC_SERVER_ENDPOINT
