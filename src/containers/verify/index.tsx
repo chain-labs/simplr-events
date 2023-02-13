@@ -1,35 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import QrScan from './components/QrScan'
-import SignIn from './components/SignIn'
-import If from '@/components/If'
 import Login from './components/Login'
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { loginSelector, setStep } from '@/redux/login'
-import toast, { Toaster } from 'react-hot-toast'
+import { useAppSelector } from '@/redux/hooks'
+import { verifySelector } from '@/redux/verify'
+import If from '@/components/If'
 
 const VerifyComp = () => {
-  const [signedIn, setSignedIn] = useState<boolean>()
-  const login = useAppSelector(loginSelector)
-  const dispatch = useAppDispatch()
+  const verify = useAppSelector(verifySelector)
 
-  useEffect(() => {
-    if (sessionStorage.getItem('password')) {
-      setSignedIn(true)
-      dispatch(setStep(1))
-    } else {
-      dispatch(setStep(0))
-    }
-  }, [])
-
-  if (login.step === 1) {
-    return <Login />
-  }
-  if (login.step === 2) {
-    return <QrScan />
-  }
   return (
     <div>
-      <SignIn />
+      <If condition={verify.step === 1} then={<QrScan />} else={<Login />} />
     </div>
   )
 }

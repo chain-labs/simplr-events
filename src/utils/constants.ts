@@ -44,3 +44,5 @@ export const getEtherscanUrl = () => {
 }
 
 export const COLLECTION_TYPE = process.env.NEXT_PUBLIC_COLLECTION_TYPE
+
+export const STATIC_PASSWORD = process.env.NEXT_PUBLIC_STATIC_PASSWORD

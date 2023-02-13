@@ -1,18 +1,23 @@
 import React, { useState } from 'react'
 import bcrypt from 'bcryptjs-react'
 import { useAppDispatch } from '@/redux/hooks'
-import { setStep } from '@/redux/login'
 import { toast, Toaster } from 'react-hot-toast'
+import { setStep } from '@/redux/verify'
+// import { STATIC_PASSWORD } from '@/utils/constants'
+
+const STATIC_PASSWORD =
+  '$2a$10$hgdaIRpS3h56ZKL9amZQreVDQgJY3T9VR4wv/Y7P3/tvbhEggaVgO'
 
 const Login = () => {
   const [password, setPassword] = useState('')
   const dispatch = useAppDispatch()
 
   const handleLogin = () => {
-    const hash = sessionStorage.getItem('password')
+    const salt = bcrypt.genSaltSync(10)
+    const hash = bcrypt.hashSync(password, salt)
     console.log(hash)
-    console.log(bcrypt.compareSync(password, hash))
-    if (bcrypt.compareSync(password, hash)) {
+    console.log(STATIC_PASSWORD)
+    if (bcrypt.compareSync(password, STATIC_PASSWORD)) {
       console.log('valid')
       toast('login Successfull', { duration: 3000 })
       setTimeout(changeStep, 4000)
@@ -22,7 +27,7 @@ const Login = () => {
     }
   }
   const changeStep = () => {
-    dispatch(setStep(2))
+    dispatch(setStep(1))
   }
   return (
     <div className="w-screen p-10">

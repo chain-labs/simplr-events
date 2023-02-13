@@ -1,7 +1,7 @@
 import { configureStore, Action, ThunkAction } from '@reduxjs/toolkit'
 import { createWrapper } from 'next-redux-wrapper'
 import { batchReducer } from './batch'
-import { loginReducer } from './login'
+import { verifyReducer } from './verify'
 import { userReducer } from './user/reducers'
 
 const makeStore = () =>
@@ -9,7 +9,7 @@ const makeStore = () =>
     reducer: {
       user: userReducer,
       batch: batchReducer,
-      login: loginReducer,
+      verify: verifyReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({ serializableCheck: false }),

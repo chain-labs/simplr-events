@@ -2,15 +2,15 @@ import { createReducer } from '@reduxjs/toolkit'
 
 import { setStep } from './actions'
 
-export type loginState = {
+export type verifyState = {
   step: number
 }
 
-const initialState: loginState = {
+const initialState: verifyState = {
   step: 0,
 }
 
-export const loginReducer = createReducer(initialState, (builder) => {
+export const verifyReducer = createReducer(initialState, (builder) => {
   builder.addCase(setStep, (state, action) => {
     state.step = action.payload
   })
