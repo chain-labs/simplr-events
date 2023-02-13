@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { QrReader } from 'react-qr-reader'
 import QrScan from './components/QrScan'
 import SignIn from './components/SignIn'
-import bcrypt from 'bcryptjs-react'
 import If from '@/components/If'
 import Login from './components/Login'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { loginReducer, loginSelector, setStep } from '@/redux/login'
+import { loginSelector, setStep } from '@/redux/login'
+import toast, { Toaster } from 'react-hot-toast'
 
 const VerifyComp = () => {
   const [signedIn, setSignedIn] = useState<boolean>()

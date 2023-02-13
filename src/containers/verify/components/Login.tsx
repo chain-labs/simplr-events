@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import bcrypt from 'bcryptjs-react'
 import { useAppDispatch } from '@/redux/hooks'
 import { setStep } from '@/redux/login'
-import { toast } from 'react-hot-toast'
+import { toast, Toaster } from 'react-hot-toast'
 
 const Login = () => {
   const [password, setPassword] = useState('')
@@ -14,13 +14,19 @@ const Login = () => {
     console.log(bcrypt.compareSync(password, hash))
     if (bcrypt.compareSync(password, hash)) {
       console.log('valid')
-      dispatch(setStep(2))
+      toast('login Successfull', { duration: 3000 })
+      setTimeout(changeStep, 4000)
     } else {
-      toast()
+      toast('Invalid Password')
+      setPassword('')
     }
+  }
+  const changeStep = () => {
+    dispatch(setStep(2))
   }
   return (
     <div className="w-screen p-10">
+      <Toaster position="top-center" />
       <div className="mb-6">
         <label
           htmlFor="password"

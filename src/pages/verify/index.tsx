@@ -7,7 +7,7 @@ import React from 'react'
 const VerifyPage = () => {
   return (
     <Wagmi>
-      <div className="flex min-h-screen items-center justify-center bg-white p-5 font-bold text-black">
+      <div className="flex min-h-screen items-center  bg-white  font-bold text-black">
         <Navbar />
         <div className="w-100 bg-white">
           <VerifyComp />

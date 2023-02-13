@@ -9,8 +9,9 @@ const QrScan = () => {
   const camStyle = {
     // display: 'flex',
     // justifycontent: 'center',
-    // marginTop: '20px',
-    width: '300px',
+    // alignItems: 'center',
+    // marginTop: '-25px',
+    width: '80vh',
   }
 
   const handleScan = async (scanData) => {
@@ -29,19 +30,12 @@ const QrScan = () => {
     console.error(err)
   }
   return (
-    <div className="bg-white">
-      <div style={camStyle}>
+    <div className="w-screen bg-white p-10">
+      <div className="max-w-screen-md">
         {/* <select onChange={(e) => setMode(e.target.value)}>
           <option value={'environment'}>Back Camera</option>
           <option value={'user'}>Front Camera</option>
         </select> */}
-        <button
-          onClick={() => {
-            setStartScan(!startScan)
-          }}
-        >
-          {startScan ? 'Stop Scan' : 'Start Scan'}
-        </button>{' '}
         <QrReader
           constraints={{ facingMode: mode }}
           scanDelay={5000}
@@ -56,12 +50,20 @@ const QrScan = () => {
               console.info(error)
             }
           }}
-          //   facingMode={mode}
-          videoStyle={{ width: '200px', padding: '0px' }}
         />
       </div>
       {/* Hi{data} */}
-      {loadingScan && <p>Loading</p>}
+      <div className="flex-row items-center justify-center">
+        {loadingScan && <p>Loading</p>}
+        <button
+          onClick={() => {
+            setStartScan(!startScan)
+          }}
+          className="w-full rounded-lg bg-violet-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300"
+        >
+          {startScan ? 'Stop Scan' : 'Start Scan'}
+        </button>{' '}
+      </div>
       {/* {data !== '' && <p>{data}</p>}{' '} */}
     </div>
   )

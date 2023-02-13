@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import bcrypt from 'bcryptjs-react'
 import { useAppDispatch } from '@/redux/hooks'
 import { setStep } from '@/redux/login'
+import toast, { Toaster } from 'react-hot-toast'
 
 const SignIn = () => {
   const [password, setPassword] = useState('')
@@ -17,18 +18,25 @@ const SignIn = () => {
     }
   }, [confirmPassword])
 
-  const handlePassword = () => {
+  const handleSignup = () => {
     const salt = bcrypt.genSaltSync(10)
     const hash = bcrypt.hashSync(password, salt)
     console.log(salt)
     console.log(hash)
     console.log(bcrypt.compareSync(password, hash))
     sessionStorage.setItem('password', hash)
+    toast('signup successful', { duration: 3000 })
+    setTimeout(changeStep, 4000)
+  }
+
+  const changeStep = () => {
     dispatch(setStep(1))
   }
 
   return (
     <div className="w-screen p-10">
+      <Toaster position="top-center" />
+
       <div className="mb-6">
         <label htmlFor="password" className="mb-2 block text-sm font-medium  ">
           Create Password
@@ -63,7 +71,7 @@ const SignIn = () => {
 
       <button
         type="submit"
-        onClick={handlePassword}
+        onClick={handleSignup}
         className="w-full rounded-lg bg-violet-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300 "
       >
         Submit
