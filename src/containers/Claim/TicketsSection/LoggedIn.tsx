@@ -2,12 +2,7 @@ import { client } from '@/components/ApolloClient'
 import If from '@/components/If'
 import FETCH_HOLDER_TICKETS from '@/graphql/query/fetchHolderTickets'
 import { useAuth } from '@arcana/auth-react'
-import {
-  CirclePlusFill,
-  CircleXFill,
-  TelegramFill,
-  TwitterFill,
-} from 'akar-icons'
+import { CirclePlusFill } from 'akar-icons'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { TICKET_IMAGE_URL } from '../constants'
@@ -25,9 +20,9 @@ const LoggedIn = () => {
       query: FETCH_HOLDER_TICKETS,
       variables: {
         id: address,
+        first: 10,
       },
     })
-    console.log({ res: res.data?.holders[0]?.tickets })
     const tickets = res.data?.holders[0]?.tickets
     setUserTickets(tickets)
   }

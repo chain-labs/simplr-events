@@ -27,8 +27,6 @@ const provider = new AuthProvider(`${ARCANA_APP_ADDRESS}`, {
 
 const checkQuery = (query: QueryProps): boolean => {
   const { lastname, firstname, emailid, eventname, batchid } = query
-  console.log({ query })
-
   if (lastname && firstname && emailid && eventname && batchid) return true
   else return false
 }

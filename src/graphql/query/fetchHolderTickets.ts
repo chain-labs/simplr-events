@@ -1,12 +1,12 @@
 import { gql } from '@apollo/client'
 
 const FETCH_HOLDER_TICKETS = gql`
-  query FetchHolderTickets($id: String) {
+  query FetchHolderTickets($id: String, $first: Int) {
     holders(where: { id_contains_nocase: $id }) {
       address {
         address
       }
-      tickets {
+      tickets(orderBy: tokenId, orderDirection: desc, first: $first) {
         tokenId
         metadataCid
         creationTimeStamp

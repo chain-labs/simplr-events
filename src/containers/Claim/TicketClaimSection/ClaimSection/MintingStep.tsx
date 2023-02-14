@@ -39,16 +39,13 @@ const MintingStep = ({
   useEffect(() => {
     FETCH_TREE_CID(query?.batchid).then((data) => {
       const hashCID = data.batches[0].cid
-      console.log({ hashCID })
       getMerkleHashes(hashCID).then((hashes) => {
-        console.log({ hashes })
         const leafs = hashes.map((entry) => ethers.utils.keccak256(entry))
         const tree = new MerkleTree(leafs, ethers.utils.keccak256, {
           sortPairs: true,
         })
         const leaf = ethers.utils.keccak256(hashQueryData(query))
         const proofs = tree.getHexProof(leaf)
-        console.log({ proofs })
         setProofs(proofs)
       })
     })
@@ -81,8 +78,6 @@ const MintingStep = ({
       secretHash,
       proofs,
     )
-
-    console.log({ data })
 
     const request: SponsoredCallERC2771Request = {
       chainId: parseInt(chainId),

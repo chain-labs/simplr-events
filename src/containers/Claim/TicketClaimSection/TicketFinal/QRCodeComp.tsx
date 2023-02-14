@@ -4,7 +4,11 @@ import QRCode from 'react-qr-code'
 import Spinner from '../../components/Spinner'
 import LitJsSdk from '@lit-protocol/sdk-browser'
 import { useAuth } from '@arcana/auth-react'
-import { getNetwork } from '@/utils/constants'
+import { CONTRACT_ADDRESS, getNetwork } from '@/utils/constants'
+import { ethers } from 'ethers'
+import { getSignature, utf8ToHex } from '../../utils'
+import { client } from '@/components/ApolloClient'
+import FETCH_HOLDER_TICKETS from '@/graphql/query/fetchHolderTickets'
 
 const QRCodeComp = ({ qrData }: { qrData: any }) => {
   const [loading, setLoading] = useState(true)
@@ -12,49 +16,100 @@ const QRCodeComp = ({ qrData }: { qrData: any }) => {
 
   const auth = useAuth()
 
-  const decrypt = async (signature, secretHash) => {
+  const onImageDownload = () => {
+    const svg = document.getElementById('QRCode')
+    const svgData = new XMLSerializer().serializeToString(svg)
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    const img = new Image()
+    img.onload = () => {
+      canvas.width = img.width + 200
+      canvas.height = img.height + 200
+      ctx.fillStyle = '#fff'
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      ctx.drawImage(
+        img,
+        canvas.width / 2 - img.width / 2,
+        canvas.height / 2 - img.height / 2,
+      )
+      const pngFile = canvas.toDataURL('image/png')
+      const downloadLink = document.createElement('a')
+      downloadLink.download = 'QRCode.png'
+      downloadLink.href = `${pngFile}`
+      downloadLink.click()
+    }
+    img.src = `data:image/svg+xml;base64,${Buffer.from(svgData).toString(
+      'base64',
+    )}`
+  }
+
+  const handleDecrypt = async (dataCid, signature) => {
     const litClient = new LitJsSdk.LitNodeClient()
     await litClient.connect()
-    const secretRes = await axios.get(
-      `https://nftstorage.link/ipfs/${secretHash}/metadata.json`,
+    const dataRes = await axios.get(
+      `https://simplr.mypinata.cloud/ipfs/${dataCid}`,
     )
-
-    const secret = secretRes.data
-
-    const encryptedStringRes = await axios.get(
-      `https://nftstorage.link/ipfs/${secret?.secret?.encryptedStringHash}`,
-    )
-
-    const encryptedString = encryptedStringRes.data
-
+    const data = dataRes.data
+    const { data: encryptedString } = await axios({
+      url: `https://simplr.mypinata.cloud/ipfs/${data?.secret?.encryptedStringHash}`,
+      method: `get`,
+      responseType: `blob`,
+    })
     const network = getNetwork()
-
     const encryptionKeyBody = {
-      accessControlConditions: secret?.secret?.accessControlConditions,
-      toDecrypt: secret?.secret?.encryptedSymmetricKey,
+      accessControlConditions: data?.secret?.accessControlConditions,
+      toDecrypt: data?.secret?.encryptedSymmetricKey,
       chain: network.name,
       authSig: signature,
     }
-
     const symmetricKey = await litClient.getEncryptionKey(encryptionKeyBody)
-
-    console.log({ symmetricKey })
-
     return await LitJsSdk.decryptString(encryptedString, symmetricKey)
+  }
+
+  const handleQrGenerate = async (details) => {
+    const tokenIdRes = await client.query({
+      query: FETCH_HOLDER_TICKETS,
+      variables: {
+        id: auth.user.address,
+        first: 1,
+      },
+    })
+    const tokenId = tokenIdRes.data?.holders[0]?.tickets[0].tokenId
+
+    const concatenatedMessage = `${details?.emailid}-${auth.user.address}-${tokenId}-${CONTRACT_ADDRESS}`
+    const message = ethers.utils.keccak256(utf8ToHex(concatenatedMessage))
+    const arcanaProvider = auth.provider
+    const provider = new ethers.providers.Web3Provider(arcanaProvider)
+    const signer = provider.getSigner()
+    const signature = await signer.signMessage(message)
+    const qrCodeData = {
+      tokenId,
+      message,
+      contractAddress: CONTRACT_ADDRESS,
+      signature,
+    }
+    setQrValue(JSON.stringify(qrCodeData))
+    setLoading(false)
   }
 
   useEffect(() => {
     const { signature, secretHash } = qrData
-    console.log({ secretHash })
-
-    decrypt(signature, secretHash).then((decryptedString) => {
-      console.log({ decryptedString })
+    handleDecrypt(secretHash, signature).then((data) => {
+      const details = JSON.parse(data)
+      handleQrGenerate(details)
     })
   }, [])
+
   if (!loading) {
     return (
-      <div>
-        <QRCode value={qrValue} />
+      <div className="flex h-full w-full flex-col items-center bg-white pt-8">
+        <QRCode value={qrValue} id="QRCode" />
+        <button
+          className="mt-4 rounded-lg bg-green-500 px-5 py-2.5 text-sm font-medium text-white"
+          onClick={() => onImageDownload()}
+        >
+          Download QR Code
+        </button>
       </div>
     )
   } else {

@@ -15,20 +15,20 @@ const TicketModal = ({ setModalOpen, modalData, setModalData }: Props) => {
 
   return (
     <div className="fixed top-0 left-0 z-10 h-screen w-screen bg-modal-bg">
-      <div className="absolute top-0 h-1/2 w-full rounded-b-lg bg-gray-200 pt-4">
+      <div className="absolute top-0 h-1/2 w-full rounded-b-lg bg-gray-200">
+        <div
+          className="absolute right-4 top-4"
+          onClick={() => {
+            setModalOpen(false)
+            setModalData({})
+          }}
+        >
+          <CircleXFill size={24} />
+        </div>
         <If
           condition={!generatingQR}
           then={
             <React.Fragment>
-              <div
-                className="float-right pr-4"
-                onClick={() => {
-                  setModalOpen(false)
-                  setModalData({})
-                }}
-              >
-                <CircleXFill size={24} />
-              </div>
               <div className="rounded-xl bg-slate-200 py-4 shadow-xl">
                 <div className="w-full py-8">
                   <img

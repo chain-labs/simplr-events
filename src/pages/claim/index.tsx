@@ -27,10 +27,6 @@ const ClaimPage = () => {
     }
   }, [router.query])
 
-  useEffect(() => {
-    console.log({ query })
-  }, [query])
-
   return <ClaimComponent query={query} />
 }
 

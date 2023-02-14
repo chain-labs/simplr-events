@@ -28,35 +28,22 @@ export const FETCH_TREE_CID = async (id: string) => {
 export const getMerkleHashes = async (cid: string) => {
   const url = `https://nftstorage.link/ipfs/${cid}`
   const { data } = await axios.get(url)
-  console.log({ data })
-
   return JSON.parse(Object.keys(data)[0])
 }
 
 export const hashQueryData = (query) => {
   const { emailid, lastname, firstname, eventname, batchid } = query
   const concatenatedString = `${emailid}-${lastname}-${firstname}-${batchid}-${eventname}`
-  console.log({ concatenatedString })
-
   const hash = ethers.utils.keccak256(
     ethers.utils.toUtf8Bytes(concatenatedString),
   )
-
-  console.log({ hash })
-
   return hash
 }
 
 export const verifyQueryDetails = async (query: QueryProps, cid: string) => {
-  console.log({ query, cid })
-
   const merkleHashes: string[] = await getMerkleHashes(cid)
-  console.log({ merkleHashes })
-
   const hash = hashQueryData(query)
-
   const index = merkleHashes.findIndex((h) => h === hash)
-  console.log({ merkleHashes, hash, index })
   if (index != -1) {
     return true
   } else return false
@@ -135,7 +122,6 @@ export const pinFile = async (file, eventname) => {
 export const getRelayStatus = async (taskId: string) => {
   const endpoint = `${RELAY_TASK_CHECK_ENDPOINT}${taskId}`
   const res = await axios.get(endpoint)
-  console.log({ res: res.data })
   return res.data?.task
 }
 
@@ -149,10 +135,22 @@ export interface ClaimTicketRequestBody {
 }
 
 export const sendInfoToServer = async (body: ClaimTicketRequestBody) => {
-  const res = await axios.post(`${SERVER_ENDPOINT}/claimTicket`, body)
-  console.log({ res })
+  return await axios.post(`${SERVER_ENDPOINT}/claimTicket`, body)
 }
 
 export function delay(time) {
   return new Promise((resolve) => setTimeout(resolve, time))
+}
+
+export function utf8ToHex(str: string) {
+  return (
+    '0x' +
+    Array.from(str)
+      .map((c) =>
+        c.charCodeAt(0) < 128
+          ? c.charCodeAt(0).toString(16)
+          : encodeURIComponent(c).replace(/\\%/g, '').toLowerCase(),
+      )
+      .join('')
+  )
 }

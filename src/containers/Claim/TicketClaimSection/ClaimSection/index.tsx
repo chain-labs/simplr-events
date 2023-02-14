@@ -59,7 +59,7 @@ const ClaimSection = ({
         name: 'Vivacity 2023',
       },
     })
-    console.log({ eventData })
+
     const eventOwnerAddress = eventData.data.simplrEvents[0].owner.address
 
     // Define access control conditions
@@ -76,7 +76,6 @@ const ClaimSection = ({
       lastnama: query.lastname,
       batchid: query.batchid,
     }
-    console.log({ rawData })
 
     // Encrypt raw user data using Lit Protocol
     const { encryptedString, symmetricKey } = await encryptRawData(rawData)
@@ -132,12 +131,10 @@ const ClaimSection = ({
     let confirmation = false
     while (!confirmation) {
       getRelayStatus(taskId).then((task) => {
-        console.log({ task })
         const taskStatus = task?.taskState
         if (taskStatus === 'CheckPending') {
           confirmation = false
         } else {
-          console.log({ taskStatus })
           if (taskStatus === 'ExecSuccess') {
             confirmation = true
             const body: ClaimTicketRequestBody = {
@@ -150,7 +147,6 @@ const ClaimSection = ({
               firstName: query.firstname,
               lastName: query.lastname,
             }
-            console.log({ body })
             setCurrentStep(CLAIM_STEPS.FINISHED)
             setQrData({ signature, secretHash })
             sendInfoToServer(body)
