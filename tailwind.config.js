@@ -15,6 +15,9 @@ module.exports = {
       center: true,
     },
     extend: {
+      colors: {
+        'modal-bg': '#0e0e0e60',
+      },
       keyframes: {
         'bounce-right': {
           '0%, 100%': {

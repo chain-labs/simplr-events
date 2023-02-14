@@ -15,6 +15,7 @@ const ClaimPage = () => {
 
   useEffect(() => {
     const query = router.query
+
     if (query) {
       setQuery({
         firstname: query.firstname as string,
@@ -25,6 +26,10 @@ const ClaimPage = () => {
       })
     }
   }, [router.query])
+
+  useEffect(() => {
+    console.log({ query })
+  }, [query])
 
   return <ClaimComponent query={query} />
 }

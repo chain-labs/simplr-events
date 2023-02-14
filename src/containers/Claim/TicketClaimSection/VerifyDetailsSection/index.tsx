@@ -1,4 +1,5 @@
 import If from '@/components/If'
+import { useAuth } from '@arcana/auth-react'
 import { ArrowCycle, ChevronRight } from 'akar-icons'
 import React from 'react'
 
@@ -22,7 +23,10 @@ const VerifyDetailsSection = ({
     if (query?.batchid) {
       FETCH_TREE_CID(query?.batchid).then((data) => {
         const hashCID = data.batches[0].cid
+        console.log({ hashCID })
         verifyQueryDetails(query, hashCID).then((data) => {
+          console.log({ data })
+
           setVerified(data)
         })
         setTimeout(() => {

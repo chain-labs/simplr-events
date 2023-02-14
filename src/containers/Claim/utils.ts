@@ -1,4 +1,5 @@
 import { client } from '@/components/ApolloClient'
+import { FormData } from 'nft.storage'
 import { FETCH_TREE_CID_QUERY } from '@/graphql/query/fetchTreeCid'
 import axios from 'axios'
 import LitJsSdk from '@lit-protocol/sdk-browser'
@@ -27,6 +28,8 @@ export const FETCH_TREE_CID = async (id: string) => {
 export const getMerkleHashes = async (cid: string) => {
   const url = `https://nftstorage.link/ipfs/${cid}`
   const { data } = await axios.get(url)
+  console.log({ data })
+
   return JSON.parse(Object.keys(data)[0])
 }
 
@@ -38,6 +41,9 @@ export const hashQueryData = (query) => {
   const hash = ethers.utils.keccak256(
     ethers.utils.toUtf8Bytes(concatenatedString),
   )
+
+  console.log({ hash })
+
   return hash
 }
 
@@ -45,6 +51,8 @@ export const verifyQueryDetails = async (query: QueryProps, cid: string) => {
   console.log({ query, cid })
 
   const merkleHashes: string[] = await getMerkleHashes(cid)
+  console.log({ merkleHashes })
+
   const hash = hashQueryData(query)
 
   const index = merkleHashes.findIndex((h) => h === hash)
@@ -74,28 +82,54 @@ export const encryptRawData = async (data) => {
 const chain = 'mumbai'
 
 export const getAccessControlConditions = (addresses: string[]) => {
-  const accessControlConditions = addresses.map((address) => ({
-    contractAddress: '',
-    standardContractType: '',
-    chain: chain,
-    method: '',
-    parameters: [':userAddress'],
-    returnValueTest: {
-      comparator: '=',
-      value: address,
-    },
-  }))
+  const accessControlConditions = []
+  addresses.forEach((address) => {
+    const condition = {
+      contractAddress: '',
+      standardContractType: '',
+      chain: chain,
+      method: '',
+      parameters: [':userAddress'],
+      returnValueTest: {
+        comparator: '=',
+        value: address,
+      },
+    }
+    accessControlConditions.push(condition)
+    accessControlConditions.push({ operator: 'or' })
+  })
+  accessControlConditions.pop()
   return accessControlConditions
 }
 
-export const pinBlobToIPFS = async (data) => {
-  const cid = await NFTStorageClient.storeBlob(data)
-  return cid
+export const pinJson = async (JSONBody) => {
+  const url = 'https://api.pinata.cloud/pinning/pinJSONToIPFS'
+  return (
+    await axios.post(url, JSONBody, {
+      headers: {
+        pinata_api_key: process.env.NEXT_PUBLIC_PINATA_API_KEY,
+        pinata_secret_api_key: process.env.NEXT_PUBLIC_PINATA_API_SECRET,
+      },
+    })
+  ).data.IpfsHash
 }
 
-export const pinDataToIPFS = async (data) => {
-  const cid = await NFTStorageClient.store(data)
-  return cid
+export const pinFile = async (file, eventname) => {
+  const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`
+  const data = new FormData()
+  data.append('file', file, 'encryptedString.bin')
+  const metadata = JSON.stringify({
+    name: `${eventname}_encryptedString`,
+  })
+  data.append('pinataMetadata', metadata)
+  return axios.post(url, data, {
+    maxBodyLength: Infinity, //this is needed to prevent axios from erroring out with large files
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      pinata_api_key: process.env.NEXT_PUBLIC_PINATA_API_KEY,
+      pinata_secret_api_key: process.env.NEXT_PUBLIC_PINATA_API_SECRET,
+    },
+  })
 }
 
 export const getRelayStatus = async (taskId: string) => {

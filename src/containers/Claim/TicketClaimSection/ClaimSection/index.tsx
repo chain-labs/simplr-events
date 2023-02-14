@@ -8,8 +8,8 @@ import {
   encryptRawData,
   getAccessControlConditions,
   getRelayStatus,
-  pinBlobToIPFS,
-  pinDataToIPFS,
+  pinFile,
+  pinJson,
   sendInfoToServer,
 } from '../../utils'
 import { CLAIM_STEPS } from './constants'
@@ -21,13 +21,16 @@ import SignatureStep from './SignatureStep'
 import SecurityStep from './SecurityStep'
 import MintingStep from './MintingStep'
 import FinalStep from './FinalStep'
+import { ethers } from 'ethers'
 
 const ClaimSection = ({
   query,
   setStep,
+  setQrData,
 }: {
   query: QueryProps
   setStep: (number) => void
+  setQrData: (any) => void
 }) => {
   const auth = useAuth()
   const [signature, setSignature] = useState()
@@ -67,8 +70,13 @@ const ClaimSection = ({
     ])
 
     // Creating raw data as object for encryption
-    const rawData = Object.create(query)
-    delete rawData.eventname
+    const rawData = {
+      emailid: query.emailid,
+      firstname: query.firstname,
+      lastnama: query.lastname,
+      batchid: query.batchid,
+    }
+    console.log({ rawData })
 
     // Encrypt raw user data using Lit Protocol
     const { encryptedString, symmetricKey } = await encryptRawData(rawData)
@@ -82,7 +90,9 @@ const ClaimSection = ({
     })
 
     // Pinning encrypted string file to NFT Storage
-    const encryptedStringHash = await pinBlobToIPFS(encryptedString)
+    const encryptedStringRes = await pinFile(encryptedString, query.eventname)
+
+    const encryptedStringHash = encryptedStringRes.data.IpfsHash
 
     // Define Secret object used for decryption of data
     const secret = {
@@ -95,7 +105,10 @@ const ClaimSection = ({
       image_description: 'Photo by Folco Masi on Unsplash',
       secret: {
         accessControlConditions: accessControlConditions,
-        encryptedSymmetricKey: encryptedSymmetricKey,
+        encryptedSymmetricKey: LitJsSdk.uint8arrayToString(
+          encryptedSymmetricKey,
+          'base16',
+        ),
         encryptedStringHash: encryptedStringHash,
       },
       attributes: [
@@ -108,8 +121,8 @@ const ClaimSection = ({
     }
 
     // Pinning the secret to NFT Storage
-    const secretHash = await pinDataToIPFS(secret)
-    setSecretHash(secretHash.ipnft)
+    const secretHash = await pinJson(secret)
+    setSecretHash(secretHash)
 
     // Move to next step
     setCurrentStep(CLAIM_STEPS.MINT_TICKET)
@@ -139,6 +152,7 @@ const ClaimSection = ({
             }
             console.log({ body })
             setCurrentStep(CLAIM_STEPS.FINISHED)
+            setQrData({ signature, secretHash })
             sendInfoToServer(body)
           } else if (taskStatus === 'Cancelled') {
             alert('Transaction Failed! Try Again!')

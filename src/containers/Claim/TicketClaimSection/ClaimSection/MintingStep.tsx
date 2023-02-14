@@ -82,6 +82,8 @@ const MintingStep = ({
       proofs,
     )
 
+    console.log({ data })
+
     const request: SponsoredCallERC2771Request = {
       chainId: parseInt(chainId),
       target: targetAddress,
