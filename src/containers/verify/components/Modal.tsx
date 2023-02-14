@@ -3,7 +3,6 @@ import Portal from './Portal'
 
 interface props {
   onCancel: (any) => void
-  discription: string
 }
 
 const Modal = ({ onCancel }: props) => {

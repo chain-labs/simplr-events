@@ -33,7 +33,9 @@ const QrScan = () => {
           console.log('getUserMedia() error', error)
         },
       )
-    } catch (e) {}
+    } catch (e) {
+      console.log(e)
+    }
     // setLoadingScan(true)
     // setStartScan(!startScan)
     // console.log(`loaded data data`, scanData)
