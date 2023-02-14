@@ -1,12 +1,7 @@
-import { client } from '@/components/ApolloClient'
 import If from '@/components/If'
-import FETCH_HOLDER_TICKETS from '@/graphql/query/fetchHolderTickets'
 import { useAuth } from '@arcana/auth-react'
-import { CirclePlusFill, GoogleFill } from 'akar-icons'
-import { ethers } from 'ethers'
-import Image from 'next/image'
+import { ArrowCycle, GoogleFill } from 'akar-icons'
 import React, { useEffect, useState } from 'react'
-import { TICKET_IMAGE_URL } from '../constants'
 import LoggedIn from './LoggedIn'
 
 const TicketsSection = () => {
@@ -18,7 +13,7 @@ const TicketsSection = () => {
     e.preventDefault()
     setInitial(false)
     setLoggingIn(true)
-    const arcanaProvider = await auth.loginWithSocial('google')
+    await auth.loginWithSocial('google')
   }
 
   useEffect(() => {
@@ -33,7 +28,10 @@ const TicketsSection = () => {
     return <LoggedIn />
   } else
     return (
-      <div className="flex h-3/4 flex-1 items-center justify-center">
+      <div className="flex h-3/4 flex-1 flex-col items-center justify-center">
+        <div className="mb-6 text-xl font-semibold text-black">
+          Login to continue
+        </div>
         <button
           className="flex items-center gap-x-4 rounded-full bg-blue-500 py-2 px-4 font-bold text-white disabled:bg-gray-500"
           onClick={handleConnect}
@@ -47,7 +45,14 @@ const TicketsSection = () => {
                 Login with Google
               </React.Fragment>
             }
-            else="Logging In"
+            else={
+              <React.Fragment>
+                <div className="animate-spin-slow">
+                  <ArrowCycle strokeWidth={2} size={18} />
+                </div>
+                Signing In
+              </React.Fragment>
+            }
           />
         </button>
       </div>

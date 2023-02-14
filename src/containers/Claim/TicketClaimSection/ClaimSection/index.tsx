@@ -21,7 +21,6 @@ import SignatureStep from './SignatureStep'
 import SecurityStep from './SecurityStep'
 import MintingStep from './MintingStep'
 import FinalStep from './FinalStep'
-import { ethers } from 'ethers'
 
 const ClaimSection = ({
   query,
@@ -149,7 +148,11 @@ const ClaimSection = ({
             }
             setCurrentStep(CLAIM_STEPS.FINISHED)
             setQrData({ signature, secretHash })
-            sendInfoToServer(body)
+            try {
+              sendInfoToServer(body)
+            } catch (err) {
+              console.log('Error sending info to server', { err })
+            }
           } else if (taskStatus === 'Cancelled') {
             alert('Transaction Failed! Try Again!')
             confirmation = true
