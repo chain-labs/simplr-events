@@ -26,7 +26,7 @@ export const FETCH_TREE_CID = async (id: string) => {
 }
 
 export const getMerkleHashes = async (cid: string) => {
-  const url = `https://nftstorage.link/ipfs/${cid}`
+  const url = `https://simplr.mypinata.cloud/ipfs/${cid}`
   const { data } = await axios.get(url)
   return JSON.parse(Object.keys(data)[0])
 }
@@ -34,6 +34,8 @@ export const getMerkleHashes = async (cid: string) => {
 export const hashQueryData = (query) => {
   const { emailid, lastname, firstname, eventname, batchid } = query
   const concatenatedString = `${emailid}-${lastname}-${firstname}-${batchid}-${eventname}`
+  console.log({ concatenatedString })
+
   const hash = ethers.utils.keccak256(
     ethers.utils.toUtf8Bytes(concatenatedString),
   )
@@ -43,6 +45,9 @@ export const hashQueryData = (query) => {
 export const verifyQueryDetails = async (query: QueryProps, cid: string) => {
   const merkleHashes: string[] = await getMerkleHashes(cid)
   const hash = hashQueryData(query)
+
+  console.log({ merkleHashes, hash })
+
   const index = merkleHashes.findIndex((h) => h === hash)
   if (index != -1) {
     return true
@@ -129,8 +134,10 @@ export interface ClaimTicketRequestBody {
   email: string
   firstName: string
   lastName: string
+  eventName: string
   accountAddress: BytesLike
-  claimTimestamp: number
+  tokenId: number
+  claimTimestamp: string
   claimTrx: BytesLike
 }
 

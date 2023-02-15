@@ -17,29 +17,13 @@ const ConnectArcana = ({
 }) => {
   const auth = useAuth()
 
-  useEffect(() => {
-    if (auth.isLoggedIn) {
-      auth.logout()
-    }
-  }, [])
-
   const [provider, setProvider] = useState<providers.Web3Provider>()
   const [signer, setSigner] = useState<providers.JsonRpcSigner>()
   const [user, setUser] = useState<string>()
   const [loggingIn, setLoggingIn] = useState(false)
-  const [initial, setInitial] = useState(true)
-
-  useEffect(() => {
-    if (auth.isLoggedIn) {
-      if (initial) {
-        auth.logout()
-      }
-    }
-  }, [auth.isLoggedIn])
 
   const handleConnect = async (e) => {
     e.preventDefault()
-    setInitial(false)
     setLoggingIn(true)
     const arcanaProvider = await auth.loginWithSocial('google')
     const provider = new ethers.providers.Web3Provider(arcanaProvider)
@@ -54,10 +38,6 @@ const ConnectArcana = ({
     setSigner(null)
     setUser('')
   }
-
-  useEffect(() => {
-    auth.logout()
-  }, [])
 
   useEffect(() => {
     if (signer) {

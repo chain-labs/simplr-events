@@ -7,11 +7,20 @@ import { QueryProps } from '../types'
 import VerifyDetailsSection from './VerifyDetailsSection'
 import TicketFinal from './TicketFinal'
 import ClaimSection from './ClaimSection'
+import { useAuth } from '@arcana/auth-react'
 
 const TicketClaimSection = ({ query }: { query: QueryProps }) => {
   const [step, setStep] = useState<number>(STEPS.VERIFY_URL)
   const [checkbox, setCheckbox] = useState(false)
   const [qrData, setQrData] = useState({})
+
+  const auth = useAuth()
+
+  useEffect(() => {
+    if (!auth.loading) {
+      auth.logout()
+    }
+  }, [auth.loading])
 
   const getClaimComponent = (step) => {
     if (step === STEPS.VERIFY_URL) {

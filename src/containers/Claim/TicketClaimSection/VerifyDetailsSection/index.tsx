@@ -25,10 +25,8 @@ const VerifyDetailsSection = ({
         const hashCID = data.batches[0].cid
         verifyQueryDetails(query, hashCID).then((data) => {
           setVerified(data)
-        })
-        setTimeout(() => {
           setChecked(true)
-        }, 1000)
+        })
       })
     }
   }, [query])

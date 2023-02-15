@@ -1,5 +1,5 @@
 import If from '@/components/If'
-import { GELATO_API_KEY, getNetwork } from '@/utils/constants'
+import { GELATO_API_KEY, getNetwork, SERVER_ENDPOINT } from '@/utils/constants'
 import { useAuth } from '@arcana/auth-react'
 import { BigNumber, ethers } from 'ethers'
 import React, { useEffect, useState } from 'react'
@@ -15,6 +15,8 @@ import {
   SponsoredCallERC2771Request,
 } from '@gelatonetwork/relay-sdk'
 import { ChevronRight } from 'akar-icons'
+import axios from 'axios'
+import { toast } from 'react-hot-toast'
 
 interface Props {
   currentStep: number
@@ -23,6 +25,7 @@ interface Props {
   secretHash: string
   setCurrentStep: (number) => void
   setTaskId: (string) => void
+  setMintFailed: (boolean) => void
 }
 
 const MintingStep = ({
@@ -32,6 +35,7 @@ const MintingStep = ({
   query,
   secretHash,
   setTaskId,
+  setMintFailed,
 }: Props) => {
   const [minting, setMinting] = useState(false)
   const [proofs, setProofs] = useState(null)
@@ -86,14 +90,23 @@ const MintingStep = ({
       user: auth.user.address,
     }
     const relay = new GelatoRelay()
-    const relayResponse = await relay.sponsoredCallERC2771(
-      request,
-      provider,
-      GELATO_API_KEY,
-    )
 
-    setTaskId(relayResponse.taskId)
-    setCurrentStep(CLAIM_STEPS.CLAIM_TICKET)
+    const pingRes = await axios.get(`${SERVER_ENDPOINT}/ping`)
+    if (pingRes.data === 'Server is Running') {
+      const relayResponse = await relay.sponsoredCallERC2771(
+        request,
+        provider,
+        GELATO_API_KEY,
+      )
+
+      setTaskId(relayResponse.taskId)
+      setCurrentStep(CLAIM_STEPS.CLAIM_TICKET)
+    } else {
+      toast.error('Something went wrong! Try again')
+      setCurrentStep(CLAIM_STEPS.GET_SIGNATURE)
+      setMintFailed(true)
+      setMinting(false)
+    }
   }
 
   return (

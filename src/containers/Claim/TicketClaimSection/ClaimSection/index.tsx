@@ -21,6 +21,7 @@ import SignatureStep from './SignatureStep'
 import SecurityStep from './SecurityStep'
 import MintingStep from './MintingStep'
 import FinalStep from './FinalStep'
+import FETCH_HOLDER_TICKETS from '@/graphql/query/fetchHolderTickets'
 
 const ClaimSection = ({
   query,
@@ -130,29 +131,44 @@ const ClaimSection = ({
     let confirmation = false
     while (!confirmation) {
       getRelayStatus(taskId).then((task) => {
+        console.log({ task })
         const taskStatus = task?.taskState
         if (taskStatus === 'CheckPending') {
           confirmation = false
         } else {
           if (taskStatus === 'ExecSuccess') {
             confirmation = true
-            const body: ClaimTicketRequestBody = {
-              accountAddress: auth.user.address,
-              claimTimestamp: Math.abs(
-                new Date(task?.executionDate).getTime() / 1000,
-              ),
-              claimTrx: task?.transactionHash,
-              email: query.emailid,
-              firstName: query.firstname,
-              lastName: query.lastname,
-            }
-            setCurrentStep(CLAIM_STEPS.FINISHED)
-            setQrData({ signature, secretHash })
-            try {
-              sendInfoToServer(body)
-            } catch (err) {
-              console.log('Error sending info to server', { err })
-            }
+            client
+              .query({
+                query: FETCH_HOLDER_TICKETS,
+                variables: {
+                  id: auth.user.address,
+                  first: 1,
+                },
+              })
+              .then((res) => {
+                const tokenId = res.data?.holders[0]?.tickets[0].tokenId
+                console.log({ tokenId })
+                const body: ClaimTicketRequestBody = {
+                  accountAddress: auth.user.address,
+                  claimTimestamp: `${Math.abs(
+                    new Date(task?.executionDate).getTime() / 1000,
+                  )}`,
+                  claimTrx: task?.transactionHash,
+                  email: query.emailid,
+                  firstName: query.firstname,
+                  lastName: query.lastname,
+                  eventName: query.eventname,
+                  tokenId: parseInt(tokenId),
+                }
+                setCurrentStep(CLAIM_STEPS.FINISHED)
+                setQrData({ signature, secretHash })
+                try {
+                  sendInfoToServer(body)
+                } catch (err) {
+                  console.log('Error sending info to server', { err })
+                }
+              })
           } else if (taskStatus === 'Cancelled') {
             alert('Transaction Failed! Try Again!')
             confirmation = true
@@ -180,6 +196,7 @@ const ClaimSection = ({
             query,
             secretHash,
             setTaskId,
+            setMintFailed,
           }}
         />
         <FinalStep {...{ currentStep, mintFailed, setStep }} />

@@ -17,12 +17,10 @@ const TicketsSection = () => {
   }
 
   useEffect(() => {
-    if (auth.isLoggedIn) {
-      if (initial) {
-        auth.logout()
-      }
+    if (!auth.loading) {
+      auth.logout()
     }
-  }, [auth.isLoggedIn])
+  }, [auth.loading])
 
   if (auth.isLoggedIn) {
     return <LoggedIn />
