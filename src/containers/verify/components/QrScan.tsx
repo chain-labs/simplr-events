@@ -4,6 +4,7 @@ import { QrReader } from 'react-qr-reader'
 import { toast, Toaster } from 'react-hot-toast'
 import Animation from './Animation'
 import Modal from './Modal'
+import { json } from 'node:stream/consumers'
 
 const QrScan = () => {
   const [mode, setMode] = useState('environment')
@@ -11,13 +12,23 @@ const QrScan = () => {
   const [startScan, setStartScan] = useState(false)
   const [loadingScan, setLoadingScan] = useState(false)
   const [data, setData] = useState('')
+  const [errorOccured, setErrorOcurred] = useState<boolean>(false)
+  const [error, setError] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
-  const camStyle = {
-    // display: 'flex',
-    // justifycontent: 'center',
-    // alignItems: 'center',
-    // marginTop: '-25px',
-    width: '80vh',
+  const handleResult = (result) => {
+    setData(result?.text)
+    const res = result.text
+    const parsedData = JSON.parse(result?.text)
+    alert(result.text)
+    const mess = []
+    for (let i = 2; i < parsedData.message.length - 2; i = i + 2) {
+      const subpart = parseInt(parsedData.message.slice(i, i + 2), 16)
+      const char = String.fromCharCode(subpart)
+      mess.push(char)
+    }
+    alert(mess.join(' '))
+    setLoadingScan(false)
   }
 
   const handleScan = async () => {
@@ -36,16 +47,11 @@ const QrScan = () => {
     } catch (e) {
       console.log(e)
     }
-    // setLoadingScan(true)
-    // setStartScan(!startScan)
-    // console.log(`loaded data data`, scanData)
-    // if (scanData && scanData !== '') {
-    //   console.log(`loaded >>>`, scanData)
-    //   setData(scanData)
-    //   setStartScan(false)
-    //   setLoadingScan(false)
-    //   // setPrecScan(scanData);
-    // }
+  }
+
+  const handleError = (error) => {
+    setErrorOcurred(true)
+    setError('error')
   }
   const handleCloseModal = () => {
     setShowModal(false)
@@ -67,12 +73,12 @@ const QrScan = () => {
                 scanDelay={2000}
                 onResult={(result, error) => {
                   if (result) {
-                    setData(result?.text)
-                    setLoadingScan(false)
-                    alert(result)
+                    handleResult(result)
+                    // alert(typeof result?.text)
                   }
 
                   if (error) {
+                    handleError(error)
                     console.info(error)
                   }
                 }}
@@ -105,12 +111,19 @@ const QrScan = () => {
             </button>
           }
         />
-        {showModal && <Modal onCancel={handleCloseModal} />}
+        {showModal && (
+          <Modal
+            onCancel={handleCloseModal}
+            errorPresent={errorOccured}
+            error={error}
+            setError={setError}
+            message={successMessage}
+            setStartScan={setStartScan}
+          />
+        )}
       </div>
     </div>
   )
 }
 
 export default QrScan
-// https://codesandbox.io/s/modal-window-with-react-typescript-tailwind-eq1w5?file=/src/Basic.tsx
-// https://codesandbox.io/s/react-tailwind-components-ln91r?from-embed=&file=/src/Modal.js
