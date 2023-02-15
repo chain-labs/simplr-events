@@ -64,17 +64,8 @@ const ConfirmButton = () => {
 
   const handleHashes = async (nextBatchId) => {
     console.log(nextBatchId)
-    const serverData = {
-      inputParams: batch.inputParams,
-      batchId: nextBatchId,
-      eventName: 'Vivacity 2023',
-      contractAddress: '0x40c5d0cac2b8533c67cf5f08146886c7a3efeca7',
-      addBatchTimestamp: Date.now(),
-    }
-    // const response = await sendDataToServer(serverData)
-    // console.log(response)
 
-    await batch?.inputParams?.map(async (data, index) => {
+    await batch?.inputParams?.map(async (data) => {
       const dataExample = {
         firstname: data.firstName,
         lastname: data.lastName,
@@ -86,22 +77,32 @@ const ConfirmButton = () => {
     })
     const cid = await sendDataToIPFS(userInputHashes)
     const merkleRoot = await getMerkleTreeRoot(userInputHashes)
-    const res = await addBatchToContract(merkleRoot, cid).then((response) => {
-      return response
-    })
+    await addBatchToContract(merkleRoot, cid, nextBatchId)
   }
 
-  const addBatchToContract = async (root, cid) => {
+  const addBatchToContract = async (root, cid, nextBatchId) => {
     console.log('Inputs:', 'merkleRoot:', root, 'cid:', cid)
     const transaction = contract
       ?.connect(signer)
       ?.addBatch(root, cid, { value: 0 })
-      .then((res) => {
+      .then(async (res) => {
         console.log(res)
-        toast(`🎉 Succesfully added batch`)
         dispatch(incrementBatchId())
         setLoading(false)
         setTimeout(removeCurrentBatch, 3000)
+        const serverData = {
+          inputParams: batch.inputParams,
+          batchId: nextBatchId.toString(),
+          eventName: 'Vivacity 2023',
+          contractAddress: '0x40c5d0cac2b8533c67cf5f08146886c7a3efeca7',
+          addBatchTimestamp: Date.now(),
+        }
+        const response = await sendDataToServer(serverData)
+        if (response.status !== 200) {
+          toast(`❌ Something went wrong! Please Try Again`)
+        } else {
+          toast(`🎉 Succesfully added batch`)
+        }
       })
       .catch((err) => {
         toast(`❌ Something went wrong! Please Try Again`)

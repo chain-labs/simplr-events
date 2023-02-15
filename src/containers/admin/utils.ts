@@ -69,7 +69,6 @@ export const sendDataToServer = async (data) => {
     .post(`${SERVER_URL}/addBatch`, data, {
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
       },
     })
     .then((response) => {
