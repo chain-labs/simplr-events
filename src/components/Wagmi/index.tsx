@@ -1,23 +1,25 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
-import { publicProvider } from 'wagmi/providers/public'
 import { useAppSelector } from 'src/redux/hooks'
 import { userSelector } from 'src/redux/user'
 
-const Wagmi = ({ children }) => {
+export const ALCHEMY_API = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY
+
+interface props {
+  children?: React.ReactNode
+}
+
+const Wagmi = ({ children }: props) => {
   const user = useAppSelector(userSelector)
   const { chains, provider } = configureChains(
-    [chain.mainnet, chain.polygonMumbai, chain.polygon],
-    [
-      alchemyProvider({ apiKey: 'lqM0WXfur0rGOi8x0lU1amSOH7FR_DQx' }),
-      publicProvider(),
-    ],
+    [chain.mainnet, chain.polygonMumbai, chain.polygon, chain.goerli],
+    [alchemyProvider({ apiKey: ALCHEMY_API, priority: 0 })],
   )
 
   const { connectors } = getDefaultWallets({
-    appName: 'Simplr Collection App',
+    appName: 'Simplr Events',
     chains,
   })
 

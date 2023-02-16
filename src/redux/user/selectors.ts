@@ -1,6 +1,6 @@
-import { createSelector } from '@reduxjs/toolkit';
-import { AppState } from '../store';
+import { createSelector } from '@reduxjs/toolkit'
+import { AppState } from '../store'
 
-export const selectUser = (state: AppState) => state.user;
+export const selectUser = (state: AppState) => state.user
 
-export const userSelector = createSelector(selectUser, (state) => state);
+export const userSelector = createSelector(selectUser, (state) => state)

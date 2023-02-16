@@ -12,7 +12,7 @@
       "chainId": "80001",
       "contracts": {
         "SimplrEvents": {
-          "address": "0x86d9bF6645Fb33b5E1E86210D86CaE461CBF9a13",
+          "address": "0xBaEBb2e5272CB139f2AbBdDb81e9d1e3D50Cbb86",
           "abi": [
             {
               "inputs": [],
@@ -48,6 +48,11 @@
                 }
               ],
               "name": "Event_PermissionDenied",
+              "type": "error"
+            },
+            {
+              "inputs": [],
+              "name": "Event_TicketClaimed",
               "type": "error"
             },
             {
@@ -180,6 +185,12 @@
                 }
               ],
               "name": "BeaconUpgraded",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [],
+              "name": "CollectionRevealed",
               "type": "event"
             },
             {
@@ -382,6 +393,19 @@
               "anonymous": false,
               "inputs": [
                 {
+                  "indexed": false,
+                  "internalType": "string",
+                  "name": "ticketUri",
+                  "type": "string"
+                }
+              ],
+              "name": "TicketURIUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
                   "indexed": true,
                   "internalType": "address",
                   "name": "from",
@@ -574,6 +598,25 @@
               "type": "function"
             },
             {
+              "inputs": [
+                {
+                  "internalType": "bytes32",
+                  "name": "",
+                  "type": "bytes32"
+                }
+              ],
+              "name": "claimed",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
               "inputs": [],
               "name": "contractURI",
               "outputs": [
@@ -733,11 +776,6 @@
                   "internalType": "uint96",
                   "name": "_percentage",
                   "type": "uint96"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "_startingTokenIdentifier",
-                  "type": "uint256"
                 }
               ],
               "name": "initialize",
@@ -759,6 +797,19 @@
                 }
               ],
               "name": "isApprovedForAll",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "isRevealed",
               "outputs": [
                 {
                   "internalType": "bool",
@@ -918,6 +969,13 @@
               "type": "function"
             },
             {
+              "inputs": [],
+              "name": "reveal",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
               "inputs": [
                 {
                   "internalType": "bytes32",
@@ -1029,6 +1087,19 @@
                 }
               ],
               "name": "setApprovalForAll",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "_ticketUri",
+                  "type": "string"
+                }
+              ],
+              "name": "setTicketURI",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
