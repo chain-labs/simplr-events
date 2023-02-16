@@ -14,8 +14,8 @@ export type CsvState = {
   firstName: string
   lastName: string
   email: string
-  firstAllowedEntryDate: Date
-  lastAllowedEntryDate: Date
+  firstAllowedEntryDate: number
+  lastAllowedEntryDate: number
 }
 
 export type BatchState = {
