@@ -1,9 +1,29 @@
-import { useState } from 'react'
+import { client } from '@/components/ApolloClient'
+import FETCH_REVEALED from '@/graphql/query/fetchRevealed'
+import { CONTRACT_ADDRESS } from '@/utils/constants'
+import { useEffect, useState } from 'react'
 import { TICKET_IMAGE_URL } from '../../constants'
 import QRCodeComp from './QRCodeComp'
 
 const TicketFinal = ({ qrData }: { qrData: any }) => {
   const [generatingQR, setGeneratingQR] = useState(false)
+
+  const [revealed, setRevealed] = useState(false)
+
+  const fetchRevealed = async () => {
+    const res = await client.query({
+      query: FETCH_REVEALED,
+      variables: { address: CONTRACT_ADDRESS },
+    })
+
+    const { data } = res
+    const isRevealed = !!data?.simplrEvents?.[0]?.isRevealed
+    setRevealed(isRevealed)
+  }
+
+  useEffect(() => {
+    fetchRevealed()
+  }, [])
 
   if (!generatingQR) {
     return (

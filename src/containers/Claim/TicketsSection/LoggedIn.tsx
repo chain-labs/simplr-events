@@ -1,6 +1,7 @@
 import { client } from '@/components/ApolloClient'
 import If from '@/components/If'
 import FETCH_HOLDER_TICKETS from '@/graphql/query/fetchHolderTickets'
+import { TOKEN_NAME } from '@/utils/constants'
 import { useAuth } from '@arcana/auth-react'
 import { CirclePlusFill } from 'akar-icons'
 import Image from 'next/image'
@@ -23,7 +24,7 @@ const LoggedIn = () => {
         first: 10,
       },
     })
-    const tickets = res.data?.holders[0]?.tickets
+    const tickets = res.data?.holders?.[0]?.tickets
     setUserTickets(tickets)
   }
 
@@ -46,39 +47,45 @@ const LoggedIn = () => {
         condition={modalOpen}
         then={<TicketModal {...{ modalData, setModalData, setModalOpen }} />}
       />
-      <h2 className="mt-4 mb-4 text-3xl font-semibold">Your Tickets</h2>
-      <div className="grid max-h-full grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-        <div className="flex h-full w-full flex-col items-center justify-center rounded-md border border-dashed border-slate-400 ">
+      <h2 className="mt-4 mb-4 text-3xl font-semibold">Your {TOKEN_NAME}</h2>
+      <If
+        condition={!!userTickets?.length}
+        then={
+          <div className="grid max-h-full grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+            {/* <div className="flex h-full w-full flex-col items-center justify-center rounded-md border border-dashed border-slate-400 ">
           <CirclePlusFill strokeWidth={2} size={48} />
           <h4 className="mt-4 text-sm font-medium">Claim a Ticket</h4>
-        </div>
-        {userTickets.map((ticket) => {
-          return (
-            <div
-              className="w-full rounded-md border border-slate-300 bg-gray-100 py-4"
-              key={ticket.dataCid}
-              onClick={() => {
-                setModalOpen(true)
-                setModalData({
-                  dataCid: ticket?.dataCid,
-                  tokenId: ticket?.tokenId,
-                  eventName: ticket?.simplrEvent?.name,
-                })
-              }}
-            >
-              <div className="relative mb-4 h-24 w-full md:h-32 lg:h-48">
-                <Image
-                  src={TICKET_IMAGE_URL}
-                  fill
-                  alt="ticket_img"
-                  style={{ objectFit: 'contain' }}
-                />
-              </div>
-              <h3 className="text-md px-4 font-semibold">{`#${ticket.tokenId} ${ticket?.simplrEvent?.name}`}</h3>
-            </div>
-          )
-        })}
-      </div>
+        </div> */}
+            {userTickets?.map((ticket) => {
+              return (
+                <div
+                  className="w-full rounded-md border border-slate-300 bg-gray-100 py-4"
+                  key={ticket.dataCid}
+                  onClick={() => {
+                    setModalOpen(true)
+                    setModalData({
+                      dataCid: ticket?.dataCid,
+                      tokenId: ticket?.tokenId,
+                      eventName: ticket?.simplrEvent?.name,
+                    })
+                  }}
+                >
+                  <div className="relative mb-4 h-24 w-full md:h-32 lg:h-48">
+                    <Image
+                      src={TICKET_IMAGE_URL}
+                      fill
+                      alt="ticket_img"
+                      style={{ objectFit: 'contain' }}
+                    />
+                  </div>
+                  <h3 className="text-md px-4 font-semibold">{`#${ticket.tokenId} ${ticket?.simplrEvent?.name}`}</h3>
+                </div>
+              )
+            })}
+          </div>
+        }
+        else={<h3 className="mt-10 text-xl">No {TOKEN_NAME} Claimed yet</h3>}
+      />
     </div>
   )
 }

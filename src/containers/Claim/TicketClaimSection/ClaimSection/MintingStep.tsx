@@ -1,5 +1,10 @@
 import If from '@/components/If'
-import { GELATO_API_KEY, getNetwork, SERVER_ENDPOINT } from '@/utils/constants'
+import {
+  GELATO_API_KEY,
+  getNetwork,
+  SERVER_ENDPOINT,
+  TOKEN_NAME,
+} from '@/utils/constants'
 import { useAuth } from '@arcana/auth-react'
 import { BigNumber, ethers } from 'ethers'
 import React, { useEffect, useState } from 'react'
@@ -101,6 +106,7 @@ const MintingStep = ({
 
       setTaskId(relayResponse.taskId)
       setCurrentStep(CLAIM_STEPS.CLAIM_TICKET)
+      setMinting(false)
     } else {
       toast.error('Something went wrong! Try again')
       setCurrentStep(CLAIM_STEPS.GET_SIGNATURE)
@@ -113,22 +119,29 @@ const MintingStep = ({
     <ClaimStepItem
       step={CLAIM_STEPS.MINT_TICKET}
       currentStep={currentStep}
-      label="Mint Ticket"
+      label={`Claim ${TOKEN_NAME}`}
       failed={mintFailed}
     >
       <If
         condition={currentStep === CLAIM_STEPS.MINT_TICKET}
         then={
-          <button
-            className="flex items-center gap-x-1 rounded-full bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
-            onClick={handleTicketMinting}
-            disabled={minting}
-          >
-            Claim your Ticket
-            <div className="animate-bounce-right">
-              <ChevronRight size={18} />
-            </div>
-          </button>
+          <React.Fragment>
+            <h4 className="text-sm font-medium">
+              {
+                "Confirm the transaction to get the masterpiece. (It won't cost you a dime!)"
+              }
+            </h4>
+            <button
+              className="mt-2 flex items-center gap-x-1 rounded-full bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
+              onClick={handleTicketMinting}
+              disabled={minting}
+            >
+              Claim {TOKEN_NAME}
+              <div className="animate-bounce-right">
+                <ChevronRight size={18} />
+              </div>
+            </button>
+          </React.Fragment>
         }
       />
     </ClaimStepItem>

@@ -74,7 +74,7 @@ const QRCodeContent = ({ modalData }: Props) => {
 
   const handleQrGenerate = async (details) => {
     const concatenatedMessage = `${details?.emailid}-${auth.user.address}-${modalData?.tokenId}-${CONTRACT_ADDRESS}`
-    const message = ethers.utils.keccak256(utf8ToHex(concatenatedMessage))
+    const message = utf8ToHex(concatenatedMessage)
     const arcanaProvider = auth.provider
     const provider = new ethers.providers.Web3Provider(arcanaProvider)
     const signer = provider.getSigner()

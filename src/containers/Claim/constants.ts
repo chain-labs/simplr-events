@@ -1,3 +1,5 @@
+import { TOKEN_NAME } from '@/utils/constants'
+
 export const STEPS = {
   VERIFY_URL: 1,
   CONNECT_WALLET: 2,
@@ -6,10 +8,10 @@ export const STEPS = {
 }
 
 export const STEP_NAME = {
-  1: 'Verification',
+  1: 'Verify',
   2: 'Login',
-  3: 'Mint Ticket',
-  4: 'Your Ticket',
+  3: `Claim ${TOKEN_NAME}`,
+  4: `View ${TOKEN_NAME}`,
 }
 
 export const TICKET_IMAGE_URL =

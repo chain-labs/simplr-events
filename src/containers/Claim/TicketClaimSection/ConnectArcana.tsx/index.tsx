@@ -8,12 +8,12 @@ import Image from 'next/image'
 
 const ConnectArcana = ({
   setStep,
-  checkbox,
-  setCheckbox,
+  subscribe,
+  setSubscribe,
 }: {
   setStep: (number) => void
-  checkbox: boolean
-  setCheckbox: (boolean) => void
+  subscribe: boolean
+  setSubscribe: (boolean) => void
 }) => {
   const auth = useAuth()
 
@@ -51,6 +51,10 @@ const ConnectArcana = ({
     }
   }, [user])
 
+  useEffect(() => {
+    console.log({ subscribe })
+  }, [subscribe])
+
   return (
     <div>
       <div className="my-6">
@@ -68,9 +72,10 @@ const ConnectArcana = ({
                 // checked
                 id="checked-checkbox"
                 type="checkbox"
-                value={`${checkbox}`}
-                onChange={() => setCheckbox(!checkbox)}
+                value={`${subscribe}`}
+                onChange={() => setSubscribe(!subscribe)}
                 className="mt-1 h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-600"
+                checked={subscribe}
               />
               <label
                 htmlFor="checked-checkbox"

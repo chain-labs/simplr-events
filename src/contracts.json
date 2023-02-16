@@ -12,7 +12,7 @@
             "chainId": "80001",
             "contracts": {
                 "SimplrEvents": {
-                    "address": "0x40c5d0cac2b8533c67cf5f08146886c7a3efeca7",
+                    "address": "0xbaebb2e5272cb139f2abbddb81e9d1e3d50cbb86",
                     "abi": [
                         {
                             "inputs": [],

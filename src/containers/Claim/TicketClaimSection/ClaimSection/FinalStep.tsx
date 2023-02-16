@@ -9,38 +9,68 @@ interface Props {
   currentStep: number
   setStep: (number) => void
   mintFailed: boolean
+  setCurrentStep: (number) => void
+  setMintFailed: (boolean) => void
+  setSignature: (any) => void
 }
 
-const FinalStep = ({ currentStep, mintFailed, setStep }: Props) => {
+const FinalStep = ({
+  currentStep,
+  mintFailed,
+  setMintFailed,
+  setStep,
+  setCurrentStep,
+  setSignature,
+}: Props) => {
   return (
     <ClaimStepItem
       step={CLAIM_STEPS.CLAIM_TICKET}
       currentStep={currentStep}
-      label="Claim Ticket"
+      label={!mintFailed ? 'Finito! 🥳' : 'Failed Transaction! Try Again'}
       failed={mintFailed}
     >
       <If
         condition={currentStep === CLAIM_STEPS.CLAIM_TICKET}
         then={
           <div className="text-xs font-semibold">
-            Please wait while we process your request...
+            {"Sit tight, it's almost done."}
           </div>
         }
         else={
-          <If
-            condition={currentStep === CLAIM_STEPS.FINISHED && !mintFailed}
-            then={
-              <button
-                className="flex items-center gap-x-1 rounded-full bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
-                onClick={() => setStep(STEPS.FINISH)}
-              >
-                View your Ticket
-                <div className="animate-bounce-right">
-                  <ChevronRight size={18} />
-                </div>
-              </button>
-            }
-          />
+          <React.Fragment>
+            <If
+              condition={currentStep === CLAIM_STEPS.FINISHED && !mintFailed}
+              then={
+                <button
+                  className="flex items-center gap-x-1 rounded-full bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+                  onClick={() => setStep(STEPS.FINISH)}
+                >
+                  View your Ticket
+                  <div className="animate-bounce-right">
+                    <ChevronRight size={18} />
+                  </div>
+                </button>
+              }
+            />
+            <If
+              condition={currentStep === CLAIM_STEPS.FINISHED && mintFailed}
+              then={
+                <button
+                  className="flex items-center gap-x-1 rounded-full bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+                  onClick={() => {
+                    setCurrentStep(CLAIM_STEPS.GET_SIGNATURE)
+                    setMintFailed(false)
+                    setSignature(null)
+                  }}
+                >
+                  Try Again
+                  <div className="animate-bounce-right">
+                    <ChevronRight size={18} />
+                  </div>
+                </button>
+              }
+            />
+          </React.Fragment>
         }
       />
     </ClaimStepItem>

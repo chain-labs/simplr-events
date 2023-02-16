@@ -11,8 +11,8 @@ import { useAuth } from '@arcana/auth-react'
 
 const TicketClaimSection = ({ query }: { query: QueryProps }) => {
   const [step, setStep] = useState<number>(STEPS.VERIFY_URL)
-  const [checkbox, setCheckbox] = useState(false)
   const [qrData, setQrData] = useState({})
+  const [subscribe, setSubscribe] = useState<boolean>(true)
 
   const auth = useAuth()
 
@@ -29,13 +29,18 @@ const TicketClaimSection = ({ query }: { query: QueryProps }) => {
       return (
         <ConnectArcana
           setStep={setStep}
-          checkbox={checkbox}
-          setCheckbox={setCheckbox}
+          subscribe={subscribe}
+          setSubscribe={setSubscribe}
         />
       )
     } else if (step === STEPS.ENCRYPT_DATA) {
       return (
-        <ClaimSection setStep={setStep} query={query} setQrData={setQrData} />
+        <ClaimSection
+          setStep={setStep}
+          query={query}
+          setQrData={setQrData}
+          subscribe={subscribe}
+        />
       )
     } else if (step === STEPS.FINISH) {
       return <TicketFinal qrData={qrData} />

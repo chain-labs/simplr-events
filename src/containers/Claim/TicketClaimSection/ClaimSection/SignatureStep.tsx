@@ -33,16 +33,16 @@ const SignatureStep = ({
     <ClaimStepItem
       step={CLAIM_STEPS.GET_SIGNATURE}
       currentStep={currentStep}
-      label="Sign Message from Lit Protocol"
+      label="Approve the message to proceed"
     >
       <If
         condition={!signature}
         then={
           <button
-            className="flex items-center gap-x-1 rounded-full bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+            className="mt-4 flex items-center gap-x-1 rounded-full bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
             onClick={handleSignature}
           >
-            Sign Message
+            Approve Message
             <div className="animate-bounce-right">
               <ChevronRight size={18} />
             </div>

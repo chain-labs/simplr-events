@@ -22,15 +22,18 @@ import SecurityStep from './SecurityStep'
 import MintingStep from './MintingStep'
 import FinalStep from './FinalStep'
 import FETCH_HOLDER_TICKETS from '@/graphql/query/fetchHolderTickets'
+import { toast } from 'react-hot-toast'
 
 const ClaimSection = ({
   query,
   setStep,
   setQrData,
+  subscribe,
 }: {
   query: QueryProps
   setStep: (number) => void
   setQrData: (any) => void
+  subscribe: boolean
 }) => {
   const auth = useAuth()
   const [signature, setSignature] = useState()
@@ -160,17 +163,19 @@ const ClaimSection = ({
                   lastName: query.lastname,
                   eventName: query.eventname,
                   tokenId: parseInt(tokenId),
+                  isSubscribed: subscribe,
                 }
                 setCurrentStep(CLAIM_STEPS.FINISHED)
                 setQrData({ signature, secretHash })
                 try {
                   sendInfoToServer(body)
                 } catch (err) {
+                  toast.error('Transaction Failed! Try Again!')
                   console.log('Error sending info to server', { err })
                 }
               })
           } else if (taskStatus === 'Cancelled') {
-            alert('Transaction Failed! Try Again!')
+            toast.error('Transaction Failed! Try Again!')
             confirmation = true
             setMintFailed(true)
             setCurrentStep(CLAIM_STEPS.FINISHED)
@@ -199,7 +204,16 @@ const ClaimSection = ({
             setMintFailed,
           }}
         />
-        <FinalStep {...{ currentStep, mintFailed, setStep }} />
+        <FinalStep
+          {...{
+            currentStep,
+            mintFailed,
+            setStep,
+            setCurrentStep,
+            setMintFailed,
+            setSignature,
+          }}
+        />
       </ol>
     </div>
   )

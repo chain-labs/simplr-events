@@ -11,7 +11,7 @@ const SecurityStep = ({ currentStep }: Props) => {
     <ClaimStepItem
       step={CLAIM_STEPS.ENCRYPTING}
       currentStep={currentStep}
-      label="Encrypting Data and Pinning to IPFS"
+      label="Let us catch our breath- hold your horses for a sec! 🏃‍♀️💨 "
     ></ClaimStepItem>
   )
 }

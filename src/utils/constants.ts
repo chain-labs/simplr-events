@@ -50,6 +50,8 @@ export const getNetwork = (): {
   }
 }
 
+export const TOKEN_NAME = process.env.NEXT_PUBLIC_TOKEN_NAME
+
 export const SIMPLR_ADDRESS = '0x63ae231DE70393E6Eea8CeE9622D84960ebBcd13'
 
 export const RELAY_TASK_CHECK_ENDPOINT =

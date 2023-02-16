@@ -18,7 +18,7 @@ const ClaimStepItem = ({
   failed,
 }: ClaimStepItemProps) => {
   return (
-    <li className="mb-10 ml-6">
+    <li className={`mb-10 ml-6 ${currentStep >= step ? 'block' : 'hidden'}`}>
       <span className="absolute -left-3 flex h-6 w-6 items-center justify-center rounded-full bg-blue-100">
         <If
           condition={currentStep <= step}
@@ -50,7 +50,7 @@ const ClaimStepItem = ({
           }
         />
       </span>
-      <h3 className="mb-6 flex items-center text-lg font-semibold text-gray-900 ">
+      <h3 className="mb-2 flex items-center text-lg font-semibold text-gray-900 ">
         {label}
       </h3>
       {children}

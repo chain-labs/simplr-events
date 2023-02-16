@@ -1,6 +1,9 @@
+import { client } from '@/components/ApolloClient'
 import If from '@/components/If'
+import FETCH_REVEALED from '@/graphql/query/fetchRevealed'
+import { CONTRACT_ADDRESS } from '@/utils/constants'
 import { CircleXFill, TelegramFill, TwitterFill } from 'akar-icons'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { TICKET_IMAGE_URL } from '../constants'
 import QRCodeContent from './QRCodeContent'
 
@@ -12,6 +15,22 @@ interface Props {
 
 const TicketModal = ({ setModalOpen, modalData, setModalData }: Props) => {
   const [generatingQR, setGeneratingQR] = useState(false)
+  const [revealed, setRevealed] = useState<boolean>(false)
+
+  const fetchRevealed = async () => {
+    const res = await client.query({
+      query: FETCH_REVEALED,
+      variables: { address: CONTRACT_ADDRESS },
+    })
+
+    const { data } = res
+    const isRevealed = !!data?.simplrEvents?.[0]?.isRevealed
+    setRevealed(isRevealed)
+  }
+
+  useEffect(() => {
+    fetchRevealed()
+  }, [])
 
   return (
     <div className="fixed top-0 left-0 z-10 h-screen w-screen bg-modal-bg">
