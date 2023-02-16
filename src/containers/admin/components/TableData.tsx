@@ -7,8 +7,8 @@ const TableData = () => {
 
   return (
     <div>
-      <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-        <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+      <table className="w-full text-left text-sm text-gray-500 ">
+        <thead className="bg-gray-300 text-xs uppercase text-gray-700">
           <tr>
             <th scope="col" className="px-6 py-3">
               First Name
@@ -24,13 +24,10 @@ const TableData = () => {
         <tbody>
           {batch?.inputParams.length
             ? batch.inputParams.map((data, index) => (
-                <tr
-                  className="border-b bg-white dark:border-gray-700 dark:bg-gray-900"
-                  key={index}
-                >
+                <tr className="border-b bg-white" key={index}>
                   <th
                     scope="row"
-                    className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+                    className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 "
                   >
                     {data.firstName}
                   </th>

@@ -135,9 +135,9 @@ const ConfirmButton = () => {
                 !loading && user.exists ? () => addExcelInputData() : () => ''
               }
               disabled={!allowed || loading}
-              className={`disabled:hover:empty: mr-2 rounded-lg bg-violet-700 px-5 py-3 text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300 disabled:cursor-not-allowed dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 `}
+              className={`disabled:hover:empty: mr-2 rounded-lg bg-violet-700 px-5 py-3 text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300 disabled:cursor-not-allowed`}
             >
-              {loading ? 'Loading' : 'Add Data'}
+              {loading ? 'Loading' : `Add Data to Batch #${batch.batchId}`}
             </button>
           </div>
         }

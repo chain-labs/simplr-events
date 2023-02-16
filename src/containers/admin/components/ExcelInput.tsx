@@ -21,7 +21,6 @@ import TableData from './TableData'
 const HomeComponent = () => {
   const [parsedData, setParsedData] = useState<CsvState[]>([])
   const [file, setFile] = useState()
-  const user = useAppSelector(userSelector)
   const dispatch = useAppDispatch()
   const ref = useRef()
   const batch = useAppSelector(batchSelector)
@@ -72,13 +71,14 @@ const HomeComponent = () => {
   }
 
   return (
-    <div>
-      <div className="m-5 flex-1 p-3">
+    <div className="rounded-2xl bg-gray-100 px-10 py-16 shadow-xl">
+      <h1 className="w-128 text-4xl font-bold">Add Invite Batches</h1>
+      <div className="my-4 flex-1 py-4">
         <div className="input-group">
           <div className="custom-file flex">
             <input
               type="file"
-              className="block w-full text-sm text-slate-500 file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-violet-50 file:py-2 file:px-4 file:text-sm file:font-semibold file:text-violet-800 hover:file:bg-violet-100"
+              className="block w-full text-sm text-slate-500 file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-violet-200 file:py-2 file:px-4 file:text-sm file:font-semibold file:text-violet-800 hover:file:bg-violet-600 hover:file:text-white"
               name="file"
               id="inputGroupFile"
               key={batch.key}
@@ -86,12 +86,22 @@ const HomeComponent = () => {
               onChange={handleImport}
               accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
             />
-            <button onClick={() => handleRemoveFile()}>Remove</button>
+            <If
+              condition={!!file}
+              then={
+                <button
+                  className="text-red-500"
+                  onClick={() => handleRemoveFile()}
+                >
+                  Remove
+                </button>
+              }
+            />
           </div>
         </div>
       </div>
       <div>
-        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <div className="relative overflow-x-auto bg-white shadow-md sm:rounded-lg">
           <TableData />
           <div className="m-3 flex justify-end p-1">
             <ConfirmButton />

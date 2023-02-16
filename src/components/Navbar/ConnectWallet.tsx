@@ -47,7 +47,7 @@ const ConnectWallet = () => {
                     <button
                       onClick={openConnectModal}
                       type="button"
-                      className="mr-3 rounded-lg bg-violet-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300 dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 md:mr-0"
+                      className="mr-3 rounded-lg bg-violet-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300  md:mr-0"
                     >
                       Connect Wallet
                     </button>
@@ -63,7 +63,7 @@ const ConnectWallet = () => {
                 return (
                   <div
                     style={{ display: 'flex', gap: 12 }}
-                    className="mr-3 rounded-lg bg-violet-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300 dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800 md:mr-0"
+                    className="mr-3 rounded-lg bg-violet-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300   md:mr-0"
                   >
                     <button
                       onClick={openChainModal}
