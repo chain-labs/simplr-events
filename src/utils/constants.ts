@@ -21,6 +21,7 @@ export const getChain = () => {
 
 export const CHAIN_ID: string = getChain()
 
+
 export const getEtherscanUrl = () => {
   switch (getChain()) {
     case '80001':

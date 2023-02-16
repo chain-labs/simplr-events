@@ -22,13 +22,14 @@ import {
 } from '../utils'
 import toast from 'react-hot-toast'
 import ConnectWallet from '@/components/Navbar/ConnectWallet'
+import { CONTRACT_ADDRESS } from '@/utils/constants'
 
 const ConfirmButton = () => {
   const provider = useProvider()
   const [contract, setContract] = useState<ethers.Contract>()
   const [loading, setLoading] = useState<boolean>(false)
   const user = useAppSelector(userSelector)
-  const id = '0x40c5d0cac2b8533c67cf5f08146886c7a3efeca7'
+  const id = CONTRACT_ADDRESS
   const contractName = 'Event'
   const { data: signer } = useSigner()
   const userInputHashes = []
@@ -94,7 +95,7 @@ const ConfirmButton = () => {
           inputParams: batch.inputParams,
           batchId: nextBatchId.toString(),
           eventName: 'Vivacity 2023',
-          contractAddress: '0x40c5d0cac2b8533c67cf5f08146886c7a3efeca7',
+          contractAddress: CONTRACT_ADDRESS,
           addBatchTimestamp: Date.now(),
         }
         const response = await sendDataToServer(serverData)
