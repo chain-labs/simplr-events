@@ -16,7 +16,7 @@ module.exports = {
     },
     extend: {
       spacing: {
-        '128': '32rem'
+        128: '32rem',
       },
       fontFamily: {
         sans: ['Satoshi', ...defaultTheme.fontFamily.sans],

@@ -58,8 +58,34 @@ const HomeComponent = () => {
       console.log(sheets, event.target.result)
 
       if (sheets.length) {
-        const rows: CsvState[] = utils.sheet_to_json(wb.Sheets[sheets[0]])
-        setParsedData(rows)
+        const rows: any = utils.sheet_to_json(wb.Sheets[sheets[0]])
+        console.log({ rows })
+        const data: CsvState[] = []
+        rows.forEach((row) => {
+          const first = row?.firstAllowedEntryDate?.split('-')
+          const last = row?.lastAllowedEntryDate?.split('-')
+          const f = new Date('July 1, 1999, 00:00:00')
+          const l = new Date('July 1, 1999, 23:59:59')
+
+          f.setDate(first[0])
+          f.setMonth(first[1])
+          f.setFullYear(first[2])
+          const ft = f.getTime()
+          l.setDate(last[0])
+          l.setMonth(last[1])
+          l.setFullYear(last[2])
+          const lt = l.getTime()
+
+          data.push({
+            firstName: row.firstName,
+            lastName: row.lastName,
+            email: row.email,
+            firstAllowedEntryDate: ft,
+            lastAllowedEntryDate: lt,
+          })
+        })
+        console.log({ rows, data })
+        setParsedData(data)
       }
     }
     reader.readAsArrayBuffer(file)
@@ -75,8 +101,8 @@ const HomeComponent = () => {
   }
 
   return (
-    <div className="rounded-2xl bg-gray-100 px-10 py-16 shadow-xl">
-      <h1 className="w-128 text-4xl font-bold">Add Invite Batches</h1>
+    <div className="mt-8 w-128 rounded-2xl bg-gray-100 px-10 py-8 shadow-xl">
+      <h1 className="w-128 text-4xl font-bold">Add your Invite list</h1>
       <div className="my-4 flex-1 py-4">
         <div className="input-group">
           <div className="custom-file flex">
@@ -97,7 +123,7 @@ const HomeComponent = () => {
                   className="text-red-500"
                   onClick={() => handleRemoveFile()}
                 >
-                  Remove
+                  Clear
                 </button>
               }
             />
