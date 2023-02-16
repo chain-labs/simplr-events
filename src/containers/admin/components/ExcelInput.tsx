@@ -33,9 +33,13 @@ const HomeComponent = () => {
   useEffect(() => {
     let num
     GET_CURRENT_BATCH_ID().then((data) => {
-      num = parseInt(data.batches[0].batchId) + 1
-      console.log(data.batches[0].batchId + 1)
-      console.log(num)
+      if (data.batches.length < 1) {
+        num = 1
+      } else {
+        num = parseInt(data.batches?.[0]?.batchId) + 1 || 1
+      }
+      console.log({ num })
+
       dispatch(addBatchId(num))
     })
   }, [])
