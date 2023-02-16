@@ -101,7 +101,7 @@ const ConfirmButton = () => {
         if (response.status !== 200) {
           toast(`❌ Something went wrong! Please Try Again`)
         } else {
-          toast(`🎉 Succesfully added batch`)
+          toast(`🎉 Succesfully added batch #${nextBatchId}`)
         }
       })
       .catch((err) => {

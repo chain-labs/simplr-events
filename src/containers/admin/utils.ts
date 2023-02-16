@@ -8,9 +8,8 @@ import { keccak256 } from 'ethers/lib/utils'
 import { SERVER_URL } from '@/utils/constants'
 import { GET_ALLOWED_MINTERS_QUERY } from '@/graphql/query/getAllowedMinters'
 
-const PINATA_KEY_SECRET =
-  '7c02de12e4bb768fd27a10a6692863056e5542354c20c2a875de0b1703b9445f'
-const PINATA_KEY = '10fda7f374970f218067'
+const PINATA_KEY_SECRET = process.env.NEXT_PUBLIC_PINATA_API_SECRET
+const PINATA_KEY = process.env.NEXT_PUBLIC_PINATA_API_KEY
 const PINATA_URL = 'https://api.pinata.cloud/'
 
 export const getHashes = async (query: QueryProps) => {

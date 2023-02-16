@@ -32,5 +32,3 @@ export const getEtherscanUrl = () => {
 
 export const SIMPLR_LOGO_URL =
   'https://ik.imagekit.io/chainlabs/Simplr_Collection_Dapp/simplr_logo_RASw5d0WR.svg?ik-sdk-version=javascript-1.4.3&updatedAt=1676550226736'
-
-export const COLLECTION_TYPE = process.env.NEXT_PUBLIC_COLLECTION_TYPE
