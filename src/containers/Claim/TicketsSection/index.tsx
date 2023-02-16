@@ -2,6 +2,7 @@ import If from '@/components/If'
 import { useAuth } from '@arcana/auth-react'
 import { ArrowCycle, GoogleFill } from 'akar-icons'
 import React, { useEffect, useState } from 'react'
+import Spinner from '../components/Spinner'
 import LoggedIn from './LoggedIn'
 
 const TicketsSection = () => {
@@ -21,6 +22,15 @@ const TicketsSection = () => {
       auth.logout()
     }
   }, [auth.loading])
+  if (auth.loading) {
+    return (
+      <div className="mt-48 flex h-full w-full items-center justify-center ">
+        <div className="h-16 w-16">
+          <Spinner />
+        </div>
+      </div>
+    )
+  }
 
   if (auth.isLoggedIn) {
     return <LoggedIn />
