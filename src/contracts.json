@@ -12,7 +12,7 @@
       "chainId": "80001",
       "contracts": {
         "SimplrEvents": {
-          "address": "0xbaebb2e5272cb139f2abbddb81e9d1e3d50cbb86",
+          "address": "0xBaEBb2e5272CB139f2AbBdDb81e9d1e3D50Cbb86",
           "abi": [
             {
               "inputs": [],
@@ -185,6 +185,12 @@
                 }
               ],
               "name": "BeaconUpgraded",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [],
+              "name": "CollectionRevealed",
               "type": "event"
             },
             {
@@ -381,6 +387,19 @@
                 }
               ],
               "name": "TicketCreated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "string",
+                  "name": "ticketUri",
+                  "type": "string"
+                }
+              ],
+              "name": "TicketURIUpdated",
               "type": "event"
             },
             {
@@ -789,6 +808,19 @@
               "type": "function"
             },
             {
+              "inputs": [],
+              "name": "isRevealed",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
               "inputs": [
                 {
                   "internalType": "address",
@@ -937,6 +969,13 @@
               "type": "function"
             },
             {
+              "inputs": [],
+              "name": "reveal",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
               "inputs": [
                 {
                   "internalType": "bytes32",
@@ -1048,6 +1087,19 @@
                 }
               ],
               "name": "setApprovalForAll",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "_ticketUri",
+                  "type": "string"
+                }
+              ],
+              "name": "setTicketURI",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
