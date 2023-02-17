@@ -45,13 +45,14 @@ module.exports = {
         'spin-slow': 'spin 3s linear infinite',
         'bounce-right':
           'bounce-right 2s ease-in-out 0s infinite normal forwards',
-      spacing: {
-        128: '32rem',
-      },
-      fontFamily: {
-        sans: ['Satoshi', ...defaultTheme.fontFamily.sans],
+        spacing: {
+          128: '32rem',
+        },
+        fontFamily: {
+          sans: ['Satoshi', ...defaultTheme.fontFamily.sans],
+        },
       },
     },
+    plugins: [],
   },
-  plugins: [],
 }

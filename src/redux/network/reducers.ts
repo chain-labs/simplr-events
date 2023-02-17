@@ -1,5 +1,5 @@
+import { TEST_ENV } from '@/utils/constants_admin'
 import { createReducer } from '@reduxjs/toolkit'
-import { TEST_ENV } from 'src/utils/constants'
 import {
   disconnect,
   // setApolloClient

@@ -80,8 +80,8 @@ const HomeComponent = () => {
             firstName: row.firstName,
             lastName: row.lastName,
             email: row.email,
-            firstAllowedEntryDate: ft,
-            lastAllowedEntryDate: lt,
+            firstAllowedEntryDate: ft.toString(),
+            lastAllowedEntryDate: lt.toString(),
           })
         })
         console.log({ rows, data })
@@ -101,7 +101,7 @@ const HomeComponent = () => {
   }
 
   return (
-    <div className="mt-8 w-128 rounded-2xl bg-gray-100 px-10 py-8 shadow-xl">
+    <div className="w-128 mt-8 rounded-2xl bg-gray-100 px-10 py-8 shadow-xl">
       <h1 className="w-128 text-4xl font-bold">Add your Invite list</h1>
       <div className="my-4 flex-1 py-4">
         <div className="input-group">
