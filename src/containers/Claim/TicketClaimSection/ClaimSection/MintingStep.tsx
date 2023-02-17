@@ -147,7 +147,7 @@ const MintingStep = ({
             <If
               condition={!waitingforUser}
               then={
-                <h3 className="mt-2 text-sm font-medium">{`"Approve" the pop up to proceed.`}</h3>
+                <h3 className="mt-2 text-sm font-medium">{`"Approve" the pop up, wait for a minute and that will be a wrap!`}</h3>
               }
             />
           </React.Fragment>
