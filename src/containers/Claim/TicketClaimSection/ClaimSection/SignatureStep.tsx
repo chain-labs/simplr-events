@@ -1,7 +1,7 @@
 import If from '@/components/If'
 import { useAuth } from '@arcana/auth-react'
 import { ChevronRight } from 'akar-icons'
-import React from 'react'
+import React, { useState } from 'react'
 import { getSignature } from '../../utils'
 import ClaimStepItem from './components/ClaimStepItem'
 import { CLAIM_STEPS } from './constants'
@@ -20,9 +20,11 @@ const SignatureStep = ({
   setSignature,
 }: Props) => {
   const auth = useAuth()
+  const [waitingForUser, setWaitingForUser] = useState(true)
 
   const handleSignature = async (e) => {
     e.preventDefault()
+    setWaitingForUser(false)
     setCurrentStep(CLAIM_STEPS.GET_SIGNATURE)
     const signature = await getSignature(auth)
     setSignature(signature)
@@ -34,6 +36,7 @@ const SignatureStep = ({
       step={CLAIM_STEPS.GET_SIGNATURE}
       currentStep={currentStep}
       label="Approve the message to proceed"
+      waitForUser={waitingForUser}
     >
       <If
         condition={!signature}

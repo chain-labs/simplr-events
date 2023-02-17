@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import {
   ARCANA_APP_ADDRESS,
   CONTRACT_ADDRESS,
+  EVENT_LOGO,
+  EVENT_URL,
   LOGO_URL,
   TOKEN_NAME,
 } from '@/utils/constants'
@@ -46,22 +48,29 @@ const ClaimComponent = ({ query }: { query: QueryProps }) => {
       <ProvideAuth provider={provider}>
         <div className="flex flex-1 flex-col pb-6">
           <div className="container flex items-center justify-between bg-white py-1 px-1 shadow-md sm:px-0">
-            <div className="relative h-6 w-28 overflow-x-visible sm:h-8">
+            <a
+              className="relative h-6 w-28 overflow-x-visible sm:h-8"
+              href="https://simplrhq.com"
+              target="_blank"
+              rel="noreferrer"
+            >
               <Image
                 src={LOGO_URL}
                 fill
                 alt="logo image"
                 style={{ objectFit: 'contain' }}
               />
-            </div>
-            <div className="relative h-16 w-28 overflow-x-visible sm:h-8">
-              <Image
-                src="https://ik.imagekit.io/chainlabs/Simplr_Events/Vivacity_logo_avv4jkBIr.png?ik-sdk-version=javascript-1.4.3&updatedAt=1676590590305"
-                fill
-                alt="logo image"
-                style={{ objectFit: 'contain' }}
-              />
-            </div>
+            </a>
+            <a href={EVENT_URL} target="_blank" rel="noreferrer">
+              <div className="relative h-16 w-28 overflow-x-visible sm:h-8">
+                <Image
+                  src={EVENT_LOGO}
+                  fill
+                  alt="event image"
+                  style={{ objectFit: 'contain' }}
+                />
+              </div>
+            </a>
           </div>
           <div className="container mt-4 flex flex-1 flex-col border-l-4 border-l-emerald-400 bg-white pb-12 shadow-md">
             <div className="container px-4 py-6">

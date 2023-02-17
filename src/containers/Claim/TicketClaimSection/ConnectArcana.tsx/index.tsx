@@ -5,6 +5,7 @@ import { ArrowCycle, ChevronRight, GoogleFill } from 'akar-icons'
 import If from '@/components/If'
 import { STEPS } from '../../constants'
 import Image from 'next/image'
+import { TOKEN_NAME } from '@/utils/constants'
 
 const ConnectArcana = ({
   setStep,
@@ -58,10 +59,12 @@ const ConnectArcana = ({
   return (
     <div>
       <div className="my-6">
-        <h2 className="font-semibold">
-          Login to Web3 using your Google Account before you can claim your
-          ticket.
+        <h2 className=" text-2xl font-semibold">
+          Ready to snag your {TOKEN_NAME}?
         </h2>
+        <h4 className="mt-2 text-sm font-normal">
+          Use your Google Account to log in to Web3 and let the magic happen! ✨
+        </h4>
       </div>
       <If
         condition={!user}
@@ -82,14 +85,14 @@ const ConnectArcana = ({
                 className="ml-2 text-sm font-medium text-black"
               >
                 By selecting this checkbox you agree to allow Simplr to send you
-                education and newsletters about the Web3
+                education and newsletters about the Web3 via mail
               </label>
             </div>
             <If
               condition={!loggingIn}
               then={
                 <button
-                  className="flex items-center gap-x-4 rounded-full bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+                  className="mt-4 flex items-center gap-x-4 rounded-full bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
                   onClick={handleConnect}
                 >
                   <GoogleFill />

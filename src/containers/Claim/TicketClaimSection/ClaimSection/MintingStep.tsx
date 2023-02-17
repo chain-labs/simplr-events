@@ -44,6 +44,7 @@ const MintingStep = ({
 }: Props) => {
   const [minting, setMinting] = useState(false)
   const [proofs, setProofs] = useState(null)
+  const [waitingforUser, setWaitingForUser] = useState(true)
 
   useEffect(() => {
     FETCH_TREE_CID(query?.batchid).then((data) => {
@@ -64,6 +65,7 @@ const MintingStep = ({
 
   const handleTicketMinting = async (e) => {
     e.preventDefault()
+    setWaitingForUser(false)
 
     setMinting(true)
     const arcanaProvider = auth.provider
@@ -121,6 +123,7 @@ const MintingStep = ({
       currentStep={currentStep}
       label={`Claim ${TOKEN_NAME}`}
       failed={mintFailed}
+      waitForUser={waitingforUser}
     >
       <If
         condition={currentStep === CLAIM_STEPS.MINT_TICKET}

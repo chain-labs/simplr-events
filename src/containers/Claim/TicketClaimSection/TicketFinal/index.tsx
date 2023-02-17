@@ -1,9 +1,17 @@
 import { client } from '@/components/ApolloClient'
 import FETCH_HOLDER_TICKETS from '@/graphql/query/fetchHolderTickets'
 import FETCH_REVEALED from '@/graphql/query/fetchRevealed'
-import { CONTRACT_ADDRESS } from '@/utils/constants'
+import {
+  CONTRACT_ADDRESS,
+  INSTAGRAM_URL,
+  TELEGRAM_URL,
+  TOKEN_NAME,
+  TWITTER_URL,
+} from '@/utils/constants'
 import { useAuth } from '@arcana/auth-react'
+import { InstagramFill, TelegramFill, TwitterFill } from 'akar-icons'
 import axios from 'axios'
+import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import Spinner from '../../components/Spinner'
 import { TICKET_IMAGE_URL } from '../../constants'
@@ -65,22 +73,41 @@ const TicketFinal = ({ qrData }: { qrData: any }) => {
     return (
       <div className="bg-red mt-16">
         <div className="rounded-xl bg-slate-200 py-4 shadow-xl">
-          <div className="w-full py-8">
-            <img src={ticketURI} alt="ticket image" className="object-cover" />
+          <div className="relative mt-8 h-60 w-full py-8 ">
+            <Image
+              src={ticketURI}
+              alt="ticket image"
+              fill
+              style={{ objectFit: 'contain' }}
+            />
           </div>
-          <div className="w-full border-t border-t-gray-300 pt-4">
+          <div className="mt-8 w-full border-t border-t-gray-300 pt-4">
             <h2 className="text-center text-2xl font-bold tracking-tight text-gray-900">
-              Your Vivacity 2023 Ticket
+              Your Vivacity 2023 {TOKEN_NAME}
             </h2>
-            <div className="mt-6 mb-8 flex justify-center gap-4">
-              <button className="rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800">
-                Join Telegram
-              </button>
+            <h2 className="text-center text-2xl font-bold tracking-tight text-gray-900">
+              #{tokenId}
+            </h2>
+            <div className="mt-6 flex justify-center gap-4">
+              <a href={TWITTER_URL} target="_blank" rel="noreferrer">
+                <button className="focus:bg-initial flex items-center rounded-lg bg-[#1da1f2] px-2 py-2.5 text-sm font-medium text-white hover:bg-[#1da1f2]">
+                  <TwitterFill size={16} />
+                  <h4 className="ml-2 text-sm">Share on Twitter</h4>
+                </button>
+              </a>
+            </div>
+            <div className="mt-4 mb-6 flex justify-center gap-4">
+              <a href={TELEGRAM_URL} target="_blank" rel="noreferrer">
+                <button className="flex items-center rounded-lg bg-blue-700 px-2 py-2.5 text-sm font-medium text-white hover:bg-blue-700">
+                  <TelegramFill size={16} />
+                  <h4 className="ml-2 text-sm">Join Telegram</h4>
+                </button>
+              </a>
               <button
-                className="rounded-lg bg-green-800 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-900"
+                className="flex items-center rounded-lg bg-emerald-500 px-2 py-2.5 text-sm font-medium text-white  hover:bg-emerald-700 focus:bg-emerald-500"
                 onClick={() => setGeneratingQR(true)}
               >
-                Generate QR Code
+                <h4 className="text-sm">Generate QR Code</h4>
               </button>
             </div>
           </div>

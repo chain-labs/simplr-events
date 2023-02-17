@@ -61,3 +61,13 @@ export const SERVER_ENDPOINT = process.env.NEXT_PUBLIC_SERVER_ENDPOINT
 
 export const CONTRACT_ADDRESS =
   contracts?.[getNetwork().chainId][0]?.contracts?.['SimplrEvents']?.['address']
+
+export const TWITTER_URL = process.env.NEXT_PUBLIC_TWITTER_URL
+
+export const INSTAGRAM_URL = process.env.NEXT_PUBLIC_INSTAGRAM_URL
+
+export const TELEGRAM_URL = process.env.NEXT_PUBLIC_TELEGRAM_URL
+
+export const EVENT_LOGO = process.env.NEXT_PUBLIC_EVENT_LOGO
+
+export const EVENT_URL = process.env.NEXT_PUBLIC_EVENT_URL

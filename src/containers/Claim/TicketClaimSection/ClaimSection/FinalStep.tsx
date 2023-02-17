@@ -1,4 +1,5 @@
 import If from '@/components/If'
+import { TOKEN_NAME } from '@/utils/constants'
 import { ChevronRight } from 'akar-icons'
 import React from 'react'
 import { STEPS } from '../../constants'
@@ -45,7 +46,7 @@ const FinalStep = ({
                   className="flex items-center gap-x-1 rounded-full bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
                   onClick={() => setStep(STEPS.FINISH)}
                 >
-                  View your Ticket
+                  View your {TOKEN_NAME}
                   <div className="animate-bounce-right">
                     <ChevronRight size={18} />
                   </div>

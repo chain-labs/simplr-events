@@ -21,3 +21,14 @@ const FETCH_HOLDER_TICKETS = gql`
 `
 
 export default FETCH_HOLDER_TICKETS
+
+export interface ITicket {
+  tokenId: string
+  metadataCid: string
+  creationTimeStamp: string
+  creationTrx: string
+  dataCid: string
+  simplrEvent: {
+    name: string
+  }
+}

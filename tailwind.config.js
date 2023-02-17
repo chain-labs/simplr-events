@@ -15,6 +15,10 @@ module.exports = {
       center: true,
     },
     extend: {
+      backgroundImage: {
+        'gradient-instagram':
+          'radial-gradient(circle at 10% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%)',
+      },
       colors: {
         'modal-bg': '#0e0e0e60',
       },

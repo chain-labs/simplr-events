@@ -1,4 +1,5 @@
 import If from '@/components/If'
+import { TOKEN_NAME } from '@/utils/constants'
 import { useAuth } from '@arcana/auth-react'
 import { ArrowCycle, ChevronRight } from 'akar-icons'
 import React from 'react'
@@ -40,7 +41,8 @@ const VerifyDetailsSection = ({
     <div>
       <div className="mb-4">
         <h3 className="font-medium">
-          Is it really * {query.firstname} * who is claiming the ticket? 🧐
+          Is it really * {query.firstname} * who is claiming the {TOKEN_NAME}?
+          🧐
         </h3>
       </div>
 
@@ -112,7 +114,7 @@ const VerifyDetailsSection = ({
           then={
             <If
               condition={verified}
-              then={<h2 className="mr-2 text-xl font-medium">🎉</h2>}
+              then={<h2 className="mr-2 mt-2 text-xl font-medium">🥳</h2>}
             />
           }
         />
@@ -123,7 +125,8 @@ const VerifyDetailsSection = ({
               condition={verified}
               then={
                 <h2 className="mr-2 text-lg font-medium text-green-400">
-                  Yohoo! Your Information is valid!
+                  Whoop-de-doo! You are the real *{query.firstname}* , you can
+                  log in now!
                 </h2>
               }
               else={
@@ -142,7 +145,7 @@ const VerifyDetailsSection = ({
         disabled={!checked || (checked && !verified)}
         onClick={() => setStep(STEPS.CONNECT_WALLET)}
       >
-        Verify & Proceed
+        Proceed to Login
         <div className={checked && verified ? 'animate-bounce-right' : ''}>
           <ChevronRight size={18} />
         </div>

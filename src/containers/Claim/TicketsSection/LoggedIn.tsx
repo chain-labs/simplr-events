@@ -1,6 +1,8 @@
 import { client } from '@/components/ApolloClient'
 import If from '@/components/If'
-import FETCH_HOLDER_TICKETS from '@/graphql/query/fetchHolderTickets'
+import FETCH_HOLDER_TICKETS, {
+  ITicket,
+} from '@/graphql/query/fetchHolderTickets'
 import FETCH_REVEALED from '@/graphql/query/fetchRevealed'
 import { CONTRACT_ADDRESS, TOKEN_NAME } from '@/utils/constants'
 import { useAuth } from '@arcana/auth-react'
@@ -13,7 +15,7 @@ import { TICKET_IMAGE_URL } from '../constants'
 import TicketModal from './TicketModal'
 
 const LoggedIn = () => {
-  const [userTickets, setUserTickets] = useState([])
+  const [userTickets, setUserTickets] = useState<ITicket[]>([])
   const [modalOpen, setModalOpen] = useState(false)
   const [modalData, setModalData] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -31,15 +33,7 @@ const LoggedIn = () => {
     const isRevealed = !!data?.simplrEvents?.[0]?.isRevealed
     const ticketURI = data?.simplrEvents?.[0]?.ticketURI
     const ticketCid = ticketURI?.split('//')[1]
-    const ticketImgRes = await axios.get(
-      `https://nftstorage.link/ipfs/${ticketCid}${
-        isRevealed ? `${modalData.tokenId}.json` : ''
-      }`,
-    )
-    const ticketImg = `https://nftstorage.link/ipfs/${
-      ticketImgRes.data?.image.split('//')[1]
-    }`
-    setTicketURI(ticketImg)
+    setTicketURI(`https://nftstorage.link/ipfs/${ticketCid}`)
     setRevealed(isRevealed)
   }
 
@@ -103,28 +97,14 @@ const LoggedIn = () => {
         </div> */}
                 {userTickets?.map((ticket) => {
                   return (
-                    <div
-                      className="w-full rounded-md border border-slate-300 bg-gray-100 py-4"
+                    <TicketTile
                       key={ticket.dataCid}
-                      onClick={() => {
-                        setModalOpen(true)
-                        setModalData({
-                          dataCid: ticket?.dataCid,
-                          tokenId: ticket?.tokenId,
-                          eventName: ticket?.simplrEvent?.name,
-                        })
-                      }}
-                    >
-                      <div className="relative mb-4 h-24 w-full md:h-32 lg:h-48">
-                        <Image
-                          src={ticketURI}
-                          fill
-                          alt="ticket_img"
-                          style={{ objectFit: 'contain' }}
-                        />
-                      </div>
-                      <h3 className="text-md px-4 font-semibold">{`#${ticket.tokenId} ${ticket?.simplrEvent?.name}`}</h3>
-                    </div>
+                      ticket={ticket}
+                      ticketURI={ticketURI}
+                      setModalData={setModalData}
+                      setModalOpen={setModalOpen}
+                      isRevealed={revealed}
+                    />
                   )
                 })}
               </div>
@@ -140,3 +120,57 @@ const LoggedIn = () => {
 }
 
 export default LoggedIn
+
+const TicketTile = ({
+  ticket,
+  setModalOpen,
+  setModalData,
+  ticketURI,
+  isRevealed,
+}: {
+  ticket: ITicket
+  setModalOpen: (boolean) => void
+  setModalData: (any) => void
+  ticketURI: string
+  isRevealed: boolean
+}) => {
+  const [ticketImg, setTicketImg] = useState('')
+
+  useEffect(() => {
+    axios
+      .get(isRevealed ? `${ticketURI}/${ticket.tokenId}.json` : ticketURI)
+      .then((res) => {
+        console.log({ res: res.data })
+
+        const imageCID = res.data.image.split('//')[1]
+        console.log({ imageCID })
+
+        setTicketImg(`https://nftstorage.link/ipfs/${imageCID}`)
+      })
+  }, [])
+
+  return (
+    <div
+      className="w-full rounded-md border border-slate-300 bg-gray-100 py-4"
+      onClick={() => {
+        setModalOpen(true)
+        setModalData({
+          dataCid: ticket?.dataCid,
+          tokenId: ticket?.tokenId,
+          eventName: ticket?.simplrEvent?.name,
+          ticketImg,
+        })
+      }}
+    >
+      <div className="relative mb-4 h-24 w-full md:h-32 lg:h-48">
+        <Image
+          src={ticketImg}
+          fill
+          alt="ticket_img"
+          style={{ objectFit: 'contain' }}
+        />
+      </div>
+      <h3 className="text-md px-4 font-semibold">{`#${ticket.tokenId} ${ticket?.simplrEvent?.name}`}</h3>
+    </div>
+  )
+}
