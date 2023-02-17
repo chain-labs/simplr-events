@@ -131,7 +131,7 @@ const MintingStep = ({
           <React.Fragment>
             <h4 className="text-sm font-medium">
               {
-                "Confirm the transaction to get the masterpiece. (It won't cost you a dime!)"
+                "Allow us to send you the masterpiece. (It won't cost you a dime!)"
               }
             </h4>
             <button
@@ -144,6 +144,12 @@ const MintingStep = ({
                 <ChevronRight size={18} />
               </div>
             </button>
+            <If
+              condition={!waitingforUser}
+              then={
+                <h3 className="mt-2 text-sm font-medium">{`"Approve" the pop up to proceed.`}</h3>
+              }
+            />
           </React.Fragment>
         }
       />
