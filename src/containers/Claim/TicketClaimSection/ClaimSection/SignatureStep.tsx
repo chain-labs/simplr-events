@@ -35,21 +35,34 @@ const SignatureStep = ({
     <ClaimStepItem
       step={CLAIM_STEPS.GET_SIGNATURE}
       currentStep={currentStep}
-      label="Approve the message to proceed"
+      label={
+        waitingForUser
+          ? 'Allow us to protect your data!'
+          : 'Approve the message to proceed'
+      }
       waitForUser={waitingForUser}
     >
       <If
         condition={!signature}
         then={
-          <button
-            className="mt-4 flex items-center gap-x-1 rounded-full bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
-            onClick={handleSignature}
-          >
-            Approve Message
-            <div className="animate-bounce-right">
-              <ChevronRight size={18} />
-            </div>
-          </button>
+          <React.Fragment>
+            <button
+              className="mt-4 flex items-center gap-x-1 rounded-full bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700"
+              onClick={handleSignature}
+              disabled={!waitingForUser}
+            >
+              Allow
+              <div className="animate-bounce-right">
+                <ChevronRight size={18} />
+              </div>
+            </button>
+            <If
+              condition={!waitingForUser}
+              then={
+                <h3 className="mt-2 text-sm font-medium">{`"Approve" the pop up to proceed.`}</h3>
+              }
+            />
+          </React.Fragment>
         }
       />
     </ClaimStepItem>
