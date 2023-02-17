@@ -1,9 +1,19 @@
 export const SUBGRAPH_ENDPOINT = process.env.NEXT_PUBLIC_SUBGRAPH_ENDPOINT
 export const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_LOCAL_URL
 export const CHAIN_NETWORK = process.env.NEXT_PUBLIC_CHAIN_NETWORK
-export const TEST_ENV = process.env.NEXT_PUBLIC_TEST_ENV
 export const CONTRACT_ADDRESS = `${process.env.NEXT_PUBLIC_CONTRACT_ADDRESS}`
 
+const toBoolean = (condition: string) => {
+  if (condition.toLowerCase() === 'true') {
+    return true
+  } else if (condition.toLowerCase() === 'false') {
+    return false
+  } else {
+    return false
+  }
+}
+
+export const TEST_ENV = toBoolean(process.env.NEXT_PUBLIC_TEST_NETWORK)
 export const getNetwork = () => {
   return TEST_ENV ? 'mumbai' : 'polygon'
 }
