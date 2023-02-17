@@ -1,16 +1,20 @@
 import { client } from '@/components/ApolloClient'
+import If from '@/components/If'
 import FETCH_HOLDER_TICKETS from '@/graphql/query/fetchHolderTickets'
 import FETCH_REVEALED from '@/graphql/query/fetchRevealed'
 import {
   CONTRACT_ADDRESS,
+  ENABLE_QR,
+  OPENSEA_URL,
   TELEGRAM_URL,
   TOKEN_NAME,
   TWITTER_URL,
 } from '@/utils/constants'
 import { useAuth } from '@arcana/auth-react'
-import { TelegramFill, TwitterFill } from 'akar-icons'
+import { ArrowRight, TelegramFill, TwitterFill } from 'akar-icons'
 import axios from 'axios'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import Spinner from '../../components/Spinner'
 import QRCodeComp from './QRCodeComp'
@@ -93,6 +97,15 @@ const TicketFinal = ({ qrData }: { qrData: any }) => {
                   <h4 className="ml-2 text-sm">Share on Twitter</h4>
                 </button>
               </a>
+              <a
+                href={`${OPENSEA_URL}${tokenId}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <button className="focus:bg-initial flex items-center rounded-lg bg-[#2081e2] px-2 py-2.5 text-sm font-medium text-white hover:bg-[#2081e2]">
+                  <h4 className="ml-2 text-sm">View on Opensea</h4>
+                </button>
+              </a>
             </div>
             <div className="mt-4 mb-6 flex justify-center gap-4">
               <a href={TELEGRAM_URL} target="_blank" rel="noreferrer">
@@ -101,13 +114,26 @@ const TicketFinal = ({ qrData }: { qrData: any }) => {
                   <h4 className="ml-2 text-sm">Join Telegram</h4>
                 </button>
               </a>
-              <button
-                className="flex items-center rounded-lg bg-emerald-500 px-2 py-2.5 text-sm font-medium text-white  hover:bg-emerald-700 focus:bg-emerald-500"
-                onClick={() => setGeneratingQR(true)}
-              >
-                <h4 className="text-sm">Generate QR Code</h4>
-              </button>
+              <If
+                condition={ENABLE_QR}
+                then={
+                  <button
+                    className="flex items-center rounded-lg bg-emerald-500 px-2 py-2.5 text-sm font-medium text-white  hover:bg-emerald-700 focus:bg-emerald-500"
+                    onClick={() => setGeneratingQR(true)}
+                  >
+                    <h4 className="text-sm">Generate QR Code</h4>
+                  </button>
+                }
+              />
             </div>
+            <Link href="/claim" target="_blank">
+              <div className="mb-6 flex items-center justify-center">
+                <h4 className="mr-1 underline">
+                  View all your Claimed {TOKEN_NAME}
+                </h4>
+                <ArrowRight size={16} />
+              </div>
+            </Link>
           </div>
         </div>
       </div>

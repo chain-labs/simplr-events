@@ -1,7 +1,14 @@
 import If from '@/components/If'
-import { TELEGRAM_URL, TWITTER_URL } from '@/utils/constants'
-import { CircleXFill, TelegramFill, TwitterFill } from 'akar-icons'
+import {
+  ENABLE_QR,
+  OPENSEA_URL,
+  TELEGRAM_URL,
+  TOKEN_NAME,
+  TWITTER_URL,
+} from '@/utils/constants'
+import { ArrowRight, CircleXFill, TelegramFill, TwitterFill } from 'akar-icons'
 import Image from 'next/image'
+import Link from 'next/link'
 import React, { useState } from 'react'
 import QRCodeContent from './QRCodeContent'
 
@@ -55,6 +62,15 @@ const TicketModal = ({ setModalOpen, modalData, setModalData }: Props) => {
                       <InstagramFill size={16} />
                       <h4 className="ml-2 text-sm">Brag on Instagram</h4>
                     </button> */}
+                    <a
+                      href={`${OPENSEA_URL}${modalData.tokenId}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <button className="focus:bg-initial flex items-center rounded-lg bg-[#2081e2] px-2 py-2.5 text-sm font-medium text-white hover:bg-[#2081e2]">
+                        <h4 className="ml-2 text-sm">View on Opensea</h4>
+                      </button>
+                    </a>
                   </div>
                   <div className="mt-4 mb-6 flex justify-center gap-4">
                     <a href={TELEGRAM_URL} target="_blank" rel="noreferrer">
@@ -63,12 +79,17 @@ const TicketModal = ({ setModalOpen, modalData, setModalData }: Props) => {
                         <h4 className="ml-2 text-sm">Join Telegram</h4>
                       </button>
                     </a>
-                    <button
-                      className="flex items-center rounded-lg bg-emerald-500 px-5 py-2.5 text-sm font-medium text-white  hover:bg-emerald-700 focus:bg-emerald-500"
-                      onClick={() => setGeneratingQR(true)}
-                    >
-                      <h4 className="text-sm">Generate QR Code</h4>
-                    </button>
+                    <If
+                      condition={ENABLE_QR}
+                      then={
+                        <button
+                          className="flex items-center rounded-lg bg-emerald-500 px-5 py-2.5 text-sm font-medium text-white  hover:bg-emerald-700 focus:bg-emerald-500"
+                          onClick={() => setGeneratingQR(true)}
+                        >
+                          <h4 className="text-sm">Generate QR Code</h4>
+                        </button>
+                      }
+                    />
                   </div>
                 </div>
               </div>

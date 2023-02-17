@@ -63,6 +63,12 @@ export const SERVER_ENDPOINT = process.env.NEXT_PUBLIC_SERVER_ENDPOINT
 export const CONTRACT_ADDRESS =
   contracts?.[getNetwork().chainId][0]?.contracts?.['SimplrEvents']?.['address']
 
+export const OPENSEA_URL = TEST_NETWORK
+  ? `https://testnets.opensea.io/assets/mumbai/${CONTRACT_ADDRESS}/`
+  : `https://opensea.io/assets/matic/${CONTRACT_ADDRESS}/`
+
+export const ENABLE_QR = toBoolean(process.env.NEXT_PUBLIC_ENABLE_QR)
+
 export const TWITTER_URL = process.env.NEXT_PUBLIC_TWITTER_URL
 
 export const INSTAGRAM_URL = process.env.NEXT_PUBLIC_INSTAGRAM_URL
