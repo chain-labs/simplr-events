@@ -1,4 +1,3 @@
-import { ApolloClient, NormalizedCacheObject } from '@apollo/client'
 import { createAction } from '@reduxjs/toolkit'
 
 export const setNetwork = createAction<{ chainId: number; name: string }>(

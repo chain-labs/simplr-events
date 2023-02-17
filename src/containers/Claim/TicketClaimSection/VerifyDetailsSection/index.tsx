@@ -1,13 +1,12 @@
 import If from '@/components/If'
 import { TOKEN_NAME } from '@/utils/constants'
-import { useAuth } from '@arcana/auth-react'
 import { ArrowCycle, ChevronRight } from 'akar-icons'
 import React from 'react'
 
 import { useEffect, useState } from 'react'
 import { STEPS } from '../../constants'
 import { QueryProps } from '../../types'
-import { delay, FETCH_TREE_CID, verifyQueryDetails } from '../../utils'
+import { FETCH_TREE_CID, verifyQueryDetails } from '../../utils'
 import UserInfoInput from '../UserInfoInput'
 
 const VerifyDetailsSection = ({

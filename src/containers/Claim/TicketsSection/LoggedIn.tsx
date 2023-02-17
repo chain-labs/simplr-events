@@ -6,12 +6,10 @@ import FETCH_HOLDER_TICKETS, {
 import FETCH_REVEALED from '@/graphql/query/fetchRevealed'
 import { CONTRACT_ADDRESS, TOKEN_NAME } from '@/utils/constants'
 import { useAuth } from '@arcana/auth-react'
-import { CirclePlusFill } from 'akar-icons'
 import axios from 'axios'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import Spinner from '../components/Spinner'
-import { TICKET_IMAGE_URL } from '../constants'
 import TicketModal from './TicketModal'
 
 const LoggedIn = () => {

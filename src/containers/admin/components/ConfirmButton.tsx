@@ -1,6 +1,5 @@
 import If from '@/components/If'
 import { getContractDetails } from '@/ethereum/useCustomContract'
-import useEthers from '@/ethereum/useEthers'
 import {
   addKey,
   batchSelector,
@@ -9,7 +8,6 @@ import {
 } from '@/redux/batch'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { userSelector } from '@/redux/user'
-import axios from 'axios'
 import { ethers } from 'ethers'
 import React, { useEffect, useState } from 'react'
 import { useProvider, useSigner } from 'wagmi'
@@ -83,7 +81,7 @@ const ConfirmButton = () => {
 
   const addBatchToContract = async (root, cid, nextBatchId) => {
     console.log('Inputs:', 'merkleRoot:', root, 'cid:', cid)
-    const transaction = contract
+    contract
       ?.connect(signer)
       ?.addBatch(root, cid, { value: 0 })
       .then(async (res) => {

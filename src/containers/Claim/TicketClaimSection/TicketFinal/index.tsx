@@ -3,18 +3,16 @@ import FETCH_HOLDER_TICKETS from '@/graphql/query/fetchHolderTickets'
 import FETCH_REVEALED from '@/graphql/query/fetchRevealed'
 import {
   CONTRACT_ADDRESS,
-  INSTAGRAM_URL,
   TELEGRAM_URL,
   TOKEN_NAME,
   TWITTER_URL,
 } from '@/utils/constants'
 import { useAuth } from '@arcana/auth-react'
-import { InstagramFill, TelegramFill, TwitterFill } from 'akar-icons'
+import { TelegramFill, TwitterFill } from 'akar-icons'
 import axios from 'axios'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import Spinner from '../../components/Spinner'
-import { TICKET_IMAGE_URL } from '../../constants'
 import QRCodeComp from './QRCodeComp'
 
 const TicketFinal = ({ qrData }: { qrData: any }) => {

@@ -5,14 +5,7 @@ import axios from 'axios'
 import LitJsSdk from '@lit-protocol/sdk-browser'
 import { BytesLike, ethers } from 'ethers'
 import { QueryProps } from './types'
-import { NFTStorage } from 'nft.storage'
-import {
-  NFT_STORAGE_TOKEN,
-  RELAY_TASK_CHECK_ENDPOINT,
-  SERVER_ENDPOINT,
-} from '@/utils/constants'
-
-const NFTStorageClient = new NFTStorage({ token: NFT_STORAGE_TOKEN })
+import { RELAY_TASK_CHECK_ENDPOINT, SERVER_ENDPOINT } from '@/utils/constants'
 
 export const FETCH_TREE_CID = async (id: string) => {
   const { data } = await client.query({

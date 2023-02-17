@@ -6,9 +6,7 @@ import LitJsSdk from '@lit-protocol/sdk-browser'
 import { useAuth } from '@arcana/auth-react'
 import { CONTRACT_ADDRESS, getNetwork, TOKEN_NAME } from '@/utils/constants'
 import { ethers } from 'ethers'
-import { getSignature, utf8ToHex } from '../../utils'
-import { client } from '@/components/ApolloClient'
-import FETCH_HOLDER_TICKETS from '@/graphql/query/fetchHolderTickets'
+import { utf8ToHex } from '../../utils'
 
 const QRCodeComp = ({ qrData, tokenId }: { qrData: any; tokenId: string }) => {
   const [loading, setLoading] = useState(true)

@@ -1,10 +1,5 @@
 import If from '@/components/If'
-import {
-  CircleXFill,
-  InstagramFill,
-  TelegramFill,
-  TwitterFill,
-} from 'akar-icons'
+import { CircleXFill, TelegramFill, TwitterFill } from 'akar-icons'
 import Image from 'next/image'
 import React, { useState } from 'react'
 import QRCodeContent from './QRCodeContent'

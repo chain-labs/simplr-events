@@ -1,7 +1,5 @@
 import If from '@/components/If'
-import ConnectWallet from '@/components/Navbar/ConnectWallet'
 import {
-  addBatch,
   addBatchId,
   addExcelData,
   addKey,
@@ -10,8 +8,6 @@ import {
   removeBatch,
 } from '@/redux/batch'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { userSelector } from '@/redux/user'
-import { userAgent } from 'next/server'
 import React, { useState, useEffect, useRef } from 'react'
 import { read, utils } from 'xlsx'
 import { GET_CURRENT_BATCH_ID } from '../utils'

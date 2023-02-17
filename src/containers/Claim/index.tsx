@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import {
   ARCANA_APP_ADDRESS,
-  CONTRACT_ADDRESS,
   EVENT_LOGO,
   EVENT_URL,
   LOGO_URL,
@@ -14,8 +13,6 @@ import { ProvideAuth } from '@arcana/auth-react'
 import { AuthProvider, CHAIN } from '@arcana/auth'
 import If from '@/components/If'
 import TicketsSection from './TicketsSection'
-import { client } from '@/components/ApolloClient'
-import FETCH_EVENT_NAME from '@/graphql/query/fetchEventName'
 
 const provider = new AuthProvider(`${ARCANA_APP_ADDRESS}`, {
   position: 'right',
@@ -47,7 +44,7 @@ const ClaimComponent = ({ query }: { query: QueryProps }) => {
     >
       <ProvideAuth provider={provider}>
         <div className="flex flex-1 flex-col pb-6">
-          <div className="container flex items-center justify-between bg-white py-1 px-1 shadow-md sm:px-0">
+          <div className="container flex items-center justify-between bg-white py-1 px-1 shadow-md sm:px-8 sm:py-2">
             <a
               className="relative h-6 w-28 overflow-x-visible sm:h-8"
               href="https://simplrhq.com"
@@ -62,7 +59,7 @@ const ClaimComponent = ({ query }: { query: QueryProps }) => {
               />
             </a>
             <a href={EVENT_URL} target="_blank" rel="noreferrer">
-              <div className="relative h-16 w-28 overflow-x-visible sm:h-8">
+              <div className="relative h-16 w-28 overflow-x-visible sm:h-16">
                 <Image
                   src={EVENT_LOGO}
                   fill

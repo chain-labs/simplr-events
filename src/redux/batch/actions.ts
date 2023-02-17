@@ -1,5 +1,4 @@
 import { createAction } from '@reduxjs/toolkit'
-import { ProviderProps, SignerProps } from 'src/ethereum/types'
 import { BatchState, CsvState } from './reducers'
 
 export const addBatch = createAction<BatchState>('batch/ADD_BATCH')
