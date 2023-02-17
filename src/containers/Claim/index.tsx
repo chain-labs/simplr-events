@@ -5,6 +5,7 @@ import {
   EVENT_URL,
   getNetwork,
   LOGO_URL,
+  TEST_NETWORK,
   TOKEN_NAME,
 } from '@/utils/constants'
 import Image from 'next/image'
@@ -19,7 +20,7 @@ const provider = new AuthProvider(`${ARCANA_APP_ADDRESS}`, {
   position: 'right',
   theme: 'light',
   alwaysVisible: true,
-  network: 'testnet',
+  network: TEST_NETWORK ? 'testnet' : 'mainnet',
   chainConfig: {
     chainId: getNetwork().chainIdHex,
     rpcUrl: '',
