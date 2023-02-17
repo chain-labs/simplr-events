@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: false,
   images: {
-    domains: ['ik.imagekit.io', 'lh3.googleusercontent.com'],
+    domains: ['ik.imagekit.io', 'lh3.googleusercontent.com', 'nftstorage.link'],
   },
   webpack: (config) => {
     config.resolve.fallback = {

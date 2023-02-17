@@ -1,11 +1,14 @@
 import { client } from '@/components/ApolloClient'
 import If from '@/components/If'
 import FETCH_HOLDER_TICKETS from '@/graphql/query/fetchHolderTickets'
-import { TOKEN_NAME } from '@/utils/constants'
+import FETCH_REVEALED from '@/graphql/query/fetchRevealed'
+import { CONTRACT_ADDRESS, TOKEN_NAME } from '@/utils/constants'
 import { useAuth } from '@arcana/auth-react'
 import { CirclePlusFill } from 'akar-icons'
+import axios from 'axios'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
+import Spinner from '../components/Spinner'
 import { TICKET_IMAGE_URL } from '../constants'
 import TicketModal from './TicketModal'
 
@@ -13,6 +16,36 @@ const LoggedIn = () => {
   const [userTickets, setUserTickets] = useState([])
   const [modalOpen, setModalOpen] = useState(false)
   const [modalData, setModalData] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  const [revealed, setRevealed] = useState<boolean>(false)
+  const [ticketURI, setTicketURI] = useState('')
+
+  const fetchRevealed = async () => {
+    const res = await client.query({
+      query: FETCH_REVEALED,
+      variables: { address: CONTRACT_ADDRESS },
+    })
+
+    const { data } = res
+    const isRevealed = !!data?.simplrEvents?.[0]?.isRevealed
+    const ticketURI = data?.simplrEvents?.[0]?.ticketURI
+    const ticketCid = ticketURI?.split('//')[1]
+    const ticketImgRes = await axios.get(
+      `https://nftstorage.link/ipfs/${ticketCid}${
+        isRevealed ? `${modalData.tokenId}.json` : ''
+      }`,
+    )
+    const ticketImg = `https://nftstorage.link/ipfs/${
+      ticketImgRes.data?.image.split('//')[1]
+    }`
+    setTicketURI(ticketImg)
+    setRevealed(isRevealed)
+  }
+
+  useEffect(() => {
+    fetchRevealed().then(() => setLoading(false))
+  }, [])
 
   const auth = useAuth()
 
@@ -45,46 +78,62 @@ const LoggedIn = () => {
     <div className="px-4 text-black">
       <If
         condition={modalOpen}
-        then={<TicketModal {...{ modalData, setModalData, setModalOpen }} />}
+        then={
+          <TicketModal
+            {...{ modalData, setModalData, setModalOpen, ticketURI }}
+          />
+        }
       />
       <h2 className="mt-4 mb-4 text-3xl font-semibold">Your {TOKEN_NAME}</h2>
       <If
-        condition={!!userTickets?.length}
+        condition={loading}
         then={
-          <div className="grid max-h-full grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-            {/* <div className="flex h-full w-full flex-col items-center justify-center rounded-md border border-dashed border-slate-400 ">
+          <div className="mt-16 h-16 w-16">
+            <Spinner />
+          </div>
+        }
+        else={
+          <If
+            condition={!!userTickets?.length}
+            then={
+              <div className="grid max-h-full grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+                {/* <div className="flex h-full w-full flex-col items-center justify-center rounded-md border border-dashed border-slate-400 ">
           <CirclePlusFill strokeWidth={2} size={48} />
           <h4 className="mt-4 text-sm font-medium">Claim a Ticket</h4>
         </div> */}
-            {userTickets?.map((ticket) => {
-              return (
-                <div
-                  className="w-full rounded-md border border-slate-300 bg-gray-100 py-4"
-                  key={ticket.dataCid}
-                  onClick={() => {
-                    setModalOpen(true)
-                    setModalData({
-                      dataCid: ticket?.dataCid,
-                      tokenId: ticket?.tokenId,
-                      eventName: ticket?.simplrEvent?.name,
-                    })
-                  }}
-                >
-                  <div className="relative mb-4 h-24 w-full md:h-32 lg:h-48">
-                    <Image
-                      src={TICKET_IMAGE_URL}
-                      fill
-                      alt="ticket_img"
-                      style={{ objectFit: 'contain' }}
-                    />
-                  </div>
-                  <h3 className="text-md px-4 font-semibold">{`#${ticket.tokenId} ${ticket?.simplrEvent?.name}`}</h3>
-                </div>
-              )
-            })}
-          </div>
+                {userTickets?.map((ticket) => {
+                  return (
+                    <div
+                      className="w-full rounded-md border border-slate-300 bg-gray-100 py-4"
+                      key={ticket.dataCid}
+                      onClick={() => {
+                        setModalOpen(true)
+                        setModalData({
+                          dataCid: ticket?.dataCid,
+                          tokenId: ticket?.tokenId,
+                          eventName: ticket?.simplrEvent?.name,
+                        })
+                      }}
+                    >
+                      <div className="relative mb-4 h-24 w-full md:h-32 lg:h-48">
+                        <Image
+                          src={ticketURI}
+                          fill
+                          alt="ticket_img"
+                          style={{ objectFit: 'contain' }}
+                        />
+                      </div>
+                      <h3 className="text-md px-4 font-semibold">{`#${ticket.tokenId} ${ticket?.simplrEvent?.name}`}</h3>
+                    </div>
+                  )
+                })}
+              </div>
+            }
+            else={
+              <h3 className="mt-10 text-xl">No {TOKEN_NAME} Claimed yet</h3>
+            }
+          />
         }
-        else={<h3 className="mt-10 text-xl">No {TOKEN_NAME} Claimed yet</h3>}
       />
     </div>
   )

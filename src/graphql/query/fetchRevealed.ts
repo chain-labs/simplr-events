@@ -4,6 +4,7 @@ const FETCH_REVEALED = gql`
   query FetchRevealed($address: Bytes) {
     simplrEvents(where: { address: $address }) {
       isRevealed
+      ticketURI
     }
   }
 `

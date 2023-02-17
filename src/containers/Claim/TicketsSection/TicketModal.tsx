@@ -3,6 +3,7 @@ import If from '@/components/If'
 import FETCH_REVEALED from '@/graphql/query/fetchRevealed'
 import { CONTRACT_ADDRESS } from '@/utils/constants'
 import { CircleXFill, TelegramFill, TwitterFill } from 'akar-icons'
+import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { TICKET_IMAGE_URL } from '../constants'
 import QRCodeContent from './QRCodeContent'
@@ -11,26 +12,16 @@ interface Props {
   modalData: any
   setModalOpen: (boolean) => void
   setModalData: (any) => void
+  ticketURI: string
 }
 
-const TicketModal = ({ setModalOpen, modalData, setModalData }: Props) => {
+const TicketModal = ({
+  setModalOpen,
+  modalData,
+  setModalData,
+  ticketURI,
+}: Props) => {
   const [generatingQR, setGeneratingQR] = useState(false)
-  const [revealed, setRevealed] = useState<boolean>(false)
-
-  const fetchRevealed = async () => {
-    const res = await client.query({
-      query: FETCH_REVEALED,
-      variables: { address: CONTRACT_ADDRESS },
-    })
-
-    const { data } = res
-    const isRevealed = !!data?.simplrEvents?.[0]?.isRevealed
-    setRevealed(isRevealed)
-  }
-
-  useEffect(() => {
-    fetchRevealed()
-  }, [])
 
   return (
     <div className="fixed top-0 left-0 z-10 h-screen w-screen bg-modal-bg">
@@ -51,7 +42,7 @@ const TicketModal = ({ setModalOpen, modalData, setModalData }: Props) => {
               <div className="rounded-xl bg-slate-200 py-4 shadow-xl">
                 <div className="w-full py-8">
                   <img
-                    src={TICKET_IMAGE_URL}
+                    src={ticketURI}
                     alt="ticket image"
                     className="object-cover"
                   />

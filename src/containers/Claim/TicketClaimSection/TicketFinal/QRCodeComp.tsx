@@ -4,13 +4,13 @@ import QRCode from 'react-qr-code'
 import Spinner from '../../components/Spinner'
 import LitJsSdk from '@lit-protocol/sdk-browser'
 import { useAuth } from '@arcana/auth-react'
-import { CONTRACT_ADDRESS, getNetwork } from '@/utils/constants'
+import { CONTRACT_ADDRESS, getNetwork, TOKEN_NAME } from '@/utils/constants'
 import { ethers } from 'ethers'
 import { getSignature, utf8ToHex } from '../../utils'
 import { client } from '@/components/ApolloClient'
 import FETCH_HOLDER_TICKETS from '@/graphql/query/fetchHolderTickets'
 
-const QRCodeComp = ({ qrData }: { qrData: any }) => {
+const QRCodeComp = ({ qrData, tokenId }: { qrData: any; tokenId: string }) => {
   const [loading, setLoading] = useState(true)
   const [qrValue, setQrValue] = useState('')
 
@@ -34,7 +34,7 @@ const QRCodeComp = ({ qrData }: { qrData: any }) => {
       )
       const pngFile = canvas.toDataURL('image/png')
       const downloadLink = document.createElement('a')
-      downloadLink.download = 'QRCode.png'
+      downloadLink.download = `#${tokenId}_${TOKEN_NAME}_Vivacity2023.png`
       downloadLink.href = `${pngFile}`
       downloadLink.click()
     }
@@ -67,15 +67,6 @@ const QRCodeComp = ({ qrData }: { qrData: any }) => {
   }
 
   const handleQrGenerate = async (details) => {
-    const tokenIdRes = await client.query({
-      query: FETCH_HOLDER_TICKETS,
-      variables: {
-        id: auth.user.address,
-        first: 1,
-      },
-    })
-    const tokenId = tokenIdRes.data?.holders[0]?.tickets[0].tokenId
-
     const concatenatedMessage = `${details?.emailid}-${auth.user.address}-${tokenId}-${CONTRACT_ADDRESS}`
 
     const message = utf8ToHex(concatenatedMessage)
