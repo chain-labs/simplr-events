@@ -9,6 +9,7 @@ import {
 } from '@/redux/batch'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import React, { useState, useEffect, useRef } from 'react'
+import { toast } from 'react-hot-toast'
 import { read, utils } from 'xlsx'
 import { GET_CURRENT_BATCH_ID } from '../utils'
 import ConfirmButton from './ConfirmButton'
@@ -47,44 +48,59 @@ const HomeComponent = () => {
   }, [file])
 
   const readFile = () => {
-    const reader = new FileReader()
-    reader.onload = (event) => {
-      const wb = read(event.target.result)
-      const sheets = wb.SheetNames
-      console.log(sheets, event.target.result)
+    try {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        const wb = read(event.target.result)
+        const sheets = wb.SheetNames
+        console.log(sheets, event.target.result)
 
-      if (sheets.length) {
-        const rows: any = utils.sheet_to_json(wb.Sheets[sheets[0]])
-        console.log({ rows })
-        const data: CsvState[] = []
-        rows.forEach((row) => {
-          const first = row?.firstAllowedEntryDate?.split('-')
-          const last = row?.lastAllowedEntryDate?.split('-')
-          const f = new Date('July 1, 1999, 00:00:00')
-          const l = new Date('July 1, 1999, 23:59:59')
+        if (sheets.length) {
+          const rows: any = utils.sheet_to_json(wb.Sheets[sheets[0]])
+          console.log({ rows })
+          const data: CsvState[] = []
+          try {
+            rows.forEach((row) => {
+              const first = row?.firstAllowedEntryDate?.split('-')
+              const last = row?.lastAllowedEntryDate?.split('-')
+              const f = new Date('July 1, 1999, 00:00:00')
+              const l = new Date('July 1, 1999, 23:59:59')
 
-          f.setDate(first[0])
-          f.setMonth(first[1])
-          f.setFullYear(first[2])
-          const ft = f.getTime()
-          l.setDate(last[0])
-          l.setMonth(last[1])
-          l.setFullYear(last[2])
-          const lt = l.getTime()
+              f.setDate(first[0])
+              f.setMonth(first[1])
+              f.setFullYear(first[2])
+              const ft = f.getTime()
+              l.setDate(last[0])
+              l.setMonth(last[1])
+              l.setFullYear(last[2])
+              const lt = l.getTime()
 
-          data.push({
-            firstName: row.firstName,
-            lastName: row.lastName,
-            email: row.email,
-            firstAllowedEntryDate: ft.toString(),
-            lastAllowedEntryDate: lt.toString(),
-          })
-        })
-        console.log({ rows, data })
-        setParsedData(data)
+              data.push({
+                firstName: row.firstName,
+                lastName: row.lastName,
+                email: row.email,
+                firstAllowedEntryDate: ft.toString(),
+                lastAllowedEntryDate: lt.toString(),
+              })
+            })
+          } catch (err) {
+            toast.error(
+              'File could not be read properly! Please refer to the help section',
+            )
+            handleRemoveFile()
+          }
+          console.log({ rows, data })
+          setParsedData(data)
+        }
       }
+      reader.readAsArrayBuffer(file)
+    } catch (err) {
+      toast.error(
+        'File could not be read properly! Please refer to the help section',
+      )
+      setFile(null)
+      handleRemoveFile()
     }
-    reader.readAsArrayBuffer(file)
   }
   const handleRemoveFile = () => {
     dispatch(addKey())
@@ -97,7 +113,7 @@ const HomeComponent = () => {
   }
 
   return (
-    <div className="w-128 mt-8 rounded-2xl bg-gray-100 px-10 py-8 shadow-xl">
+    <div className="mt-8 w-full rounded-2xl bg-gray-100 px-10 py-8 shadow-xl">
       <h1 className="w-128 text-4xl font-bold">Add your Invite list</h1>
       <div className="my-4 flex-1 py-4">
         <div className="input-group">

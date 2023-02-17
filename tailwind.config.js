@@ -51,6 +51,7 @@ module.exports = {
           'bounce-right 2s ease-in-out 0s infinite normal forwards',
         spacing: {
           128: '32rem',
+          144: '36rem',
         },
         fontFamily: {
           sans: ['Satoshi', ...defaultTheme.fontFamily.sans],
