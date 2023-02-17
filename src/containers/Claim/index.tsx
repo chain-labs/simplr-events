@@ -3,6 +3,7 @@ import {
   ARCANA_APP_ADDRESS,
   EVENT_LOGO,
   EVENT_URL,
+  getNetwork,
   LOGO_URL,
   TOKEN_NAME,
 } from '@/utils/constants'
@@ -10,7 +11,7 @@ import Image from 'next/image'
 import TicketClaimSection from './TicketClaimSection'
 import { QueryProps } from './types'
 import { ProvideAuth } from '@arcana/auth-react'
-import { AuthProvider, CHAIN } from '@arcana/auth'
+import { AuthProvider } from '@arcana/auth'
 import If from '@/components/If'
 import TicketsSection from './TicketsSection'
 
@@ -20,7 +21,7 @@ const provider = new AuthProvider(`${ARCANA_APP_ADDRESS}`, {
   alwaysVisible: true,
   network: 'testnet',
   chainConfig: {
-    chainId: CHAIN.POLYGON_MUMBAI_TESTNET,
+    chainId: getNetwork().chainIdHex,
     rpcUrl: '',
   },
 })
