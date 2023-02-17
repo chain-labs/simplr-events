@@ -22,7 +22,7 @@ import {
 } from '../utils'
 import toast from 'react-hot-toast'
 import ConnectWallet from '@/components/Navbar/ConnectWallet'
-import { CONTRACT_ADDRESS } from '@/utils/constants'
+import { CONTRACT_ADDRESS } from '@/utils/constants_admin'
 
 const ConfirmButton = () => {
   const provider = useProvider()

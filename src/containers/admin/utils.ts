@@ -5,8 +5,8 @@ import { GET_CURRENT_BATCH_ID_QUERY } from '@/graphql/query/getCurrentBatchId'
 import { client } from '@/components/ApolloClient'
 import MerkleTree from 'merkletreejs'
 import { keccak256 } from 'ethers/lib/utils'
-import { SERVER_URL } from '@/utils/constants'
 import { GET_ALLOWED_MINTERS_QUERY } from '@/graphql/query/getAllowedMinters'
+import { SERVER_URL } from '@/utils/constants_admin'
 
 const PINATA_KEY_SECRET = process.env.NEXT_PUBLIC_PINATA_API_SECRET
 const PINATA_KEY = process.env.NEXT_PUBLIC_PINATA_API_KEY

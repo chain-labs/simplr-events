@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { getChain } from '@/utils/constants'
+import { getChain } from '@/utils/constants_admin'
 import { ethers, providers } from 'ethers'
 import { useEffect, useState } from 'react'
 import contracts from '../contracts.json'

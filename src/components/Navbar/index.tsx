@@ -1,6 +1,6 @@
 import { useAppSelector } from '@/redux/hooks'
 import { userSelector } from '@/redux/user'
-import { getChain, SIMPLR_LOGO_URL } from '@/utils/constants'
+import { SIMPLR_LOGO_URL } from '@/utils/constants_admin'
 import React, { useEffect } from 'react'
 import { useSwitchNetwork } from 'wagmi'
 import ConnectWallet from './ConnectWallet'

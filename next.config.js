@@ -1,6 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
+  images: {
+    domains: ['ik.imagekit.io', 'lh3.googleusercontent.com', 'nftstorage.link'],
+  },
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      net: false,
+      os: false,
+      tls: false,
+      fs: false,
+    }
+    return config
+  },
 }
 
 module.exports = nextConfig

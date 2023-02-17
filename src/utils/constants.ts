@@ -1,34 +1,63 @@
+import contracts from '@/contracts.json'
+
+const toBoolean = (condition: string) => {
+  if (condition.toLowerCase() === 'true') {
+    return true
+  } else if (condition.toLowerCase() === 'false') {
+    return false
+  } else {
+    return false
+  }
+}
+
+export const LOGO_URL =
+  'https://ik.imagekit.io/chainlabs/Simplr_Collection_Dapp/simplr-logo__v0Tmlq6M.png?ik-sdk-version=javascript-1.4.3&updatedAt=1675703009631'
+export const BACKGROUND_MEDIA =
+  'https://ik.imagekit.io/chainlabs/Simplr_Events/pexels-adrien-olichon-2387793_7h4CeXjRss.jpg?ik-sdk-version=javascript-1.4.3&updatedAt=1675402350598'
 export const SUBGRAPH_ENDPOINT = process.env.NEXT_PUBLIC_SUBGRAPH_ENDPOINT
-export const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_LOCAL_URL
-export const CHAIN_NETWORK = process.env.NEXT_PUBLIC_CHAIN_NETWORK
-export const TEST_ENV = process.env.NEXT_PUBLIC_TEST_ENV
-export const CONTRACT_ADDRESS = `${process.env.NEXT_PUBLIC_CONTRACT_ADDRESS}`
 
-export const getNetwork = () => {
-  return TEST_ENV ? 'mumbai' : 'polygon'
-}
+export const ARCANA_APP_ADDRESS = process.env.NEXT_PUBLIC_ARCANA_APP_ADDRESS
 
-export const NETWORK: string = getNetwork()
+export const NFT_STORAGE_TOKEN = process.env.NEXT_PUBLIC_NFT_STORAGE_TOKEN
 
-export const getChain = () => {
-  switch (NETWORK) {
-    case 'mumbai':
-      return '80001'
-    case 'polygon':
-      return '137'
+export const GELATO_API_KEY = process.env.NEXT_PUBLIC_GELATO_API_KEY
+
+export const TEST_NETWORK = toBoolean(process.env.NEXT_PUBLIC_TEST_NETWORK)
+
+export const getNetwork = (): {
+  chainIdHex: string
+  chainId: string
+  blockExplorer: string
+  unit: string
+  name: string
+} => {
+  if (TEST_NETWORK) {
+    return {
+      name: 'mumbai',
+      chainIdHex: '0x13881',
+      chainId: '80001',
+      blockExplorer: 'https://mumbai.polygonscan.com/',
+      unit: 'MATIC',
+    }
+  } else {
+    return {
+      name: 'matic',
+      chainIdHex: '0x89',
+      chainId: '137',
+      blockExplorer: 'https://polygonscan.com/',
+      unit: 'MATIC',
+    }
   }
 }
 
-export const CHAIN_ID: string = getChain()
+export const TOKEN_NAME = process.env.NEXT_PUBLIC_TOKEN_NAME
 
-export const getEtherscanUrl = () => {
-  switch (getChain()) {
-    case '80001':
-      return `https://mumbai.polygonscan.com/address/${CONTRACT_ADDRESS}`
-    case '137':
-      return `https://polygonscan.com/address/${CONTRACT_ADDRESS}`
-  }
-}
+export const SIMPLR_ADDRESS = '0x63ae231DE70393E6Eea8CeE9622D84960ebBcd13'
 
-export const SIMPLR_LOGO_URL =
-  'https://ik.imagekit.io/chainlabs/Simplr_Collection_Dapp/simplr_logo_RASw5d0WR.svg?ik-sdk-version=javascript-1.4.3&updatedAt=1676550226736'
+export const RELAY_TASK_CHECK_ENDPOINT =
+  'https://relay.gelato.digital/tasks/status/'
+
+export const SERVER_ENDPOINT = process.env.NEXT_PUBLIC_SERVER_ENDPOINT
+
+export const CONTRACT_ADDRESS =
+  contracts?.[getNetwork().chainId][0]?.contracts?.['SimplrEvents']?.['address']
