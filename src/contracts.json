@@ -5,7 +5,7 @@
       "chainId": "137",
       "contracts": {
         "SimplrEvents": {
-          "address": "0xDC54449BcC96605836DE864f06EFb4719A3F307b",
+          "address": "0x76DE8359A67152aA121913a1AcA07aF50239E62B",
           "abi": [
             {
               "inputs": [],
