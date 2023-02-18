@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
 export const FETCH_EVENT_OWNER_QUERY = gql`
-  query FetchTreeCid($name: String) {
-    simplrEvents(where: { name: $name }) {
+  query FetchEventOwner($address: Bytes) {
+    simplrEvents(where: { address: $address }) {
       owner {
         address
       }

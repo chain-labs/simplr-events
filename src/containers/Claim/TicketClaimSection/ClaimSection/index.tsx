@@ -16,7 +16,7 @@ import { CLAIM_STEPS } from './constants'
 import { client } from '@/components/ApolloClient'
 import { FETCH_EVENT_OWNER_QUERY } from '@/graphql/query/fetchEventOwnerAddress'
 import { Blob } from 'nft.storage'
-import { SIMPLR_ADDRESS } from '@/utils/constants'
+import { CONTRACT_ADDRESS, SIMPLR_ADDRESS } from '@/utils/constants'
 import SignatureStep from './SignatureStep'
 import SecurityStep from './SecurityStep'
 import MintingStep from './MintingStep'
@@ -59,7 +59,7 @@ const ClaimSection = ({
     const eventData = await client.query({
       query: FETCH_EVENT_OWNER_QUERY,
       variables: {
-        name: 'Vivacity 2023',
+        address: CONTRACT_ADDRESS,
       },
     })
 
