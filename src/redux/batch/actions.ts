@@ -14,5 +14,3 @@ export const addKey = createAction('batch/ADD_KEY')
 export const removeKey = createAction('batch/REMOVE_KEY')
 
 export const incrementBatchId = createAction('batch/INCREMENT_BATCH_ID')
-
-export const addMailSent = createAction<number>('batch/ADD_MAIL_SENT')
