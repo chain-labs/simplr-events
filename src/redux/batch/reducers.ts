@@ -8,7 +8,6 @@ import {
   addKey,
   removeKey,
   incrementBatchId,
-  addMailSent,
 } from './actions'
 
 export type CsvState = {
