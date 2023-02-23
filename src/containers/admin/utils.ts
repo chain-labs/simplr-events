@@ -26,7 +26,6 @@ export const GET_CURRENT_BATCH_ID = async () => {
   const { data } = await client.query({
     query: GET_CURRENT_BATCH_ID_QUERY,
   })
-  console.log({ data })
 
   return data
 }

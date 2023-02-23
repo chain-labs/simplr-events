@@ -8,6 +8,7 @@ import {
   addKey,
   removeKey,
   incrementBatchId,
+  addMailSent,
 } from './actions'
 
 export type CsvState = {
@@ -25,6 +26,7 @@ export type BatchState = {
   contractAddress: string
   addBatchTimestamp: number
   key: string
+  MailSentNumber: number
 }
 
 const initialState: BatchState = {
@@ -34,6 +36,7 @@ const initialState: BatchState = {
   contractAddress: '',
   addBatchTimestamp: 0,
   key: '',
+  MailSentNumber: 0,
 }
 
 export const batchReducer = createReducer(initialState, (builder) => {
@@ -69,6 +72,10 @@ export const batchReducer = createReducer(initialState, (builder) => {
     })
     .addCase(removeKey, (state) => {
       state.key = ''
+      return state
+    })
+    .addCase(addMailSent, (state, action) => {
+      state.MailSentNumber = action.payload
       return state
     })
 })

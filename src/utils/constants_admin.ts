@@ -4,9 +4,9 @@ export const CHAIN_NETWORK = process.env.NEXT_PUBLIC_CHAIN_NETWORK
 export const CONTRACT_ADDRESS = `${process.env.NEXT_PUBLIC_CONTRACT_ADDRESS}`
 
 const toBoolean = (condition: string) => {
-  if (condition.toLowerCase() === 'true') {
+  if (condition?.toLowerCase() === 'true') {
     return true
-  } else if (condition.toLowerCase() === 'false') {
+  } else if (condition?.toLowerCase() === 'false') {
     return false
   } else {
     return false

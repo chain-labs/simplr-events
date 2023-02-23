@@ -7,13 +7,8 @@ import { ProviderProps } from './types'
 
 export const getContractDetails = () => {
   const network = contracts[getChain()]
-  console.log({ net: getChain() })
-
-  console.log({ network })
-
   const contractDetails =
     network[Object.keys(network)[0]].contracts.SimplrEvents
-  console.log({ contractDetails })
 
   return contractDetails.abi
 }

@@ -2,6 +2,7 @@ import If from '@/components/If'
 import { getContractDetails } from '@/ethereum/useCustomContract'
 import {
   addKey,
+  addMailSent,
   batchSelector,
   incrementBatchId,
   removeBatch,
@@ -34,6 +35,7 @@ const ConfirmButton = () => {
   const batch = useAppSelector(batchSelector)
   const dispatch = useAppDispatch()
   const [allowed, setAllowed] = useState<boolean>(false)
+  const [mailSent, setMailSent] = useState<number>(0)
 
   useEffect(() => {
     if (id && provider && contractName) {
@@ -79,6 +81,23 @@ const ConfirmButton = () => {
     await addBatchToContract(merkleRoot, cid, nextBatchId)
   }
 
+  const addChunk = async (chunk, nextBatchId) => {
+    const serverData = {
+      inputParams: chunk,
+      batchId: nextBatchId.toString(),
+      eventName: 'Vivacity 2023',
+      contractAddress: CONTRACT_ADDRESS,
+      addBatchTimestamp: Date.now(),
+    }
+    console.log(serverData)
+    const response = await sendDataToServer(serverData)
+    if (response.status == 200) {
+      return 200
+    } else {
+      return 201
+    }
+  }
+
   const addBatchToContract = async (root, cid, nextBatchId) => {
     console.log('Inputs:', 'merkleRoot:', root, 'cid:', cid)
     contract
@@ -89,18 +108,53 @@ const ConfirmButton = () => {
         dispatch(incrementBatchId())
         setLoading(false)
         setTimeout(removeCurrentBatch, 3000)
-        const serverData = {
-          inputParams: batch.inputParams,
-          batchId: nextBatchId.toString(),
-          eventName: 'Vivacity 2023',
-          contractAddress: CONTRACT_ADDRESS,
-          addBatchTimestamp: Date.now(),
-        }
-        const response = await sendDataToServer(serverData)
-        if (response.status !== 200) {
-          toast(`❌ Something went wrong! Please Try Again`)
+        setLoading(true)
+        const size = batch.inputParams.length
+        console.log(size)
+        if (size > 25) {
+          let response
+          const ActualSize = Math.floor(size / 25)
+          console.log(ActualSize)
+          let chunk
+          for (let i = 0; i <= ActualSize; i++) {
+            if (i === ActualSize && size % 25 !== 0) {
+              chunk = batch.inputParams.slice(i * 25, size)
+              await addChunk(chunk, nextBatchId).then((res) => {
+                setMailSent(size)
+                response = res
+              })
+              console.log(size)
+            } else if (i !== ActualSize) {
+              chunk = batch.inputParams.slice(i * 25, (i + 1) * 25)
+              await addChunk(chunk, nextBatchId).then((res) => {
+                setMailSent((i + 1) * 25)
+                response = res
+              })
+              console.log(size)
+            } else {
+              break
+            }
+            setLoading(false)
+          }
+          if (response === 200) {
+            toast(`🎉 Succesfully added batch #${nextBatchId}`)
+          } else {
+            toast(`❌ Something went wrong! Please Try Again`)
+          }
         } else {
-          toast(`🎉 Succesfully added batch #${nextBatchId}`)
+          const serverData = {
+            inputParams: batch.inputParams,
+            batchId: nextBatchId.toString(),
+            eventName: 'Vivacity 2023',
+            contractAddress: CONTRACT_ADDRESS,
+            addBatchTimestamp: Date.now(),
+          }
+          const response = await sendDataToServer(serverData)
+          if (response.status !== 200) {
+            toast(`❌ Something went wrong! Please Try Again`)
+          } else {
+            toast(`🎉 Succesfully added batch #${nextBatchId}`)
+          }
         }
       })
       .catch((err) => {
@@ -120,14 +174,6 @@ const ConfirmButton = () => {
         condition={user.exists && batch.inputParams.length !== 0}
         then={
           <div>
-            {/* <button
-              type="button"
-              onClick={addExcelInputData}
-              className="mr-2 rounded-lg bg-violet-700 px-5 py-4 text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300 dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800"
-            >
-              Add Data
-            </button> */}
-
             <button
               type="button"
               onClick={
@@ -136,7 +182,9 @@ const ConfirmButton = () => {
               disabled={!allowed || loading}
               className={`disabled:hover:empty: mr-2 rounded-lg bg-violet-700 px-5 py-3 text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300 disabled:cursor-not-allowed`}
             >
-              {loading ? 'Loading' : `Add Data to Batch #${batch.batchId}`}
+              {loading
+                ? `Loading ${mailSent}/${batch.inputParams.length} mails sent`
+                : `Add Data to Batch #${batch.batchId}`}
             </button>
           </div>
         }
