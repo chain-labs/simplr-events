@@ -2,7 +2,6 @@ import If from '@/components/If'
 import { getContractDetails } from '@/ethereum/useCustomContract'
 import {
   addKey,
-  addMailSent,
   batchSelector,
   incrementBatchId,
   removeBatch,
