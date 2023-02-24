@@ -74,6 +74,9 @@ export const sendDataToServer = async (data) => {
     .then((response) => {
       return response
     })
+    .catch((err) => {
+      return err
+    })
   console.log(res)
   return res
 }
