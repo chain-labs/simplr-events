@@ -86,7 +86,7 @@ const ConfirmButton = () => {
     const serverData = {
       inputParams: chunk,
       batchId: nextBatchId.toString(),
-      eventName: 'Vivacity 2023',
+      eventName: EVENT_NAME,
       contractAddress: CONTRACT_ADDRESS,
       addBatchTimestamp: Date.now(),
     }
