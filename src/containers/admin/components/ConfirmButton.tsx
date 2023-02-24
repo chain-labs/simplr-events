@@ -118,18 +118,12 @@ const ConfirmButton = () => {
           for (let i = 0; i <= ActualSize; i++) {
             if (i === ActualSize && size % 25 !== 0) {
               chunk = batch.inputParams.slice(i * 25, size)
-              await addChunk(chunk, nextBatchId).then((res) => {
-                setMailSent(size)
-                response = res
-              })
-              console.log(size)
+              response = await addChunk(chunk, nextBatchId)
+              setMailSent(size)
             } else if (i !== ActualSize) {
               chunk = batch.inputParams.slice(i * 25, (i + 1) * 25)
-              await addChunk(chunk, nextBatchId).then((res) => {
-                setMailSent((i + 1) * 25)
-                response = res
-              })
-              console.log(size)
+              response = await addChunk(chunk, nextBatchId)
+              setMailSent((i + 1) * 25)
             } else {
               break
             }
