@@ -78,3 +78,5 @@ export const TELEGRAM_URL = process.env.NEXT_PUBLIC_TELEGRAM_URL
 export const EVENT_LOGO = process.env.NEXT_PUBLIC_EVENT_LOGO
 
 export const EVENT_URL = process.env.NEXT_PUBLIC_EVENT_URL
+
+export const EVENT_NAME = process.env.NEXT_PUBLIC_EVENT_NAME

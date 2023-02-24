@@ -21,6 +21,7 @@ import {
 import toast from 'react-hot-toast'
 import ConnectWallet from '@/components/Navbar/ConnectWallet'
 import { CONTRACT_ADDRESS } from '@/utils/constants_admin'
+import { EVENT_NAME } from '@/utils/constants'
 
 const ConfirmButton = () => {
   const provider = useProvider()
@@ -35,6 +36,7 @@ const ConfirmButton = () => {
   const dispatch = useAppDispatch()
   const [allowed, setAllowed] = useState<boolean>(false)
   const [mailSent, setMailSent] = useState<number>(0)
+  const MAX_SIZE = 25
 
   useEffect(() => {
     if (id && provider && contractName) {
@@ -110,26 +112,26 @@ const ConfirmButton = () => {
         setLoading(true)
         const size = batch.inputParams.length
         console.log(size)
-        if (size > 25) {
+        if (size > MAX_SIZE) {
           let response
-          const ActualSize = Math.floor(size / 25)
+          const ActualSize = Math.floor(size / MAX_SIZE)
           console.log(ActualSize)
           let chunk
           for (let i = 0; i <= ActualSize; i++) {
-            if (i === ActualSize && size % 25 !== 0) {
-              chunk = batch.inputParams.slice(i * 25, size)
+            if (i === ActualSize && size % MAX_SIZE !== 0) {
+              chunk = batch.inputParams.slice(i * MAX_SIZE, size)
               response = await addChunk(chunk, nextBatchId)
               if (response === 201) {
                 break
               }
               setMailSent(size)
             } else if (i !== ActualSize) {
-              chunk = batch.inputParams.slice(i * 25, (i + 1) * 25)
+              chunk = batch.inputParams.slice(i * MAX_SIZE, (i + 1) * MAX_SIZE)
               response = await addChunk(chunk, nextBatchId)
               if (response === 201) {
                 break
               }
-              setMailSent((i + 1) * 25)
+              setMailSent((i + 1) * MAX_SIZE)
             } else {
               break
             }
@@ -144,7 +146,7 @@ const ConfirmButton = () => {
           const serverData = {
             inputParams: batch.inputParams,
             batchId: nextBatchId.toString(),
-            eventName: 'Vivacity 2023',
+            eventName: EVENT_NAME,
             contractAddress: CONTRACT_ADDRESS,
             addBatchTimestamp: Date.now(),
           }
