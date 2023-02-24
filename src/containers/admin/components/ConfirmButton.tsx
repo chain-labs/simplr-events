@@ -36,7 +36,7 @@ const ConfirmButton = () => {
   const dispatch = useAppDispatch()
   const [allowed, setAllowed] = useState<boolean>(false)
   const [mailSent, setMailSent] = useState<number>(0)
-  const MAX_SIZE = 25
+  const MAX_SIZE_USERS_ALLOWED = 25
 
   useEffect(() => {
     if (id && provider && contractName) {
@@ -82,9 +82,11 @@ const ConfirmButton = () => {
     await addBatchToContract(merkleRoot, cid, nextBatchId)
   }
 
-  const addChunk = async (chunk, nextBatchId) => {
+  //The function addSubBatch takes a specified length of subArray of whole batch and nectBatchId and add it to server
+  // subBatch here is subarray of a batch having length <= MAX_SIZE_USERS_ALLOWED
+  const addSubBatch = async (subBatch, nextBatchId) => {
     const serverData = {
-      inputParams: chunk,
+      inputParams: subBatch,
       batchId: nextBatchId.toString(),
       eventName: EVENT_NAME,
       contractAddress: CONTRACT_ADDRESS,
@@ -110,34 +112,41 @@ const ConfirmButton = () => {
         setLoading(false)
         setTimeout(removeCurrentBatch, 3000)
         setLoading(true)
-        const size = batch.inputParams.length
-        console.log(size)
-        if (size > MAX_SIZE) {
-          let response
-          const ActualSize = Math.floor(size / MAX_SIZE)
-          console.log(ActualSize)
-          let chunk
-          for (let i = 0; i <= ActualSize; i++) {
-            if (i === ActualSize && size % MAX_SIZE !== 0) {
-              chunk = batch.inputParams.slice(i * MAX_SIZE, size)
-              response = await addChunk(chunk, nextBatchId)
-              if (response === 201) {
+        const totalUser = batch.inputParams.length
+        if (totalUser > MAX_SIZE_USERS_ALLOWED) {
+          let subBatch
+          let subBatchStatus
+          const noOfSubBatches = Math.floor(totalUser / MAX_SIZE_USERS_ALLOWED)
+          for (let i = 0; i <= noOfSubBatches; i++) {
+            if (
+              i === noOfSubBatches &&
+              totalUser % MAX_SIZE_USERS_ALLOWED !== 0
+            ) {
+              subBatch = batch.inputParams.slice(
+                i * MAX_SIZE_USERS_ALLOWED,
+                totalUser,
+              )
+              subBatchStatus = await addSubBatch(subBatch, nextBatchId)
+              if (subBatchStatus === 201) {
                 break
               }
-              setMailSent(size)
-            } else if (i !== ActualSize) {
-              chunk = batch.inputParams.slice(i * MAX_SIZE, (i + 1) * MAX_SIZE)
-              response = await addChunk(chunk, nextBatchId)
-              if (response === 201) {
+              setMailSent(totalUser)
+            } else if (i !== noOfSubBatches) {
+              subBatch = batch.inputParams.slice(
+                i * MAX_SIZE_USERS_ALLOWED,
+                (i + 1) * MAX_SIZE_USERS_ALLOWED,
+              )
+              subBatchStatus = await addSubBatch(subBatch, nextBatchId)
+              if (subBatchStatus === 201) {
                 break
               }
-              setMailSent((i + 1) * MAX_SIZE)
+              setMailSent((i + 1) * MAX_SIZE_USERS_ALLOWED)
             } else {
               break
             }
             setLoading(false)
           }
-          if (response === 200) {
+          if (subBatchStatus === 200) {
             toast(`🎉 Succesfully added batch #${nextBatchId}`)
           } else {
             toast(`❌ Something went wrong! Please Try Again`)
