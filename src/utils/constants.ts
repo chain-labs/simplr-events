@@ -2,9 +2,9 @@ import contracts from '@/contracts.json'
 import { CHAIN } from '@arcana/auth'
 
 const toBoolean = (condition: string) => {
-  if (condition.toLowerCase() === 'true') {
+  if (condition?.toLowerCase() === 'true') {
     return true
-  } else if (condition.toLowerCase() === 'false') {
+  } else if (condition?.toLowerCase() === 'false') {
     return false
   } else {
     return false
@@ -78,3 +78,5 @@ export const TELEGRAM_URL = process.env.NEXT_PUBLIC_TELEGRAM_URL
 export const EVENT_LOGO = process.env.NEXT_PUBLIC_EVENT_LOGO
 
 export const EVENT_URL = process.env.NEXT_PUBLIC_EVENT_URL
+
+export const EVENT_NAME = process.env.NEXT_PUBLIC_EVENT_NAME

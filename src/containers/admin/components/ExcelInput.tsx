@@ -24,7 +24,6 @@ const HomeComponent = () => {
 
   useEffect(() => {
     dispatch(addExcelData(parsedData))
-    console.log(ref)
   }, [parsedData, ref])
 
   useEffect(() => {
@@ -35,7 +34,6 @@ const HomeComponent = () => {
       } else {
         num = parseInt(data.batches?.[0]?.batchId) + 1 || 1
       }
-      console.log({ num })
 
       dispatch(addBatchId(num))
     })
@@ -61,8 +59,8 @@ const HomeComponent = () => {
           const data: CsvState[] = []
           try {
             rows.forEach((row) => {
-              const first = row?.firstAllowedEntryDate?.split('-')
-              const last = row?.lastAllowedEntryDate?.split('-')
+              const first = row.firstAllowedEntryDate?.split('-')
+              const last = row.lastAllowedEntryDate?.split('-')
               const f = new Date('July 1, 1999, 00:00:00')
               const l = new Date('July 1, 1999, 23:59:59')
 

@@ -21,6 +21,7 @@ import {
 import toast from 'react-hot-toast'
 import ConnectWallet from '@/components/Navbar/ConnectWallet'
 import { CONTRACT_ADDRESS } from '@/utils/constants_admin'
+import { EVENT_NAME } from '@/utils/constants'
 
 const ConfirmButton = () => {
   const provider = useProvider()
@@ -34,6 +35,8 @@ const ConfirmButton = () => {
   const batch = useAppSelector(batchSelector)
   const dispatch = useAppDispatch()
   const [allowed, setAllowed] = useState<boolean>(false)
+  const [mailSent, setMailSent] = useState<number>(0)
+  const MAX_SIZE_USERS_ALLOWED = 25
 
   useEffect(() => {
     if (id && provider && contractName) {
@@ -79,6 +82,25 @@ const ConfirmButton = () => {
     await addBatchToContract(merkleRoot, cid, nextBatchId)
   }
 
+  //The function addSubBatch takes a specified length of subArray of whole batch and nectBatchId and add it to server
+  // subBatch here is subarray of a batch having length <= MAX_SIZE_USERS_ALLOWED
+  const addSubBatch = async (subBatch, nextBatchId) => {
+    const serverData = {
+      inputParams: subBatch,
+      batchId: nextBatchId.toString(),
+      eventName: EVENT_NAME,
+      contractAddress: CONTRACT_ADDRESS,
+      addBatchTimestamp: Date.now(),
+    }
+    console.log(serverData)
+    const response = await sendDataToServer(serverData)
+    if (response.status == 200) {
+      return 200
+    } else {
+      return 201
+    }
+  }
+
   const addBatchToContract = async (root, cid, nextBatchId) => {
     console.log('Inputs:', 'merkleRoot:', root, 'cid:', cid)
     contract
@@ -89,18 +111,60 @@ const ConfirmButton = () => {
         dispatch(incrementBatchId())
         setLoading(false)
         setTimeout(removeCurrentBatch, 3000)
-        const serverData = {
-          inputParams: batch.inputParams,
-          batchId: nextBatchId.toString(),
-          eventName: 'Vivacity 2023',
-          contractAddress: CONTRACT_ADDRESS,
-          addBatchTimestamp: Date.now(),
-        }
-        const response = await sendDataToServer(serverData)
-        if (response.status !== 200) {
-          toast(`❌ Something went wrong! Please Try Again`)
+        setLoading(true)
+        const totalUser = batch.inputParams.length
+        if (totalUser > MAX_SIZE_USERS_ALLOWED) {
+          let subBatch
+          let subBatchStatus
+          const noOfSubBatches = Math.floor(totalUser / MAX_SIZE_USERS_ALLOWED)
+          for (let i = 0; i <= noOfSubBatches; i++) {
+            if (
+              i === noOfSubBatches &&
+              totalUser % MAX_SIZE_USERS_ALLOWED !== 0
+            ) {
+              subBatch = batch.inputParams.slice(
+                i * MAX_SIZE_USERS_ALLOWED,
+                totalUser,
+              )
+              subBatchStatus = await addSubBatch(subBatch, nextBatchId)
+              if (subBatchStatus === 201) {
+                break
+              }
+              setMailSent(totalUser)
+            } else if (i !== noOfSubBatches) {
+              subBatch = batch.inputParams.slice(
+                i * MAX_SIZE_USERS_ALLOWED,
+                (i + 1) * MAX_SIZE_USERS_ALLOWED,
+              )
+              subBatchStatus = await addSubBatch(subBatch, nextBatchId)
+              if (subBatchStatus === 201) {
+                break
+              }
+              setMailSent((i + 1) * MAX_SIZE_USERS_ALLOWED)
+            } else {
+              break
+            }
+            setLoading(false)
+          }
+          if (subBatchStatus === 200) {
+            toast(`🎉 Succesfully added batch #${nextBatchId}`)
+          } else {
+            toast(`❌ Something went wrong! Please Try Again`)
+          }
         } else {
-          toast(`🎉 Succesfully added batch #${nextBatchId}`)
+          const serverData = {
+            inputParams: batch.inputParams,
+            batchId: nextBatchId.toString(),
+            eventName: EVENT_NAME,
+            contractAddress: CONTRACT_ADDRESS,
+            addBatchTimestamp: Date.now(),
+          }
+          const response = await sendDataToServer(serverData)
+          if (response.status !== 200) {
+            toast(`❌ Something went wrong! Please Try Again`)
+          } else {
+            toast(`🎉 Succesfully added batch #${nextBatchId}`)
+          }
         }
       })
       .catch((err) => {
@@ -120,14 +184,6 @@ const ConfirmButton = () => {
         condition={user.exists && batch.inputParams.length !== 0}
         then={
           <div>
-            {/* <button
-              type="button"
-              onClick={addExcelInputData}
-              className="mr-2 rounded-lg bg-violet-700 px-5 py-4 text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300 dark:bg-violet-600 dark:hover:bg-violet-700 dark:focus:ring-violet-800"
-            >
-              Add Data
-            </button> */}
-
             <button
               type="button"
               onClick={
@@ -136,7 +192,9 @@ const ConfirmButton = () => {
               disabled={!allowed || loading}
               className={`disabled:hover:empty: mr-2 rounded-lg bg-violet-700 px-5 py-3 text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300 disabled:cursor-not-allowed`}
             >
-              {loading ? 'Loading' : `Add Data to Batch #${batch.batchId}`}
+              {loading
+                ? `Loading ${mailSent}/${batch.inputParams.length} mails sent`
+                : `Add Data to Batch #${batch.batchId}`}
             </button>
           </div>
         }
