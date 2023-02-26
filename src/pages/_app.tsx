@@ -3,6 +3,7 @@ import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { debounce } from 'lodash'
 import { useEffect } from 'react'
+import React from 'react'
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -36,6 +37,17 @@ export default function App({ Component, pageProps }: AppProps) {
           href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500,300,400&display=swap"
           rel="stylesheet"
         />
+        <link
+          rel="shortcut icon"
+          href="https://ik.imagekit.io/chainlabs/Simplr_Collection_Dapp/Simplr_Dark_Logo__kMoJpXxz.svg?ik-sdk-version=javascript-1.4.3&updatedAt=1676563761000"
+        />
+        <script
+          defer
+          data-domain="vivacity23.simplrhq.com"
+          src="https://plausible.io/js/script.js"
+        ></script>
+
+        <title>Simpr Events | Vivacity 2023 - Admin</title>
       </Head>
       <Component {...pageProps} />
     </>

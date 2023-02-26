@@ -7,7 +7,11 @@ import { userSelector } from 'src/redux/user'
 
 export const ALCHEMY_API = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY
 
-const Wagmi = ({ children }) => {
+interface props {
+  children?: React.ReactNode
+}
+
+const Wagmi = ({ children }: props) => {
   const user = useAppSelector(userSelector)
   const { chains, provider } = configureChains(
     [chain.mainnet, chain.polygonMumbai, chain.polygon, chain.goerli],

@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 import { UseEthersResult } from './types'
-import { useConnect, useProvider, useSigner } from 'wagmi'
-import { useEffect } from 'react'
+import { useProvider, useSigner } from 'wagmi'
 
 const useEthers = (): UseEthersResult => {
   const provider = useProvider()

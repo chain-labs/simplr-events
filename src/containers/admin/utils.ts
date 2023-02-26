@@ -5,11 +5,11 @@ import { GET_CURRENT_BATCH_ID_QUERY } from '@/graphql/query/getCurrentBatchId'
 import { client } from '@/components/ApolloClient'
 import MerkleTree from 'merkletreejs'
 import { keccak256 } from 'ethers/lib/utils'
-import { SERVER_URL } from '@/utils/constants'
+import { GET_ALLOWED_MINTERS_QUERY } from '@/graphql/query/getAllowedMinters'
+import { SERVER_URL } from '@/utils/constants_admin'
 
-const PINATA_KEY_SECRET =
-  '7c02de12e4bb768fd27a10a6692863056e5542354c20c2a875de0b1703b9445f'
-const PINATA_KEY = '10fda7f374970f218067'
+const PINATA_KEY_SECRET = process.env.NEXT_PUBLIC_PINATA_API_SECRET
+const PINATA_KEY = process.env.NEXT_PUBLIC_PINATA_API_KEY
 const PINATA_URL = 'https://api.pinata.cloud/'
 
 export const getHashes = async (query: QueryProps) => {
@@ -25,6 +25,13 @@ export const getHashes = async (query: QueryProps) => {
 export const GET_CURRENT_BATCH_ID = async () => {
   const { data } = await client.query({
     query: GET_CURRENT_BATCH_ID_QUERY,
+  })
+
+  return data
+}
+export const GET_ALLOWED_MINTERS = async () => {
+  const { data } = await client.query({
+    query: GET_ALLOWED_MINTERS_QUERY,
   })
   return data
 }
@@ -62,11 +69,13 @@ export const sendDataToServer = async (data) => {
     .post(`${SERVER_URL}/addBatch`, data, {
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
       },
     })
     .then((response) => {
       return response
+    })
+    .catch((err) => {
+      return err
     })
   console.log(res)
   return res

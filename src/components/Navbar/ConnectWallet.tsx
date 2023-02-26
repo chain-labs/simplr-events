@@ -1,17 +1,35 @@
-import React from 'react'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+import React, { useEffect } from 'react'
+import {
+  ConnectButton,
+  useAccountModal,
+  useChainModal,
+  useConnectModal,
+} from '@rainbow-me/rainbowkit'
 import '@rainbow-me/rainbowkit/styles.css'
+import { useAccount } from 'wagmi'
+import { useAppDispatch } from '@/redux/hooks'
+import { setUser } from '@/redux/user'
 
 const ConnectWallet = () => {
+  const dispatch = useAppDispatch()
+  const { openConnectModal } = useConnectModal()
+  const { openAccountModal } = useAccountModal()
+  const { openChainModal } = useChainModal()
+  const account = useAccount()
+
+  useEffect(() => {
+    if (account?.address) {
+      dispatch(setUser(account.address))
+    }
+  }, [account])
+
   return (
     <div>
       <ConnectButton.Custom>
         {({
           account,
           chain,
-          openAccountModal,
-          openChainModal,
-          openConnectModal,
+
           authenticationStatus,
           mounted,
         }) => {
@@ -29,7 +47,7 @@ const ConnectWallet = () => {
                     <button
                       onClick={openConnectModal}
                       type="button"
-                      className="mr-3 rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 md:mr-0"
+                      className="mr-3 rounded-lg bg-violet-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300  md:mr-0"
                     >
                       Connect Wallet
                     </button>
@@ -45,7 +63,7 @@ const ConnectWallet = () => {
                 return (
                   <div
                     style={{ display: 'flex', gap: 12 }}
-                    className="mr-3 rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 md:mr-0"
+                    className="mr-3 rounded-lg bg-violet-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300   md:mr-0"
                   >
                     <button
                       onClick={openChainModal}
@@ -75,9 +93,9 @@ const ConnectWallet = () => {
                       {chain.name}
                     </button>
                     <button onClick={openAccountModal} type="button">
-                      {account.displayName}
-                      {account.displayBalance
-                        ? ` (${account.displayBalance})`
+                      {account?.displayName}
+                      {account?.displayBalance
+                        ? ` (${account?.displayBalance})`
                         : ''}
                     </button>
                   </div>

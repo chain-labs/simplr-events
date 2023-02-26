@@ -1,31 +1,33 @@
-import clsx from 'clsx'
+import ClaimComponent from '@/containers/Claim'
+import { QueryProps } from '@/containers/Claim/types'
 import { useRouter } from 'next/router'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const ClaimPage = () => {
   const router = useRouter()
+  const [query, setQuery] = useState<QueryProps>({
+    firstname: '',
+    lastname: '',
+    eventname: '',
+    batchid: '',
+    emailid: '',
+  })
 
   useEffect(() => {
-    if (router.query) {
-      console.log({ query: router.query })
+    const query = router.query
+
+    if (query) {
+      setQuery({
+        firstname: query.firstname as string,
+        lastname: query.lastname as string,
+        emailid: query.emailid as string,
+        batchid: query.batchid as string,
+        eventname: query.eventname as string,
+      })
     }
   }, [router.query])
-  return (
-    <div
-      className="
-      container
-      flex
-      h-screen
-      items-center
-      justify-center
-      bg-yellow-200 
-      font-bold
-      text-black
-    "
-    >
-      <div className="text text-center text-4xl underline ">Hello Men!</div>
-    </div>
-  )
+
+  return <ClaimComponent query={query} />
 }
 
 export default ClaimPage

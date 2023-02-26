@@ -7,8 +7,8 @@ import AdminComp from '@/containers/admin'
 const AdminPage = () => {
   return (
     <Wagmi>
-      <div className="mt-12 flex min-h-screen justify-center p-5 font-bold text-black">
-        <Navbar />
+      <Navbar />
+      <div className="flex min-h-screen items-center justify-center bg-white p-5 font-bold text-black">
         <AdminComp />
       </div>
     </Wagmi>
