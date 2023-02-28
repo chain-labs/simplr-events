@@ -4,34 +4,72 @@ import { QrReader } from 'react-qr-reader'
 import { toast, Toaster } from 'react-hot-toast'
 import Animation from './Animation'
 import Modal from './Modal'
-import { json } from 'node:stream/consumers'
+import { GET_TICKET_OWNER_ID, sendTokenIdToServer } from '../utils'
+import { ethers } from 'ethers'
 
 const QrScan = () => {
   const [mode, setMode] = useState('environment')
-  const [showModal, setShowModal] = useState<boolean>(true)
+  const [showModal, setShowModal] = useState<boolean>(false)
   const [startScan, setStartScan] = useState(false)
   const [loadingScan, setLoadingScan] = useState(false)
-  const [data, setData] = useState('')
   const [errorOccured, setErrorOcurred] = useState<boolean>(false)
   const [error, setError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
 
-  const handleResult = (result) => {
-    setData(result?.text)
-    const res = result.text
-    const parsedData = JSON.parse(result?.text)
-    alert(result.text)
-    const mess = []
-    for (let i = 2; i < parsedData.message.length - 2; i = i + 2) {
-      const subpart = parseInt(parsedData.message.slice(i, i + 2), 16)
-      const char = String.fromCharCode(subpart)
-      mess.push(char)
+  const handleResult = async (result) => {
+    const qrCodeData = JSON.parse(result)
+    const signerAddress = ethers.utils.verifyMessage(
+      qrCodeData.message,
+      qrCodeData.signature,
+    )
+    console.log(signerAddress)
+    const isOwner = await checkIfSignerAddressIsOwnerOfTokenId(
+      qrCodeData.tokenId,
+      qrCodeData.contractAddress.toLowerCase(),
+      signerAddress,
+    )
+    console.log(isOwner)
+    if (isOwner) {
+      alert(`Inside owner ${isOwner}`)
+      const data = {
+        accountAddress: signerAddress,
+        tokenId: qrCodeData.tokenId,
+        contractAddress: qrCodeData.contractAddress,
+        redeemedTimestamp: Date.now(),
+      }
+      const serverResponse = await sendTokenIdToServer(data)
+      console.log(serverResponse)
+      if (serverResponse.data.success) {
+        handleCloseScan()
+        setErrorOcurred(false)
+        setSuccessMessage(serverResponse.data.data.message)
+        setShowModal(true)
+      } else {
+        handleCloseScan()
+        setErrorOcurred(true)
+        setError(serverResponse.data.data.message)
+        setShowModal(true)
+      }
+    } else {
+      setErrorOcurred(true)
+      setError('Owner is not valid')
+      setShowModal(true)
     }
-    alert(mess.join(' '))
     setLoadingScan(false)
   }
 
-  const handleScan = async () => {
+  const checkIfSignerAddressIsOwnerOfTokenId = async (
+    tokenId,
+    contractAddress,
+    signerAddress,
+  ) => {
+    const id = `ticket-${contractAddress}-${tokenId}`
+    console.log(id)
+    const data = await GET_TICKET_OWNER_ID(id)
+    return data.ticket.holder.address.id === signerAddress.toLowerCase()
+  }
+
+  const handleCloseScan = async () => {
     setStartScan(false)
     try {
       navigator.getUserMedia(
@@ -49,10 +87,12 @@ const QrScan = () => {
     }
   }
 
-  const handleError = (error) => {
+  const handleError = () => {
     setErrorOcurred(true)
-    setError('error')
+    setError('Something went wrong while scanning')
+    setShowModal(true)
   }
+
   const handleCloseModal = () => {
     setShowModal(false)
   }
@@ -74,11 +114,8 @@ const QrScan = () => {
                 onResult={(result, error) => {
                   if (result) {
                     handleResult(result)
-                    // alert(typeof result?.text)
                   }
-
                   if (error) {
-                    handleError(error)
                     console.info(error)
                   }
                 }}
@@ -103,7 +140,7 @@ const QrScan = () => {
           then={
             <button
               onClick={() => {
-                handleScan()
+                handleCloseScan()
               }}
               className="mt-5 flex w-full items-center justify-center rounded-lg bg-violet-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300"
             >

@@ -28,7 +28,7 @@ const Modal = ({
     <Fragment>
       <div onClick={onCancel} className="fixed inset-0 bg-black opacity-50" />
       <Portal>
-        <div className="relative  px-4 md:flex md:items-center md:justify-center">
+        <div className="relative mx-5 px-4 md:flex md:items-center md:justify-center">
           <div className="inset-0 z-10 bg-black opacity-25" />
           <div className="md:max-sm: fixed inset-x-0 bottom-0 z-50 mb-4 rounded-lg bg-white p-4  md:mx-auto md:max-w-md">
             <div className="flex-row items-center justify-center">
@@ -44,26 +44,44 @@ const Modal = ({
                 />
               </div>
               <div className="mt-4 text-center md:mt-0 md:text-left">
-                <p className="mt-2 text-center font-bold text-gray-700">HEY</p>
-                <p className="mt-1 text-center text-sm text-gray-700">
-                  Congratulations, Your Ticked is Valid
-                </p>
+                <If
+                  condition={errorPresent}
+                  then={
+                    <p className="mt-2 text-center font-bold text-gray-700">
+                      {error}
+                    </p>
+                  }
+                  else={
+                    <p className="mt-2 text-center font-bold text-gray-700">
+                      {message}
+                    </p>
+                  }
+                />
+                <p className="mt-1 text-center text-sm text-gray-700"></p>
               </div>
             </div>
             <div className="mt-4 text-center md:flex md:justify-end md:text-right">
               <If
                 condition={errorPresent}
                 then={
-                  <button
-                    onClick={handleScan}
-                    className="mt-5 flex w-full items-center justify-center rounded-lg bg-violet-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300"
-                  >
-                    Scan Again
-                  </button>
+                  <div>
+                    <button
+                      onClick={handleScan}
+                      className="mt-2 flex w-full items-center justify-center rounded-lg bg-violet-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300"
+                    >
+                      Scan Again
+                    </button>
+                    <button
+                      className="mt-2 flex w-full items-center justify-center rounded-lg bg-violet-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300"
+                      onClick={onCancel}
+                    >
+                      Close
+                    </button>
+                  </div>
                 }
                 else={
                   <button
-                    className="mt-5 flex w-full items-center justify-center rounded-lg bg-violet-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300"
+                    className="mt-2 flex w-full items-center justify-center rounded-lg bg-violet-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-violet-800 focus:outline-none focus:ring-4 focus:ring-violet-300"
                     onClick={onCancel}
                   >
                     Close
