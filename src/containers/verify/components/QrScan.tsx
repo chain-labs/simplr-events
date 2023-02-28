@@ -66,16 +66,16 @@ const QrScan = () => {
   const handleCloseScan = async () => {
     setStartScan(false)
     try {
-      navigator.getUserMedia(
-        { audio: false, video: true },
-        function (stream) {
-          const track = stream.getTracks()[0] // if only one media track
-          track.stop()
-        },
-        function (error) {
+      navigator.mediaDevices
+        .getUserMedia({ audio: false, video: true })
+        .then((stream) => {
+          stream.getTracks().forEach((track) => {
+            track.stop()
+          })
+        })
+        .catch((err) => {
           console.log('getUserMedia() error', error)
-        },
-      )
+        })
     } catch (e) {
       console.log(e)
     }

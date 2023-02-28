@@ -7,7 +7,6 @@ interface props {
   onCancel: () => void
   errorPresent: boolean
   error: string
-  // setError: (any) => void
   message: string
   setStartScan: (any) => void
 }
@@ -26,7 +25,7 @@ const Modal = ({
   return (
     <Fragment>
       <div onClick={onCancel} className="fixed inset-0 bg-black opacity-50" />
-      <Portal>
+      <Portal className="modal-portal">
         <div className="relative mx-5 px-4 md:flex md:items-center md:justify-center">
           <div className="inset-0 z-10 bg-black opacity-25" />
           <div className="md:max-sm: fixed inset-x-0 bottom-0 z-50 mb-4 rounded-lg bg-white p-4  md:mx-auto md:max-w-md">
