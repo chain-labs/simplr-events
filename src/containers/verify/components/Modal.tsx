@@ -7,7 +7,7 @@ interface props {
   onCancel: () => void
   errorPresent: boolean
   error: string
-  setError: (any) => void
+  // setError: (any) => void
   message: string
   setStartScan: (any) => void
 }
@@ -17,7 +17,6 @@ const Modal = ({
   errorPresent,
   error,
   message,
-  setError,
   setStartScan,
 }: props) => {
   const handleScan = () => {
@@ -44,20 +43,13 @@ const Modal = ({
                 />
               </div>
               <div className="mt-4 text-center md:mt-0 md:text-left">
-                <If
-                  condition={errorPresent}
-                  then={
-                    <p className="mt-2 text-center font-bold text-gray-700">
-                      {error}
-                    </p>
-                  }
-                  else={
-                    <p className="mt-2 text-center font-bold text-gray-700">
-                      {message}
-                    </p>
-                  }
-                />
-                <p className="mt-1 text-center text-sm text-gray-700"></p>
+                <p className="mt-2 text-center font-bold text-gray-700">
+                  {errorPresent ? 'Invalid' : 'Valid'}
+                </p>
+                <p className="mt-1 text-center text-sm text-gray-700">
+                  {' '}
+                  {message}
+                </p>
               </div>
             </div>
             <div className="mt-4 text-center md:flex md:justify-end md:text-right">

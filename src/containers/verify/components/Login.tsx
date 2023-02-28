@@ -3,10 +3,10 @@ import bcrypt from 'bcryptjs-react'
 import { useAppDispatch } from '@/redux/hooks'
 import { toast, Toaster } from 'react-hot-toast'
 import { setStep } from '@/redux/verify'
-// import { STATIC_PASSWORD } from '@/utils/constants'
+import { STATIC_PASSWORD } from '@/utils/constants'
 
-const STATIC_PASSWORD =
-  '$2a$10$hgdaIRpS3h56ZKL9amZQreVDQgJY3T9VR4wv/Y7P3/tvbhEggaVgO'
+// const STATIC_PASSWORD =
+//   '$2a$10$hgdaIRpS3h56ZKL9amZQreVDQgJY3T9VR4wv/Y7P3/tvbhEggaVgO'
 
 const Login = () => {
   const [password, setPassword] = useState('')

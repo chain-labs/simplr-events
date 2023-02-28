@@ -14,9 +14,9 @@ const QrScan = () => {
   const [loadingScan, setLoadingScan] = useState(false)
   const [errorOccured, setErrorOcurred] = useState<boolean>(false)
   const [error, setError] = useState('')
-  const [successMessage, setSuccessMessage] = useState('')
+  const [message, setMessage] = useState('')
 
-  const handleResult = async (result) => {
+  const handleQrCodeData = async (result) => {
     const qrCodeData = JSON.parse(result)
     const signerAddress = ethers.utils.verifyMessage(
       qrCodeData.message,
@@ -30,24 +30,18 @@ const QrScan = () => {
     )
     console.log(isOwner)
     if (isOwner) {
-      alert(`Inside owner ${isOwner}`)
-      const data = {
+      const body = {
         accountAddress: signerAddress,
         tokenId: qrCodeData.tokenId,
         contractAddress: qrCodeData.contractAddress,
         redeemedTimestamp: Date.now(),
       }
-      const serverResponse = await sendTokenIdToServer(data)
+      const serverResponse = await sendTokenIdToServer(body)
       console.log(serverResponse)
-      if (serverResponse.data.success) {
+      if (serverResponse) {
         handleCloseScan()
-        setErrorOcurred(false)
-        setSuccessMessage(serverResponse.data.data.message)
-        setShowModal(true)
-      } else {
-        handleCloseScan()
-        setErrorOcurred(true)
-        setError(serverResponse.data.data.message)
+        setErrorOcurred(!serverResponse.data.success)
+        setMessage(serverResponse.data.data.message)
         setShowModal(true)
       }
     } else {
@@ -87,12 +81,6 @@ const QrScan = () => {
     }
   }
 
-  const handleError = () => {
-    setErrorOcurred(true)
-    setError('Something went wrong while scanning')
-    setShowModal(true)
-  }
-
   const handleCloseModal = () => {
     setShowModal(false)
   }
@@ -113,7 +101,7 @@ const QrScan = () => {
                 scanDelay={2000}
                 onResult={(result, error) => {
                   if (result) {
-                    handleResult(result)
+                    handleQrCodeData(result)
                   }
                   if (error) {
                     console.info(error)
@@ -153,8 +141,7 @@ const QrScan = () => {
             onCancel={handleCloseModal}
             errorPresent={errorOccured}
             error={error}
-            setError={setError}
-            message={successMessage}
+            message={message}
             setStartScan={setStartScan}
           />
         )}
