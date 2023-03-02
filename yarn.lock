@@ -2427,11 +2427,6 @@ bcrypt@^5.1.0:
     "@mapbox/node-pre-gyp" "^1.0.10"
     node-addon-api "^5.0.0"
 
-bcryptjs-react@^2.4.6:
-  version "2.4.6"
-  resolved "https://registry.yarnpkg.com/bcryptjs-react/-/bcryptjs-react-2.4.6.tgz#493be46586f2eaaf17efd142feea617169c26881"
-  integrity sha512-dc9oUX1JwnXoSwIXL6T4p/MxPvu2AHlhmml3vA4mA/z492j3vtJl29jLylYyYtPw3OHii3gGmdNM9kYeq7ZrqA==
-
 bech32@1.1.4:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/bech32/-/bech32-1.1.4.tgz#e38c9f37bf179b8eb16ae3a772b40c356d4832e9"

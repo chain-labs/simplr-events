@@ -1,11 +1,11 @@
 import If from '@/components/If'
 import React, { useState } from 'react'
 import { QrReader } from 'react-qr-reader'
-import { toast, Toaster } from 'react-hot-toast'
 import Animation from './Animation'
 import Modal from './Modal'
 import { GET_TICKET_OWNER_ID, sendTokenIdToServer } from '../utils'
 import { ethers } from 'ethers'
+import { ERRORS } from '../constants'
 
 const QrScan = () => {
   const [mode, setMode] = useState('environment')
@@ -14,21 +14,22 @@ const QrScan = () => {
   const [loadingScan, setLoadingScan] = useState(false)
   const [errorOccured, setErrorOcurred] = useState<boolean>(false)
   const [error, setError] = useState('')
-  const [message, setMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
+  //This functions gets the data scanned from QR code and pass to check validity of owner
+  //If owner is valid data is sent to server and token's validity is checked
   const handleQrCodeData = async (result) => {
     const qrCodeData = JSON.parse(result)
     const signerAddress = ethers.utils.verifyMessage(
       qrCodeData.message,
       qrCodeData.signature,
     )
-    console.log(signerAddress)
+    console.log({ signerAddressOfQrCodeData: signerAddress })
     const isOwner = await checkIfSignerAddressIsOwnerOfTokenId(
       qrCodeData.tokenId,
       qrCodeData.contractAddress.toLowerCase(),
       signerAddress,
     )
-    console.log(isOwner)
     if (isOwner) {
       const body = {
         accountAddress: signerAddress,
@@ -36,22 +37,31 @@ const QrScan = () => {
         contractAddress: qrCodeData.contractAddress,
         redeemedTimestamp: Date.now(),
       }
+
+      //sending data to server
       const serverResponse = await sendTokenIdToServer(body)
       console.log(serverResponse)
       if (serverResponse) {
         handleCloseScan()
         setErrorOcurred(!serverResponse.data.success)
-        setMessage(serverResponse.data.data.message)
+        setSuccessMessage(serverResponse.data.data.message)
         setShowModal(true)
+      } else {
+        const dataNotSent = true
+        setErrorOcurred(dataNotSent)
+        setError(ERRORS.unknownError)
       }
     } else {
-      setErrorOcurred(true)
-      setError('Owner is not valid')
+      const ownerNotValid = true
+      setErrorOcurred(ownerNotValid)
+      setError(ERRORS.OwnerNotValid)
       setShowModal(true)
     }
     setLoadingScan(false)
   }
 
+  //pass tokenId,contractAddress and signerAddress to check if owner is valid
+  //This function fetches owner id from subgraph and check owner's validity
   const checkIfSignerAddressIsOwnerOfTokenId = async (
     tokenId,
     contractAddress,
@@ -63,6 +73,7 @@ const QrScan = () => {
     return data.ticket.holder.address.id === signerAddress.toLowerCase()
   }
 
+  //This function closes the camera
   const handleCloseScan = async () => {
     setStartScan(false)
     try {
@@ -81,13 +92,13 @@ const QrScan = () => {
     }
   }
 
+  //Close the modal
   const handleCloseModal = () => {
     setShowModal(false)
   }
 
   return (
     <div>
-      <Toaster />
       <div className="w-screen bg-white ">
         <div className="flex-row items-center justify-center">
           <div className="flex-row items-center justify-center"></div>
@@ -141,7 +152,7 @@ const QrScan = () => {
             onCancel={handleCloseModal}
             errorPresent={errorOccured}
             error={error}
-            message={message}
+            message={successMessage}
             setStartScan={setStartScan}
           />
         )}

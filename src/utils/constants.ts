@@ -62,8 +62,8 @@ export const SERVER_ENDPOINT = process.env.NEXT_PUBLIC_SERVER_ENDPOINT
 
 export const COLLECTION_TYPE = process.env.NEXT_PUBLIC_COLLECTION_TYPE
 
-export const STATIC_PASSWORD =
-  '$2a$10$hgdaIRpS3h56ZKL9amZQreVDQgJY3T9VR4wv/Y7P3/tvbhEggaVgO'
+export const STATIC_PASSWORD = process.env.NEXT_PUBLIC_STATIC_PASSWORD
+
 export const CONTRACT_ADDRESS =
   contracts?.[getNetwork().chainId][0]?.contracts?.['SimplrEvents']?.['address']
 

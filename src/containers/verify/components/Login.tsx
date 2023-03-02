@@ -1,26 +1,22 @@
 import React, { useState } from 'react'
-import bcrypt from 'bcryptjs-react'
 import { useAppDispatch } from '@/redux/hooks'
-import { toast, Toaster } from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
 import { setStep } from '@/redux/verify'
 import { STATIC_PASSWORD } from '@/utils/constants'
-
-// const STATIC_PASSWORD =
-//   '$2a$10$hgdaIRpS3h56ZKL9amZQreVDQgJY3T9VR4wv/Y7P3/tvbhEggaVgO'
+import { STEPS } from '../constants'
+import { ethers } from 'ethers'
 
 const Login = () => {
   const [password, setPassword] = useState('')
   const dispatch = useAppDispatch()
 
   const handleLogin = () => {
-    const salt = bcrypt.genSaltSync(10)
-    const hash = bcrypt.hashSync(password, salt)
-    console.log(hash)
-    console.log(STATIC_PASSWORD)
-    if (bcrypt.compareSync(password, STATIC_PASSWORD)) {
-      console.log('valid')
-      toast('login Successfull', { duration: 3000 })
-      setTimeout(changeStep, 4000)
+    const hash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(password))
+    console.log({ loginHash: hash, loginPassword: password })
+    if (hash === STATIC_PASSWORD) {
+      console.log({ loginMessage: 'Hash is valid' })
+      toast('login Successfull')
+      changeStep()
     } else {
       toast('Invalid Password')
       setPassword('')
@@ -28,11 +24,10 @@ const Login = () => {
   }
 
   const changeStep = () => {
-    dispatch(setStep(1))
+    dispatch(setStep(STEPS.QRSCAN))
   }
   return (
     <div className="w-screen p-10">
-      <Toaster position="top-center" />
       <div className="mb-6">
         <label
           htmlFor="password"

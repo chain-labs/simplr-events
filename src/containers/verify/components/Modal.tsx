@@ -47,7 +47,7 @@ const Modal = ({
                 </p>
                 <p className="mt-1 text-center text-sm text-gray-700">
                   {' '}
-                  {message}
+                  {errorPresent ? error : message}
                 </p>
               </div>
             </div>
