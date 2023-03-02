@@ -13,7 +13,7 @@ const Login = () => {
   const handleLogin = () => {
     const hash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(password))
     console.log({ loginHash: hash, loginPassword: password })
-    console.log(STATIC_PASSWORD)
+    console.log({ staticPasswordFromEnv: STATIC_PASSWORD })
     if (hash === STATIC_PASSWORD) {
       console.log({ loginMessage: 'Hash is valid' })
       toast('login Successfull')
