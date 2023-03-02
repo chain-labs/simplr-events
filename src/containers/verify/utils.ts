@@ -13,6 +13,9 @@ export const GET_TICKET_OWNER_ID = async (id: string) => {
 
   return data
 }
+export const getTickedIdFormat = (tokenId, contractAddress) => {
+  return `ticket-${contractAddress}-${tokenId}`
+}
 
 export const sendTokenIdToServer = async (data) => {
   const res = await axios

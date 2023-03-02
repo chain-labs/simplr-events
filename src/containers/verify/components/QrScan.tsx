@@ -3,7 +3,11 @@ import React, { useState } from 'react'
 import { QrReader } from 'react-qr-reader'
 import Animation from './Animation'
 import Modal from './Modal'
-import { GET_TICKET_OWNER_ID, sendTokenIdToServer } from '../utils'
+import {
+  getTickedIdFormat,
+  GET_TICKET_OWNER_ID,
+  sendTokenIdToServer,
+} from '../utils'
 import { ethers } from 'ethers'
 import { ERRORS } from '../constants'
 
@@ -67,8 +71,7 @@ const QrScan = () => {
     contractAddress,
     signerAddress,
   ) => {
-    const id = `ticket-${contractAddress}-${tokenId}`
-    console.log(id)
+    const id = await getTickedIdFormat(tokenId, contractAddress)
     const data = await GET_TICKET_OWNER_ID(id)
     return data.ticket.holder.address.id === signerAddress.toLowerCase()
   }
