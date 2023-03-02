@@ -102,7 +102,6 @@ const HomeComponent = () => {
   }
   const handleRemoveFile = () => {
     dispatch(addKey())
-    // setInputKey(num)
     dispatch(removeBatch())
   }
 
@@ -153,13 +152,3 @@ const HomeComponent = () => {
 }
 
 export default HomeComponent
-
-// const handleExport = () => {
-//   const headings = [['Email', 'Name', 'Number']]
-//   const wb = utils.book_new()
-//   const ws = utils.json_to_sheet([])
-//   utils.sheet_add_aoa(ws, headings)
-//   utils.sheet_add_json(ws, parsedData, { origin: 'A2', skipHeader: true })
-//   utils.book_append_sheet(wb, ws, 'Report')
-//   writeFile(wb, 'Movie Report.xlsx')
-// }
