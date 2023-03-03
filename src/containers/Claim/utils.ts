@@ -133,6 +133,7 @@ export interface ClaimTicketRequestBody {
   isSubscribed: boolean
   claimTimestamp: string
   claimTrx: BytesLike
+  contractAddress: BytesLike
 }
 
 export const sendInfoToServer = async (body: ClaimTicketRequestBody) => {

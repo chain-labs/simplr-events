@@ -164,6 +164,7 @@ const ClaimSection = ({
                   eventName: query.eventname,
                   tokenId: parseInt(tokenId),
                   isSubscribed: subscribe,
+                  contractAddress: CONTRACT_ADDRESS,
                 }
                 setCurrentStep(CLAIM_STEPS.FINISHED)
                 setQrData({ signature, secretHash })
