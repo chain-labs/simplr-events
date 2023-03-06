@@ -22,6 +22,7 @@ import {
 import { ChevronRight } from 'akar-icons'
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
+import { CONTRACT_ADDRESS } from '@/utils/constants_admin'
 
 interface Props {
   currentStep: number
@@ -72,8 +73,7 @@ const MintingStep = ({
     const provider = new ethers.providers.Web3Provider(arcanaProvider)
     const signer = provider.getSigner()
     const { chainId } = getNetwork()
-    const targetAddress =
-      contracts?.[chainId][0]?.contracts?.['SimplrEvents']?.['address']
+    const targetAddress = CONTRACT_ADDRESS
     const abi = [
       contracts?.[chainId][0]?.contracts?.['SimplrEvents']?.['abi'].find(
         (el) => el.name === 'mintTicket',
