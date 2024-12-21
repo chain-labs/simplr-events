@@ -2,6 +2,8 @@
   "extends": ["next/core-web-vitals", "next/typescript", "prettier"],
   "plugins": ["check-file"],
   "rules": {
+    "no-unused-vars": ["warn"],
+    "@typescript-eslint/no-unused-vars": "warn",
     "prefer-arrow-callback": ["error", { "allowNamedFunctions": true }],
     "prefer-template": "error",
     "semi": ["error"],
@@ -9,7 +11,8 @@
     "check-file/filename-naming-convention": [
       "error",
       {
-        "**/*.{ts,tsx}": "KEBAB_CASE"
+        "**/*.{ts,tsx}": "KEBAB_CASE",
+        "**/_*.{ts,tsx}": "KEBAB_CASE"
       },
       {
         // ignore the middle extensions of the filename to support filename like bable.config.js or smoke.spec.ts
@@ -19,10 +22,11 @@
     "check-file/folder-naming-convention": [
       "error",
       {
-        // all folders within src  be named in kebab-case
-        "src/**": "KEBAB_CASE"
+        // all folders within src (except _)should be named in kebab-case
+        "src/**/!(_)": "KEBAB_CASE",
+        // all folders within src (except [...])should be named in kebab-case
+        "src/**/![...]/": "KEBAB_CASE"
       }
     ]
   }
 }
-
