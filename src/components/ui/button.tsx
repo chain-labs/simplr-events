@@ -33,7 +33,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       primary: "bg-simpleYellow text-simpleBlack shadow-[inset_2px_4px_4px_#FAFFD3BF,_inset_-2px_-4px_4px_#63680040]",
       secondary: "bg-[#FFFFFF03] text-simpleBlack shadow-[inset_2px_4px_4px_#D3E1FFBF,_inset_-2px_-4px_4px_#00096840,_inset_0_0_0_2px_#050505]",
       outline: "bg-[#FFFFFF03] text-simpleWhite shadow-[inset_2px_4px_4px_#FAFFD3BF,_inset_-2px_-4px_4px_#63680040,_inset_0_0_0_2px_#ffffff]",
-      ghost: "text-simpleWhite",
+      ghost: "text-simpleWhite bg-[#FFFFFF03]",
     };
 
     const sizes = {
