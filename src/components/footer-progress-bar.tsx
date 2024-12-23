@@ -1,19 +1,12 @@
-"use client";
+export type StepsType = {
+  name: string;
+  description?: string;
+  status: "completed" | "active" | "pending";
+};
 
-export default function FooterProgressBar() {
-  const STEPS: {
-    name: string;
-    status: "completed" | "active" | "pending";
-  }[] = [
-    { name: "Share your booking details", status: "completed" },
-    {
-      name: "Review your booking",
-      status: "active",
-    },
-    { name: "Start selling your ticket", status: "pending" },
-  ];
+export default function FooterProgressBar({ STEPS }: { STEPS: StepsType[] }) {
   return (
-    <div className="sticky bottom-0 w-full h-fit bg-[#FAFAFA80] p-[32px] backdrop-blur-lg">
+    <div className="sticky bottom-0 h-fit w-full bg-[#FAFAFA80] p-[32px] backdrop-blur-lg">
       <div className="mx-auto flex max-w-[1000px] flex-col items-center justify-center gap-[12px]">
         <div className="grid w-full grid-flow-col place-items-center">
           {STEPS.map((step, index) => (
@@ -184,9 +177,18 @@ export default function FooterProgressBar() {
           {STEPS.map((step, index) => (
             <div
               key={step.name + index}
-              className={`text-[14px] font-semibold leading-[20px] ${step.status === "active" ? "text-simpleBlue" : "text-simpleGray700"}`}
+              className="flex flex-col items-center justify-center"
             >
-              {step.name}
+              <div
+                className={`text-[14px] font-semibold leading-[20px] ${step.status === "active" ? "text-simpleBlue" : "text-simpleGray700"}`}
+              >
+                {step.name}
+              </div>
+              <div
+                className={`text-[14px] font-normal leading-[20px] ${step.status === "active" ? "text-simpleBlue" : "text-simpleGray600"}`}
+              >
+                {step.description}
+              </div>
             </div>
           ))}
         </div>
