@@ -1,31 +1,27 @@
 "use client";
 
-import { IconType } from "react-icons/lib";
 import { PiCheck } from "react-icons/pi";
 
+import { Ticket } from "@/types/ticket";
 import { cn } from "@/utils/cn";
 
 import { PSmall } from "../ui/paragraph";
 
-type EventCardComponentProps = {
-  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>> | IconType;
-  name: string;
-  date: string;
-  location: string;
+type EventCardComponentProps = Ticket & {
   status: "selected" | "grey" | "white" | "grey selected";
   onClick?: () => void;
 };
 export default function EventCardComponent({
-  Icon,
-  name,
-  date,
+  EventIcon,
+  eventName,
+  startDate,
   location,
   status,
   onClick,
 }: EventCardComponentProps) {
   return (
     <div
-      key={name}
+      key={eventName}
       className={cn(
         "flex gap-[4px] rounded-[16px] p-[16px] text-simpleGray900",
         status === "white" && "bg-simpleWhite",
@@ -36,17 +32,18 @@ export default function EventCardComponent({
       onClick={onClick}
     >
       <div className="flex w-full flex-col gap-[4px]">
-        <Icon className={cn("text-[32px]")} />
+        {/* @ts-expect-error */}
+        <EventIcon size={32} className={cn("text-[32px]")} />
         <div className="flex flex-col">
           <p className="text-[20px] font-bold leading-[30px] text-[inherit]">
-            {name}
+            {eventName}
           </p>
           <PSmall
             className={cn(
               status === "selected" ? "text-simpleWhite" : "text-simpleGray700"
             )}
           >
-            {date}
+            {startDate}
           </PSmall>
           <PSmall
             className={cn(
@@ -58,9 +55,11 @@ export default function EventCardComponent({
         </div>
       </div>
       {status === "selected" && (
+        //@ts-expect-error
         <PiCheck className="text-[20px] text-simpleWhite" />
       )}
       {status === "grey selected" && (
+        // @ts-expect-error
         <PiCheck className="text-[20px] text-simpleBlue" />
       )}
     </div>

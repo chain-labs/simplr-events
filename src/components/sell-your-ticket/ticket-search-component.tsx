@@ -2,28 +2,22 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { UseFormRegisterReturn } from "react-hook-form";
 import { PiMagnifyingGlass } from "react-icons/pi";
 
 import { Ticket } from "@/types/ticket";
-import { cn } from "@/utils/cn";
 import { dummyTickets } from "@/utils/dummyData";
 
 import { Input } from "../ui/input";
-import EventCardComponent from "./event-card-component";
+import TicketCardComponent from "./ticket-card-component";
 
-export default function EventSearchComponent({
-  register,
-}: {
-  register: UseFormRegisterReturn<"event">;
-}) {
+export default function TicketSearchComponent() {
   // TODO: Replace dummyTickets with real data
   const data = dummyTickets;
 
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<Ticket[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<Ticket>();
+  const [selectedEvents, setSelectedEvents] = useState<Ticket[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -66,24 +60,15 @@ export default function EventSearchComponent({
   return (
     <div className="relative" ref={wrapperRef}>
       <Input
-        placeholder="Select event"
+        placeholder="Select for ticket"
         icon={
           // @ts-expect-error
           <PiMagnifyingGlass />
         }
         iconPosition="left"
         value={search}
+        onChange={(e) => setSearch(e.target.value)}
         onFocus={() => setIsOpen(true)}
-        className={cn(
-          selectedEvent !== undefined &&
-            "border-[#D6BBFB] text-simpleGray900 shadow-[0_0_0_4px_#9E77ED3D]"
-        )}
-        {...register}
-        onChange={(e) => {
-          register.onChange(e);
-          setSearch(e.target.value);
-          setSelectedEvent(undefined);
-        }}
       />
 
       {loading && <div className="mt-2">Loading...</div>}
@@ -91,16 +76,22 @@ export default function EventSearchComponent({
       {results.length > 0 && isOpen && (
         <div className="absolute z-10 mt-2 flex max-h-[320px] w-full flex-col gap-[4px] overflow-y-scroll rounded-[8px] bg-white p-[8px] shadow-lg">
           {results.map((event) => (
-            <EventCardComponent
+            <TicketCardComponent
               key={event.id}
               {...event}
               status={
-                selectedEvent?.id === event.id ? "grey selected" : "white"
+                selectedEvents.find(
+                  (selectedEvent) => selectedEvent.id === event.id
+                )
+                  ? "grey selected"
+                  : "white"
               }
               onClick={() => {
-                setSelectedEvent(event);
-                setSearch(event.eventName);
-                setIsOpen(false);
+                setSelectedEvents((prev) =>
+                  prev.find((prevEvent) => prevEvent.id === event.id)
+                    ? prev.filter((prevEvent) => prevEvent.id !== event.id)
+                    : [...prev, event]
+                );
               }}
             />
           ))}
