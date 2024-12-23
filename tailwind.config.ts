@@ -8,6 +8,10 @@ export default {
     "./src/lib/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    listStyleType: {
+      alpha: "lower-alpha",
+      decimal: "decimal",
+    },
     extend: {
       colors: {
         background: "var(--background)",
