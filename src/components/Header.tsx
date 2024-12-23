@@ -10,7 +10,7 @@ export default function Header() {
     { name: "home", href: "/" },
     { name: "link your ticket", href: "/link-your-ticket" },
     { name: "buy", href: "/buy" },
-    { name: "sell", href: "/sell" },
+    { name: "sell", href: "/sell-your-ticket" },
   ];
 
   return (
@@ -25,7 +25,7 @@ export default function Header() {
             className="h-[32px] w-auto"
           />
         </div>
-        <ul>
+        <ul className="flex gap-[10px]">
           {Links.map((link) => (
             <li
               key={link.href}
