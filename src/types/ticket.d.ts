@@ -20,3 +20,14 @@ interface Ticket {
   price: string;
   priceCategory: "average" | "highest" | "lowest";
 }
+
+interface Order {
+  orderId: string;
+  tickets: Ticket[];
+  startDate: string;
+  startTime: string;
+  endDate: string;
+  endTime: string;
+  eventName: string;
+  other: string;
+}
