@@ -6,7 +6,7 @@ export type StepsType = {
 
 export default function FooterProgressBar({ STEPS }: { STEPS: StepsType[] }) {
   return (
-    <div className="sticky bottom-0 h-fit w-full bg-[#FAFAFA80] p-[32px] backdrop-blur-lg">
+    <div className="sticky bottom-0 z-50 h-fit w-full bg-[#FAFAFA80] p-[32px] backdrop-blur-lg">
       <div className="mx-auto flex max-w-[1000px] flex-col items-center justify-center gap-[12px]">
         <div className="grid w-full grid-flow-col place-items-center">
           {STEPS.map((step, index) => (
