@@ -1,15 +1,21 @@
 "use client";
 
-import { dummyTickets } from "@/utils/dummyData";
+import { Order } from "@/types/ticket";
 
 import { Button } from "../ui/button";
 import { H4 } from "../ui/heading";
 import { PLarge, PMedium, PSmall } from "../ui/paragraph";
 
-export default function OrderDetails() {
-  // TODO: Replace dummy data with real data
-  const data = { ...dummyTickets[0], tickets: dummyTickets.slice(0, 2) };
-
+export default function OrderDetails({
+  data,
+  navigation,
+}: {
+  data: Order;
+  navigation: {
+    next: () => void;
+    back: () => void;
+  };
+}) {
   return (
     <div className="m-auto flex max-w-[780px] gap-[64px] rounded-bl-[16px] rounded-tr-[16px] bg-simpleWhite p-[48px]">
       <div className="flex w-full flex-col gap-[16px]">
@@ -27,9 +33,9 @@ export default function OrderDetails() {
               className="flex w-fit flex-col gap-[4px] rounded-[8px] bg-simpleGray200 p-[8px]"
             >
               <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
-                Ticket ID #{ticket.ticketId}
+                Ticket #{ticket.ticketId}
               </label>
-              <PMedium className="font-bold">{ticket.seat}</PMedium>
+              <PMedium className="font-bold">Seat {ticket.seat}</PMedium>
             </div>
           ))}
         </div>
@@ -59,8 +65,14 @@ export default function OrderDetails() {
           <PSmall className="font-bold">{data.other}</PSmall>
         </div>
         <div className="flex w-full items-center justify-between">
-          <Button variant="secondary"> go back </Button>
-          <Button variant="primary"> confirm & link </Button>
+          <Button variant="secondary" onClick={navigation.back}>
+            {" "}
+            go back{" "}
+          </Button>
+          <Button variant="primary" onClick={navigation.next}>
+            {" "}
+            confirm & link{" "}
+          </Button>
         </div>
       </div>
     </div>
