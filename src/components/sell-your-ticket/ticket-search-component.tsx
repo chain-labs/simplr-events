@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
 import { PiMagnifyingGlass } from "react-icons/pi";
 
@@ -10,14 +10,21 @@ import { dummyTickets } from "@/utils/dummyData";
 import { Input } from "../ui/input";
 import TicketCardComponent from "./ticket-card-component";
 
-export default function TicketSearchComponent() {
+type TicketSearchComponentProps = {
+  setSelectedTickets: Dispatch<SetStateAction<Ticket[]>>;
+  selectedTickets: Ticket[];
+};
+
+export default function TicketSearchComponent({
+  setSelectedTickets,
+  selectedTickets,
+}: TicketSearchComponentProps) {
   // TODO: Replace dummyTickets with real data
   const data = dummyTickets;
 
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<Ticket[]>([]);
-  const [selectedEvents, setSelectedEvents] = useState<Ticket[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -57,6 +64,14 @@ export default function TicketSearchComponent() {
     return () => clearTimeout(timer);
   }, [search]);
 
+  const handleTicketCLick = (event: Ticket) => {
+    setSelectedTickets((prev) =>
+      prev.find((selectedTicket) => selectedTicket.id === event.id)
+        ? prev.filter((selectedTicket) => selectedTicket.id !== event.id)
+        : [...prev, event]
+    );
+  };
+
   return (
     <div className="relative" ref={wrapperRef}>
       <Input
@@ -75,24 +90,18 @@ export default function TicketSearchComponent() {
 
       {results.length > 0 && isOpen && (
         <div className="absolute z-10 mt-2 flex max-h-[320px] w-full flex-col gap-[4px] overflow-y-scroll rounded-[8px] bg-white p-[8px] shadow-lg">
-          {results.map((event) => (
+          {results.map((ticket) => (
             <TicketCardComponent
-              key={event.id}
-              {...event}
+              key={ticket.id}
+              {...ticket}
               status={
-                selectedEvents.find(
-                  (selectedEvent) => selectedEvent.id === event.id
+                selectedTickets.find(
+                  (selectedTicket) => selectedTicket.id === ticket.id
                 )
                   ? "grey selected"
                   : "white"
               }
-              onClick={() => {
-                setSelectedEvents((prev) =>
-                  prev.find((prevEvent) => prevEvent.id === event.id)
-                    ? prev.filter((prevEvent) => prevEvent.id !== event.id)
-                    : [...prev, event]
-                );
-              }}
+              onClick={() => handleTicketCLick(ticket)}
             />
           ))}
         </div>
