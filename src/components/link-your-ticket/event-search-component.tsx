@@ -84,9 +84,22 @@ export default function EventSearchComponent({
           setSearch(e.target.value);
           setSelectedEvent(undefined);
         }}
+        onInvalid={(e) => {
+          if (selectedEvent === undefined || search === "") {
+            e.currentTarget.setCustomValidity("Please select an event");
+          } else {
+            e.currentTarget.setCustomValidity("");
+          }
+        }}
+        onSubmit={(e) => {
+          console.log('onSubmit', e);
+          if (selectedEvent === undefined || search === "") {
+            e.preventDefault();
+            e.currentTarget.reportValidity();
+          }
+        }}
+        required
       />
-
-      {loading && <div className="mt-2">Loading...</div>}
 
       {results.length > 0 && isOpen && (
         <div className="absolute z-10 mt-2 flex max-h-[320px] w-full flex-col gap-[4px] overflow-y-scroll rounded-[8px] bg-white p-[8px] shadow-lg">
