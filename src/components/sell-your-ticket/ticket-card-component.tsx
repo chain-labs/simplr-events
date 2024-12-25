@@ -1,14 +1,16 @@
 "use client";
 
-import { PiCheck, PiInfoDuotone } from "react-icons/pi";
+import { PiCheck, PiInfoDuotone, PiXCircleDuotone } from "react-icons/pi";
 
 import { Ticket } from "@/types/ticket";
 import { cn } from "@/utils/cn";
 
 type EventCardComponentProps = Ticket & {
-  status: "selected" | "grey" | "white" | "grey selected";
+  status: "selected" | "grey" | "white" | "grey selected" | "closable";
   onClick?: () => void;
+  onClose?: () => void;
 };
+
 export default function TicketCardComponent({
   EventIcon,
   ticketId,
@@ -21,16 +23,18 @@ export default function TicketCardComponent({
   endDay,
   status,
   onClick,
+  onClose,
 }: EventCardComponentProps) {
   return (
     <div
       key={ticketId}
       className={cn(
-        "flex gap-[4px] rounded-[16px] p-[16px] text-simpleGray700",
+        "grid grid-flow-col gap-[4px] rounded-[16px] p-[16px] text-simpleGray700",
         status === "white" && "bg-simpleWhite",
         status === "grey" && "bg-simpleGray200",
         status === "selected" && "bg-simpleBlue text-simpleWhite",
-        status === "grey selected" && "bg-simpleGray200"
+        status === "grey selected" && "bg-simpleGray200",
+        status === "closable" && "bg-simpleBlue text-simpleWhite"
       )}
       onClick={onClick}
     >
@@ -38,14 +42,15 @@ export default function TicketCardComponent({
         <div className="flex flex-col gap-[8px]">
           <p className="font-regular flex items-center gap-[1ch] text-[16px] leading-[24px] text-[inherit]">
             {/* @ts-expect-error */}
-
-            <EventIcon size={21} className={cn("text-[21px]")} />
+            <EventIcon size={24} className={cn("text-[21px]")} />
             {eventName}
           </p>
           <p
             className={cn(
               "text-[20px] font-bold leading-[28px] text-[inherit]",
-              status === "selected" ? "text-simpleWhite" : "text-simpleGray900"
+              status === "selected" || status === "closable"
+                ? "text-simpleWhite"
+                : "text-simpleGray900"
             )}
           >
             Seat {seat}
@@ -67,11 +72,22 @@ export default function TicketCardComponent({
       </div>
       {status === "selected" && (
         // @ts-expect-error
-        <PiCheck className="text-[20px] text-simpleWhite" />
+        <PiCheck className="ml-auto text-[20px] text-simpleWhite" />
       )}
       {status === "grey selected" && (
         // @ts-expect-error
-        <PiCheck className="text-[20px] text-simpleBlue" />
+        <PiCheck className="ml-auto text-[20px] text-simpleBlue" />
+      )}
+      {status === "closable" && (
+        // @ts-expect-error
+        <PiXCircleDuotone
+          size={24}
+          className="ml-auto text-[24px] w-[24px] h-[24px] text-simpleWhite cursor-pointer"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose && onClose();
+          }}
+        />
       )}
     </div>
   );
