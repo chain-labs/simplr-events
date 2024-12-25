@@ -27,7 +27,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    const baseStyles = "rounded-full font-bold transition-colors duration-200 w-fit";
+    const baseStyles = "rounded-full font-bold transition-colors duration-200 w-fit whitespace-nowrap";
 
     const variants = {
       primary: "bg-simpleYellow text-simpleBlack shadow-[inset_2px_4px_4px_#FAFFD3BF,_inset_-2px_-4px_4px_#63680040]",
@@ -37,7 +37,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const sizes = {
-      sm: "px-3 py-1.5 text-[14px] leading-[1.3em] tracking-[0.02em]",
+      sm: "px-[16px] py-[8px] text-[16px] leading-[20.8px] tracking-[0.02em]",
       md: "py-[8px] px-[16px] text-[20px] leading-[1.3em] tracking-[0.02em]",
       lg: "px-6 py-3 text-[24px] leading-[1.3em] tracking-[0.02em]",
     };
