@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { PiMoneyDuotone } from "react-icons/pi";
 
 import { Ticket } from "@/types/ticket";
+import { cn } from "@/utils/cn";
 import { dummyTickets } from "@/utils/dummyData";
 
 import { Button } from "../ui/button";
@@ -47,37 +48,46 @@ export default function SettingTicketPricing({
             setSelectedTickets={setSelectedTickets}
           />
         </label>
-        <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
-          Set price for all tickets
-          <Input
-            type="number"
-            placeholder="Enter price"
-            icon={
-              // @ts-expect-error
-              <PiMoneyDuotone className="text-simpleGray500" />
-            }
-            iconPosition="left"
-            value={
-              settingPriceForAllTickets.auto
-                ? "Auto"
-                : settingPriceForAllTickets.price
-            }
-            onChange={(e) =>
-              setSettingPriceForAllTickets((prev) => ({
-                ...prev,
-                price: Number(e.target.value),
-                auto: false,
-              }))
-            }
-            min={0}
-          />
-        </label>
+        {selectedTickets.length > 1 && (
+          <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
+            Set price for all tickets
+            <Input
+              type="number"
+              placeholder={
+                settingPriceForAllTickets.auto ? "Auto" : "Enter price"
+              }
+              icon={
+                // @ts-expect-error
+                <PiMoneyDuotone className="text-simpleGray500" />
+              }
+              iconPosition="left"
+              value={
+                settingPriceForAllTickets.auto
+                  ? "Auto"
+                  : settingPriceForAllTickets.price
+              }
+              onChange={(e) =>
+                setSettingPriceForAllTickets((prev) => ({
+                  ...prev,
+                  price: Number(e.target.value),
+                  auto: false,
+                }))
+              }
+              min={1}
+            />
+          </label>
+        )}
       </div>
       <div className="flex w-full flex-col gap-[16px]">
         <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
           Your selected tickets:
         </label>
-        <div className="grid grid-cols-2 gap-4">
+        <div
+          className={cn(
+            "grid grid-cols-2 gap-4",
+            selectedTickets.length === 1 && "grid-cols-1"
+          )}
+        >
           {selectedTickets.map((ticket) => (
             <>
               <TicketCardComponent
@@ -119,13 +129,25 @@ export default function SettingTicketPricing({
                 }
                 iconPosition="left"
                 parentClassName="my-auto"
-                min={0}
+                min={1}
               />
             </>
           ))}
+          {selectedTickets.length === 1 && (
+            <Button className="mx-auto" disabled={!selectedTickets.length}>
+              sell ticket
+            </Button>
+          )}
         </div>
       </div>
-      <Button className="mt- col-span-2 ml-auto">confirm</Button>
+      {selectedTickets.length > 1 && (
+        <Button
+          className="col-span-2 ml-auto"
+          disabled={!selectedTickets.length}
+        >
+          {selectedTickets.length > 1 ? "confirm" : "select"}
+        </Button>
+      )}
     </div>
   );
 }

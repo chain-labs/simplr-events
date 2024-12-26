@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 import { PiSealWarningDuotone } from "react-icons/pi";
 
@@ -32,6 +32,9 @@ export default function SellingLinkedTicket({
     "If everything's okay and Buyer verifies & confirms the ticket: We transfer their payment to you.",
     "If Buyer refuses the ticket: We reverse their payment back to them. We notify you of the refusal of the ticket.",
   ];
+
+  // when user visit it for first time or user haven't linked any ticket
+  const [firstTime, setFirstTime] = useState(true);
   return (
     <div className="m-auto grid max-w-[1000px] grid-cols-[auto_auto] gap-[64px] rounded-bl-[16px] rounded-tr-[16px] bg-simpleWhite p-[48px]">
       <div className="flex w-[320px] flex-col gap-[16px]">
