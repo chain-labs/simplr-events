@@ -2,17 +2,18 @@ import { ReactNode } from "react";
 
 import { cn } from "@/utils/cn";
 
-type ListProps = {
+export type ListProps = {
   items: (
     | string
     | { data: string | ReactNode; className: string }
     | ReactNode
   )[];
+  parentClassName?: string;
 };
 
-export const List = ({ items }: ListProps) => {
+export const List = ({ items, parentClassName }: ListProps) => {
   return (
-    <ol className="flex flex-col gap-[8px]">
+    <ol className={cn("flex flex-col gap-[8px]", parentClassName)}>
       {items.length > 0 &&
         items.map((item, index) => {
           if (

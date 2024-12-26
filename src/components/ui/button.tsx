@@ -1,9 +1,16 @@
 "use client";
 
 import React, { ButtonHTMLAttributes, forwardRef } from "react";
+
 import { cn } from "@/utils/cn";
 
-type ButtonVariant = "primary" | "secondary" | "outline" | "ghost";
+type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "outline"
+  | "ghost"
+  | "primary-danger"
+  | "outline-danger";
 type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -27,13 +34,21 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    const baseStyles = "rounded-full font-bold transition-colors duration-200 w-fit whitespace-nowrap";
+    const baseStyles =
+      "rounded-full font-bold transition-colors duration-200 w-fit whitespace-nowrap";
 
     const variants = {
-      primary: "bg-simpleYellow text-simpleBlack shadow-[inset_2px_4px_4px_#FAFFD3BF,_inset_-2px_-4px_4px_#63680040]",
-      secondary: "bg-[#FFFFFF03] text-simpleBlack shadow-[inset_2px_4px_4px_#D3E1FFBF,_inset_-2px_-4px_4px_#00096840,_inset_0_0_0_2px_#050505]",
-      outline: "bg-[#FFFFFF03] text-simpleWhite shadow-[inset_2px_4px_4px_#FAFFD3BF,_inset_-2px_-4px_4px_#63680040,_inset_0_0_0_2px_#ffffff]",
+      primary:
+        "bg-simpleYellow text-simpleBlack shadow-[inset_2px_4px_4px_#FAFFD3BF,_inset_-2px_-4px_4px_#63680040]",
+      secondary:
+        "bg-[#FFFFFF03] text-simpleBlack shadow-[inset_2px_4px_4px_#D3E1FFBF,_inset_-2px_-4px_4px_#00096840,_inset_0_0_0_2px_#050505]",
+      outline:
+        "bg-[#FFFFFF03] text-simpleWhite shadow-[inset_2px_4px_4px_#FAFFD3BF,_inset_-2px_-4px_4px_#63680040,_inset_0_0_0_2px_#ffffff]",
       ghost: "text-simpleWhite bg-[#FFFFFF03]",
+      "primary-danger":
+        "bg-simpleRed text-simpleWhite shadow-[inset_2px_4px_4px_#FFD3D3BF,_inset_-2px_-4px_4px_#96000040]",
+      "outline-danger":
+        "bg-[#FFFFFF03] text-simpleRed shadow-[inset_2px_4px_4px_#FAFFD3BF,_inset_-2px_-4px_4px_#63680040,_inset_0_0_0_2px_#FF4242]",
     };
 
     const sizes = {
@@ -53,10 +68,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <button
+        {...props}
         ref={ref}
         className={classes}
         disabled={disabled || isLoading}
-        {...props}
       >
         {isLoading ? (
           <span className="flex items-center justify-center">

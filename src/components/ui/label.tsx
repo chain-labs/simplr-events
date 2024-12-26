@@ -8,8 +8,8 @@ const labelDefaultClassName =
 export function LabelLarge(props: React.HTMLProps<HTMLLabelElement>) {
   return (
     <label
-      className={cn(labelDefaultClassName, "text-[16px]", props.className)}
       {...props}
+      className={cn(labelDefaultClassName, "text-[16px]", props.className)}
     />
   );
 }
@@ -17,8 +17,8 @@ export function LabelLarge(props: React.HTMLProps<HTMLLabelElement>) {
 export function LabelMedium(props: React.HTMLProps<HTMLLabelElement>) {
   return (
     <label
-      className={cn(labelDefaultClassName, "text-[14px]", props.className)}
       {...props}
+      className={cn(labelDefaultClassName, "text-[14px]", props.className)}
     />
   );
 }
@@ -26,8 +26,8 @@ export function LabelMedium(props: React.HTMLProps<HTMLLabelElement>) {
 export function LabelSmall(props: React.HTMLProps<HTMLLabelElement>) {
   return (
     <label
-      className={cn(labelDefaultClassName, "text-[12px]", props.className)}
       {...props}
+      className={cn(labelDefaultClassName, "text-[12px]", props.className)}
     />
   );
 }
