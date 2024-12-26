@@ -11,6 +11,7 @@ export default {
     listStyleType: {
       alpha: "lower-alpha",
       decimal: "decimal",
+      disc: "disc",
     },
     extend: {
       colors: {
