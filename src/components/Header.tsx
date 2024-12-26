@@ -17,12 +17,12 @@ export default function Header() {
   const Links = [
     { name: "home", href: "/" },
     { name: "link your ticket", href: "/link-your-ticket" },
-    { name: "buy", href: "/buy" },
+    { name: "buy", href: "/buy-ticket" },
     { name: "sell", href: "/sell-your-ticket" },
   ];
 
   const account = {
-    isConnected: false,
+    isConnected: true,
     wallet: "$250,000.0000",
   };
 
@@ -52,43 +52,46 @@ export default function Header() {
             </li>
           ))}
         </ul>
-        <div className="relative">
-          <Button
-            variant="ghost"
-            className="relative flex items-center gap-[4px] text-[16px] leading-[20.8px] tracking-[0.02em]"
-            onClick={
-              walletModelOpen
-                ? () => setWalletModelOpen(false)
-                : () => setWalletModelOpen(true)
-            }
-          >
-            {/* @ts-expect-error */}
-            <PiWalletDuotone />
-            {account.wallet}
-            {
-              // @ts-expect-error
-              <PiCaretDown
-                className={cn(
-                  "transform transition-transform duration-300",
-                  walletModelOpen ? "rotate-180" : "rotate-0"
-                )}
-              />
-            }
-          </Button>
-          {walletModelOpen && (
-            <div className="absolute left-1/2 top-full flex -translate-x-1/2 flex-col items-center justify-center gap-[16px] rounded-[24px] bg-[#FFFFFF03] bg-simpleWhite p-[16px] shadow-[inset_2px_4px_4px_#FAFFD3BF,_inset_-2px_-4px_4px_#63680040,_inset_0_0_0_2px_#ffffff]">
-              <div className="flex flex-col gap-[8px] whitespace-nowrap text-left text-simpleGray700">
-                <LabelSmall>Your wallet Balance:</LabelSmall>
-                <PMedium className="text-[20px] font-bold leading-[26px] tracking-[0.02em]">
-                  {account.wallet}
-                </PMedium>
+        {account.isConnected && (
+          <div className="relative">
+            <Button
+              variant="ghost"
+              className="relative flex items-center gap-[4px] bg-[transparent] text-[16px] leading-[20.8px] tracking-[0.02em]"
+              onClick={
+                walletModelOpen
+                  ? () => setWalletModelOpen(false)
+                  : () => setWalletModelOpen(true)
+              }
+            >
+              {/* @ts-expect-error */}
+              <PiWalletDuotone size={24} />
+              {account.wallet}
+              {
+                // @ts-expect-error
+                <PiCaretDown
+                  size={16}
+                  className={cn(
+                    "transform transition-transform duration-300",
+                    walletModelOpen ? "rotate-180" : "rotate-0"
+                  )}
+                />
+              }
+            </Button>
+            {walletModelOpen && (
+              <div className="absolute left-1/2 top-full flex -translate-x-1/2 flex-col items-center justify-center gap-[16px] rounded-[24px] bg-[#FFFFFF03] bg-simpleWhite p-[16px] shadow-[inset_2px_4px_4px_#FAFFD3BF,_inset_-2px_-4px_4px_#63680040,_inset_0_0_0_2px_#ffffff]">
+                <div className="flex flex-col gap-[8px] whitespace-nowrap text-left text-simpleGray700">
+                  <LabelSmall>Your wallet Balance:</LabelSmall>
+                  <PMedium className="text-[20px] font-bold leading-[26px] tracking-[0.02em]">
+                    {account.wallet}
+                  </PMedium>
+                </div>
+                <Button variant="primary" size="sm">
+                  withdraw balance
+                </Button>
               </div>
-              <Button variant="primary" size="sm">
-                withdraw balance
-              </Button>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
         <div className="flex items-center justify-center gap-2">
           <Button variant="outline" size="sm">
             contact us
