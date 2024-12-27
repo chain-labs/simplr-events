@@ -10,7 +10,8 @@ type ButtonVariant =
   | "outline"
   | "ghost"
   | "primary-danger"
-  | "outline-danger";
+  | "outline-danger"
+  | "primary-blue";
 type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -49,6 +50,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         "bg-simpleRed text-simpleWhite shadow-[inset_2px_4px_4px_#FFD3D3BF,_inset_-2px_-4px_4px_#96000040]",
       "outline-danger":
         "bg-[#FFFFFF03] text-simpleRed shadow-[inset_2px_4px_4px_#FAFFD3BF,_inset_-2px_-4px_4px_#63680040,_inset_0_0_0_2px_#FF4242]",
+      "primary-blue":
+        "bg-simpleBlue text-simpleWhite shadow-[inset_2px_4px_4px_#D3E1FFBF,_inset_-2px_-4px_4px_#00096840]",
     };
 
     const sizes = {
