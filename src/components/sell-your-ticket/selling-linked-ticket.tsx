@@ -7,6 +7,8 @@ import { PiSealWarningDuotone } from "react-icons/pi";
 import { Ticket } from "@/types/ticket";
 import { dummyTickets } from "@/utils/dummyData";
 
+import { ComponentWithLabel } from "../component/component-with-label";
+import Container from "../component/container";
 import { Button } from "../ui/button";
 import Dropdown from "../ui/dropdown";
 import { H4 } from "../ui/heading";
@@ -36,66 +38,79 @@ export default function SellingLinkedTicket({
   // when user visit it for first time or user haven't linked any ticket
   const [firstTime, setFirstTime] = useState(true);
   return (
-    <div className="m-auto grid max-w-[1000px] grid-cols-[auto_auto] gap-[64px] rounded-bl-[16px] rounded-tr-[16px] bg-simpleWhite p-[48px]">
-      <div className="flex w-[320px] flex-col gap-[16px]">
-        <H4>Sell your ticket</H4>
-        <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
-          Choose your event
-          <Dropdown options={dummyEvents} placeholder="Select event" />
-        </label>
-        <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
-          Choose the tickets to sell
-          <TicketSearchComponent
-            selectedTickets={selectedTickets}
-            setSelectedTickets={setSelectedTickets}
-          />
-        </label>
-        <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
-          Suggested ticket:
-          <TicketCardComponent {...{ ...dummyTickets[0], status: "grey" }} />
-        </label>
-      </div>
-      <div className="flex w-full flex-col gap-[16px]">
-        <H4>How we secure your sales</H4>
-        <ul className="list-decimal">
-          <PSmall className="text-simpleGray700">
-            <List items={HowToSecureYourSales} />
-            <div className="mt-[16px] grid grid-cols-[24px_auto] gap-[8px] rounded-[16px] bg-[#F2FF49A8] p-[16px]">
-              {/* @ts-expect-error */}
-              <PiSealWarningDuotone className="text-[24px] text-simpleRed" />
-              <span>
-                Please be warned that multiple violations in bad faith
-                (uploading expired/invalid tickets) could lead to a permanent
-                deactivation of your account.
-              </span>
-            </div>
-          </PSmall>
-        </ul>
-      </div>
-      <div className="col-span-2 flex w-full flex-col gap-[16px]">
-        <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
-          Your selected tickets:
-        </label>
-        <div className="flex flex-wrap gap-[8px]">
-          {selectedTickets.map((ticket) => (
-            <TicketCardComponent
-              key={ticket.id}
-              {...ticket}
-              status="closable"
-              onClose={() => {
-                setSelectedTickets((prev) =>
-                  prev.filter(
-                    (selectedTicket) => selectedTicket.id !== ticket.id
-                  )
-                );
-              }}
+    <Container className="my-[50px] max-w-[1000px]">
+      <div className="grid grid-cols-[auto_auto] gap-[64px]">
+        <div className="flex w-[320px] flex-col gap-[16px]">
+          <H4 className="text-simpleGray700">Sell your ticket</H4>
+
+          {/* event dropdown */}
+          <ComponentWithLabel label="Choose your event">
+            <Dropdown options={dummyEvents} placeholder="Select event" />
+          </ComponentWithLabel>
+
+          {/* ticket search */}
+          <ComponentWithLabel label="Choose the ticket to sell">
+            <TicketSearchComponent
+              selectedTickets={selectedTickets}
+              setSelectedTickets={setSelectedTickets}
             />
-          ))}
+          </ComponentWithLabel>
+
+          {/* suggested ticket */}
+          <ComponentWithLabel label="Suggested ticket:">
+            <TicketCardComponent {...{ ...dummyTickets[0], status: "grey" }} />
+          </ComponentWithLabel>
+        </div>
+
+        {/*  */}
+        <div className="flex w-full flex-col gap-[16px]">
+          <H4 className="text-simpleGray700">How we secure your sales</H4>
+          <ul className="list-decimal">
+            <PSmall className="text-simpleGray700">
+              <List items={HowToSecureYourSales} parentClassName="text-simpleGray700" />
+              <div className="mt-[16px] grid grid-cols-[24px_auto] gap-[8px] rounded-[16px] bg-[#F2FF49A8] p-[16px]">
+                {/* @ts-expect-error */}
+                <PiSealWarningDuotone className="text-[24px] text-simpleRed" />
+                <span>
+                  Please be warned that multiple violations in bad faith
+                  (uploading expired/invalid tickets) could lead to a permanent
+                  deactivation of your account.
+                </span>
+              </div>
+            </PSmall>
+          </ul>
+        </div>
+        <div className="col-span-2 flex w-full flex-col gap-[16px]">
+          {/* selected tickets */}
+          <ComponentWithLabel label="Your selected tickets:">
+            <div className="flex flex-wrap gap-[8px]">
+              {selectedTickets.length ? (
+                selectedTickets.map((ticket) => (
+                  <TicketCardComponent
+                    key={ticket.id}
+                    {...ticket}
+                    status="closable"
+                    onClose={() => {
+                      setSelectedTickets((prev) =>
+                        prev.filter(
+                          (selectedTicket) => selectedTicket.id !== ticket.id
+                        )
+                      );
+                    }}
+                  />
+                ))
+              ) : (
+                <PSmall className="font-bold text-simpleGray700">
+                  No ticket(s) selected
+                </PSmall>
+              )}
+            </div>
+          </ComponentWithLabel>
+        </div>
+        <div className="col-span-2 flex w-full items-center justify-center">
+          <Button>set price</Button>
         </div>
       </div>
-      <div className="col-span-2 flex w-full items-center justify-center">
-        <Button>set price</Button>
-      </div>
-    </div>
+    </Container>
   );
 }

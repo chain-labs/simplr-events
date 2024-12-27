@@ -110,8 +110,8 @@ export default function LinkYourTicket() {
     <>
       <div
         className={cn(
-          state === "linking-ticket" ? "block" : "hidden",
-          "h-full w-full"
+          state === "linking-ticket" ? "" : "hidden",
+          "h-full w-full flex-grow"
         )}
       >
         <LinkingTicketContainer

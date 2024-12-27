@@ -7,6 +7,8 @@ import { PiSealWarningDuotone } from "react-icons/pi";
 
 import { cn } from "@/utils/cn";
 
+import { ComponentWithLabel } from "../component/component-with-label";
+import Container from "../component/container";
 import { Button } from "../ui/button";
 import { H4 } from "../ui/heading";
 import { List, ListProps } from "../ui/list";
@@ -37,50 +39,43 @@ function TicketDetails({
     <div className="flex flex-col gap-[32px]">
       <div className="flex flex-col gap-[16px]">
         <H4 className="text-simpleGray700">Ticket details</H4>
-        <div className="flex flex-col gap-[6px]">
-          <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
-            Order ID
-          </label>
+
+        {/* price */}
+        <ComponentWithLabel gap={6} label="Price">
           <PLarge className="text-simpleGray700">{ticket.price}</PLarge>
-        </div>
-        <div className="flex flex-col gap-[6px]">
-          <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
-            Event Ticket ID
-          </label>
+        </ComponentWithLabel>
+
+        {/* order id */}
+        <ComponentWithLabel gap={6} label="Event Ticket ID">
           <PLarge className="text-simpleGray700">{ticket.orderId}</PLarge>
-        </div>
-        <div className="flex flex-col gap-[6px]">
-          <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
-            Your Seat
-          </label>
+        </ComponentWithLabel>
+
+        {/* seat */}
+        <ComponentWithLabel gap={6} label="Your Seat">
           <PLarge className="text-simpleGray700">Seat {ticket.seat}</PLarge>
-        </div>
+        </ComponentWithLabel>
+
+        {/* start and end datetime */}
         <div className="flex gap-[32px]">
-          <div className="flex flex-col gap-[6px]">
-            <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
-              Start Date
-            </label>
+          <ComponentWithLabel gap={6} label="Start Date">
             <PSmall className="whitespace-nowrap font-bold text-simpleGray700">
               {ticket.startDate}
             </PSmall>
-          </div>
-          <div className="flex flex-col gap-[6px]">
-            <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
-              End Date
-            </label>
+          </ComponentWithLabel>
+
+          <ComponentWithLabel gap={6} label="End Date">
             <PSmall className="whitespace-nowrap font-bold text-simpleGray700">
               {ticket.endDate}
             </PSmall>
-          </div>
+          </ComponentWithLabel>
         </div>
-        <div className="flex flex-col gap-[6px]">
-          <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
-            Another Field
-          </label>
+
+        {/* other field */}
+        <ComponentWithLabel gap={6} label="Another Field">
           <PSmall className="font-bold text-simpleGray700">
             {ticket.other}
           </PSmall>
-        </div>
+        </ComponentWithLabel>
       </div>
       {state === "confirmation" && (
         <div className="flex flex-col gap-[8px]">
@@ -100,7 +95,7 @@ function TicketDetails({
             {/* @ts-expect-error */}
             <PiSealWarningDuotone className="text-[24px] text-simpleRed" />
             <PSmall className="font-bold text-simpleGray700">
-              If you don’t confirm the ticket within 48 hours, the ticket will
+              If you don't confirm the ticket within 48 hours, the ticket will
               be auto-confirmed on your behalf.
             </PSmall>
           </div>
@@ -140,7 +135,7 @@ function Details() {
         <>
           If everything's okay and you verify & confirm the ticket: We transfer
           your payment from our escrow to the Seller.{" "}
-          <ol className="list-disc list-outside pl-[16px]">
+          <ol className="list-outside list-disc pl-[16px]">
             <li>
               {" "}
               Your ticket is now available in your account. Go{" "}
@@ -152,14 +147,14 @@ function Details() {
           </ol>
         </>
       ),
-      className: "bg-[#FB62F640] p-[16px] rounded-[16px]",
+      className: "bg-[#FB62F640] p-[16px] rounded-[16px] mx-[-16px]",
     },
     {
       data: (
         <>
           If you feel like something’s off about the ticket and refuse it: We
           reverse the payment back to your account from our escrow.{" "}
-          <ol className="list-disc list-outside pl-[16px]">
+          <ol className="list-outside list-disc pl-[16px]">
             <li>
               {" "}
               In the event that this happens, we encourage you to view other
@@ -172,13 +167,16 @@ function Details() {
           </ol>
         </>
       ),
-      className: "bg-[#FF424240] p-[16px] rounded-[16px]",
+      className: "bg-[#FF424240] p-[16px] rounded-[16px] mx-[-16px]",
     },
   ];
   return (
     <div className="flex flex-col gap-[16px]">
       <H4 className="text-simpleGray700">How we secure your payments</H4>
-      <List items={HowToSecureYourPayments} parentClassName="gap-[16px]" />
+      <List
+        items={HowToSecureYourPayments}
+        parentClassName="gap-[16px] text-simpleGray700"
+      />
     </div>
   );
 }
@@ -196,7 +194,7 @@ function Confirmation() {
     <>
       If everything's okay and you verify & confirm the ticket: We transfer your
       payment from our escrow to the Seller.{" "}
-      <ol className="list-disc list-outside pl-[24px]">
+      <ol className="list-outside list-disc pl-[24px]">
         <li>
           Your ticket is now available in your account. Go{" "}
           <Link href="/" className="font-bold underline">
@@ -210,7 +208,7 @@ function Confirmation() {
     <>
       If you feel like something's off about the ticket and refuse it: We
       reverse the payment back to your account from our escrow.{" "}
-      <ol className="list-disc list-outside pl-[24px]">
+      <ol className="list-outside list-disc pl-[24px]">
         <li>
           In the event that this happens, we encourage you to view other tickets
           from the{" "}
@@ -228,7 +226,10 @@ function Confirmation() {
         Your payment is in escrow!
         <br /> Here's what happens next...
       </H4>
-      <List items={WhatHappensNext} parentClassName="gap-[16px]" />
+      <List
+        items={WhatHappensNext}
+        parentClassName="gap-[16px] text-simpleGray700"
+      />
     </div>
   );
 }
@@ -318,19 +319,17 @@ export default function TicketDetail() {
     | "dispute"
     | "dispute-confirmation"
     | "sold-out"
-  >("sold-out");
+  >("details");
   return (
-    <div
-      className={cn(
-        "m-auto flex max-w-[1000px] gap-[64px] rounded-bl-[16px] rounded-tr-[16px] bg-simpleWhite p-[48px]"
-      )}
-    >
-      {state === "details" && <Details />}
-      {state === "confirmation" && <Confirmation />}
-      {state === "success" && <Success />}
-      {state === "dispute" && <Dispute />}
-      {state === "dispute-confirmation" && <DisputeConfirmation />}
-      <TicketDetails ticket={ticket} state={state} />
-    </div>
+    <Container className="my-[50px] max-w-[1000px]">
+      <div className={cn("flex gap-[64px]")}>
+        {state === "details" && <Details />}
+        {state === "confirmation" && <Confirmation />}
+        {state === "success" && <Success />}
+        {state === "dispute" && <Dispute />}
+        {state === "dispute-confirmation" && <DisputeConfirmation />}
+        <TicketDetails ticket={ticket} state={state} />
+      </div>
+    </Container>
   );
 }

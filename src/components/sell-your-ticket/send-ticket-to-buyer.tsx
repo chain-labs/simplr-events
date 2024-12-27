@@ -5,6 +5,8 @@ import { useState } from "react";
 
 import { cn } from "@/utils/cn";
 
+import { ComponentWithLabel } from "../component/component-with-label";
+import Container from "../component/container";
 import { Button } from "../ui/button";
 import { H4 } from "../ui/heading";
 import { PLarge, PSmall } from "../ui/paragraph";
@@ -35,48 +37,40 @@ function TicketDetails({
           auto-rejection of your sale.
         </PSmall>
       )}
-      <div className="flex flex-col gap-[6px]">
-        <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
-          Order ID
-        </label>
+
+      {/* ticket price */}
+      <ComponentWithLabel label="Order ID" gap={6}>
         <PLarge className="text-simpleGray700">{ticket.price}</PLarge>
-      </div>
-      <div className="flex flex-col gap-[6px]">
-        <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
-          Event Ticket ID
-        </label>
+      </ComponentWithLabel>
+
+      {/* ticket id */}
+      <ComponentWithLabel label="Event Ticket ID" gap={6}>
         <PLarge className="text-simpleGray700">{ticket.orderId}</PLarge>
-      </div>
-      <div className="flex flex-col gap-[6px]">
-        <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
-          Your Seat
-        </label>
+      </ComponentWithLabel>
+
+      {/* seat number */}
+      <ComponentWithLabel label="Your Seat" gap={6}>
         <PLarge className="text-simpleGray700">Seat {ticket.seat}</PLarge>
-      </div>
+      </ComponentWithLabel>
+
+      {/* ṣtart and end date */}
       <div className="flex gap-[32px]">
-        <div className="flex flex-col gap-[6px]">
-          <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
-            Start Date
-          </label>
+        <ComponentWithLabel label="Start Date" gap={6}>
           <PSmall className="whitespace-nowrap font-bold text-simpleGray700">
             {ticket.startDate}
           </PSmall>
-        </div>
-        <div className="flex flex-col gap-[6px]">
-          <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
-            End Date
-          </label>
+        </ComponentWithLabel>
+        <ComponentWithLabel label="End Date" gap={6}>
           <PSmall className="whitespace-nowrap font-bold text-simpleGray700">
             {ticket.endDate}
           </PSmall>
-        </div>
+        </ComponentWithLabel>
       </div>
-      <div className="flex flex-col gap-[6px]">
-        <label className="flex flex-col gap-[8px] text-[14px] font-medium leading-[20px] text-simpleGray500">
-          Another Field
-        </label>
+
+      {/* other */}
+      <ComponentWithLabel label="Another Field" gap={6}>
         <PSmall className="font-bold text-simpleGray700">{ticket.other}</PSmall>
-      </div>
+      </ComponentWithLabel>
     </div>
   );
 }
@@ -92,7 +86,7 @@ function CancellingReason() {
 
   return (
     <div className="flex flex-col gap-[16px]">
-      <H4>Please tell us why you're disputing this sale.</H4>
+      <H4 className="text-simpleGray700">Please tell us why you're disputing this sale.</H4>
       <Select
         options={disputeReasonsSelection}
         onSelect={setSelectedReason}
@@ -108,7 +102,7 @@ function CancellingSuccess() {
   return (
     <div className="flex flex-col gap-[32px]">
       <div className="flex flex-col gap-[16px]">
-        <H4>Give us 2 days to look into this.</H4>
+        <H4 className="text-simpleGray700">Give us 2 days to look into this.</H4>
         <PSmall>
           <Link href="/contact-us" className="font-bold underline">
             Contact us
@@ -133,30 +127,31 @@ export default function SendTicketToBuyer() {
 
   const [state, setState] = useState<
     "message" | "cancelling-reason" | "cancelling-success"
-  >("cancelling-success");
+  >("cancelling-reason");
   return (
-    <div
-      className={cn(
-        "m-auto flex max-w-[1000px] flex-col gap-[32px] rounded-bl-[16px] rounded-tr-[16px] bg-simpleWhite p-[48px]",
-        state !== "message"
-          ? "flex flex-row gap-[64px]"
-          : "flex flex-col gap-[32px]"
-      )}
-    >
-      {state === "cancelling-reason" && <CancellingReason />}
-      {state === "cancelling-success" && <CancellingSuccess />}
-      <TicketDetails ticket={ticket} state={state} />
-      {state === "message" && (
-        <div className="flex flex-col gap-[8px]">
-          <PSmall>
-            Please confirm that you've sent the ticket to the buyer.
-          </PSmall>
-          <div className="flex gap-[8px]">
-            <Button>yes, I've sent the ticket</Button>
-            <Button variant="outline-danger">no, cancel this sale</Button>
+    <Container className="my-[50px] max-w-[1000px]">
+      <div
+        className={cn(
+          state !== "message"
+            ? "flex flex-row gap-[64px]"
+            : "flex flex-col gap-[32px]"
+        )}
+      >
+        {state === "cancelling-reason" && <CancellingReason />}
+        {state === "cancelling-success" && <CancellingSuccess />}
+        <TicketDetails ticket={ticket} state={state} />
+        {state === "message" && (
+          <div className="flex flex-col gap-[8px]">
+            <PSmall className="text-simpleGray700">
+              Please confirm that you've sent the ticket to the buyer.
+            </PSmall>
+            <div className="flex gap-[8px]">
+              <Button>yes, I've sent the ticket</Button>
+              <Button variant="outline-danger">no, cancel this sale</Button>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </Container>
   );
 }
