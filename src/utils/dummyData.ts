@@ -1,5 +1,6 @@
 import { PiShootingStarDuotone } from "react-icons/pi";
 
+import { Event } from "@/types/event";
 import { Ticket } from "@/types/ticket";
 
 export const dummyTickets: Ticket[] = [
@@ -74,5 +75,76 @@ export const dummyTickets: Ticket[] = [
     price: "$350",
     priceCategory: "average",
     orderId: "OD987654321",
+  },
+  {
+    id: "5",
+    eventName: "Taipei Blockchain Week 2024",
+    seat: "A123",
+    ticketId: "123",
+    startDate: "Sep 23, 2024",
+    startTime: "12:00 PM ET",
+    endDate: "Sep 25, 2024",
+    endTime: "8:00 PM ET",
+    startDay: 1,
+    endDay: 3,
+    other: "Central Park",
+    EventIcon: PiShootingStarDuotone,
+    location: "New York, USA",
+    price: "$250",
+    priceCategory: "average",
+    orderId: "OD123456789",
+  },
+];
+
+export const dummyEvents: Event[] = [
+  {
+    id: "1",
+    eventName: "Summer Music Festival",
+    EventIcon: PiShootingStarDuotone,
+    location: "New York, USA",
+    deadline: "1734170400",
+    contractAddress: "0x02d5ee0b15f6598736A24C5AaA968FaeF49cd4B4",
+    image:
+      "https://ik.imagekit.io/chainlabs/simplr-events-designs/events/taipei_blockchain_week_3HvOXP802.jpeg?updatedAt=1733346848449",
+  },
+  {
+    id: "2",
+    eventName: "Tech Conference",
+    EventIcon: PiShootingStarDuotone,
+    location: "San Francisco, USA",
+    deadline: "1734170400",
+    contractAddress: "0x02d5ee0b15f6598736A24C5AaA968FaeF49cd4B4",
+    image:
+      "https://ik.imagekit.io/chainlabs/simplr-events-designs/events/taipei_blockchain_week_3HvOXP802.jpeg?updatedAt=1733346848449",
+  },
+  {
+    id: "3",
+    eventName: "Food & Wine Expo",
+    EventIcon: PiShootingStarDuotone,
+    location: "Paris, France",
+    deadline: "1734170400",
+    contractAddress: "0x02d5ee0b15f6598736A24C5AaA968FaeF49cd4B4",
+    image:
+      "https://ik.imagekit.io/chainlabs/simplr-events-designs/events/taipei_blockchain_week_3HvOXP802.jpeg?updatedAt=1733346848449",
+  },
+  {
+    id: "4",
+    eventName: "Art Gallery Opening",
+    deadline: "1734170400",
+    contractAddress: "0x02d5ee0b15f6598736A24C5AaA968FaeF49cd4B4",
+    EventIcon: PiShootingStarDuotone,
+    location: "London, UK",
+    image:
+      "https://ik.imagekit.io/chainlabs/simplr-events-designs/events/taipei_blockchain_week_3HvOXP802.jpeg?updatedAt=1733346848449",
+  },
+  {
+    id: "5",
+    eventName: "Taipei Blockchain Week 2024",
+    deadline: "1734170400",
+    contractAddress: "0x02d5ee0b15f6598736A24C5AaA968FaeF49cd4B4",
+    EventIcon: PiShootingStarDuotone,
+    location: "Taipei, Taiwan",
+    image:
+      "https://ik.imagekit.io/chainlabs/simplr-events-designs/events/taipei_blockchain_week_3HvOXP802.jpeg?updatedAt=1733346848449",
   },
 ];
