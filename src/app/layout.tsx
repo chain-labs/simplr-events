@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 
-import Header from "@/components/header";
+import SimpleBar from "simplebar-react";
+import "simplebar-react/dist/simplebar.min.css";
+
+import Header from "@/components/Header";
 
 import "./globals.css";
 
@@ -36,10 +39,7 @@ export default function RootLayout({
         ></link>
       </head>
       <body className={`bg-simpleBlue font-switzer antialiased`}>
-        <div className="flex flex-col w-full h-full min-h-[100vh]">
-          <Header />
-          {children}
-        </div>
+        {children}
       </body>
     </html>
   );

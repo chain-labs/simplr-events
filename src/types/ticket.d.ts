@@ -31,3 +31,19 @@ interface Order {
   eventName: string;
   other: string;
 }
+
+interface TicketMock {
+  id: string;
+  event: Event;
+  orderNumber: string;
+  tokenId: string;
+  seat: string;
+  ticketData: string;
+  additionalInfo?: Object;
+}
+
+interface OrderMock {
+  id: string;
+  ticket: TicketMock;
+  price: string;
+}

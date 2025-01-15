@@ -5,7 +5,7 @@ import { PSmall } from "../ui/paragraph";
 
 export default function TicketsOnSellMessage() {
   return (
-    <Container className="my-[50px] max-w-[1000px]">
+    <Container className="max-w-[1000px] md:my-[50px]">
       <div className="flex flex-col gap-[16px]">
         <H4 className="text-simpleGray700">Your tickets are on sale!</H4>
         <div className="flex flex-col gap-[8px]">

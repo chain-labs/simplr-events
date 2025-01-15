@@ -1,3 +1,5 @@
+import { RecursiveKeyValuePair, ResolvableTo } from "tailwindcss/types/config";
+
 export const theme = {
   colors: {
     primary1: "#F75818",
@@ -9,7 +11,10 @@ export const theme = {
     brandYellow: "#F2FF49",
     brandBlack: "#050505",
     brandWhite: "#FAFAFA",
-  },
+    brandGreen: "#66C61C",
+    brandRed: "#f24742",
+    brandPink: "#f16af8",
+  } as RecursiveKeyValuePair<string, string>,
 } as const;
 
 export const logos = {

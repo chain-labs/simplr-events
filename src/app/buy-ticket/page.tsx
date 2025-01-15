@@ -7,27 +7,18 @@ import FooterProgressBar, { StepsType } from "@/components/footer-progress-bar";
 
 export default function BuyTicket() {
   const footerSteps: StepsType[] = [
+    { name: "Share your booking details", status: "completed" },
     {
-      name: "Your details",
-      description: "Please provide your name and email",
-      status: "completed",
-    },
-    {
-      name: "Company details",
-      description: "A few details about your company",
+      name: "Review your booking",
       status: "active",
     },
-    {
-      name: "Invite your team",
-      description: "Start collaborating with your team",
-      status: "pending",
-    },
+    { name: "Start selling your ticket", status: "pending" },
   ];
   const [state, setState] = useState<"detail">("detail");
   return (
     <>
       {state === "detail" && <TicketDetail />}
-      <FooterProgressBar STEPS={footerSteps} />
+      <FooterProgressBar STEPS={footerSteps} active="Start selling your ticket" />
     </>
   );
 }

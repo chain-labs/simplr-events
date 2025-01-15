@@ -1,13 +1,35 @@
+import { cn } from "@/utils/cn";
+
 export type StepsType = {
   name: string;
   description?: string;
   status: "completed" | "active" | "pending";
 };
 
-export default function FooterProgressBar({ STEPS }: { STEPS: StepsType[] }) {
+export default function FooterProgressBar({
+  STEPS,
+  active,
+}: {
+  STEPS: StepsType[];
+  active: string;
+}) {
+  // checking which step is active and make it appear in center
+  const activeStepIndex = STEPS.findIndex((step) => step.name === active);
+  const stepsLength = STEPS.length;
+
   return (
-    <div className="sticky bottom-0 z-50 h-fit w-full bg-[#FAFAFA80] p-[32px] backdrop-blur-lg">
-      <div className="mx-auto flex max-w-[1000px] flex-col items-center justify-center gap-[12px]">
+    <div className="sticky bottom-0 z-50 h-fit w-full overflow-hidden bg-[#FAFAFA80] p-[16px] backdrop-blur-lg md:p-[32px]">
+      <div
+        style={
+          {
+            "--translate": `calc(-${((2 * activeStepIndex + 1) / (2 * stepsLength)) * 100}% - 16px + 50vw)`,
+            transition: "transform 0.5s ease-in-out",
+          } as React.CSSProperties
+        }
+        className={cn(
+          "mx-auto flex w-[1280px] translate-x-[var(--translate)] flex-col items-center justify-center gap-[12px] lg:translate-x-0"
+        )}
+      >
         <div className="grid w-full grid-flow-col place-items-center">
           {STEPS.map((step, index) => (
             <div

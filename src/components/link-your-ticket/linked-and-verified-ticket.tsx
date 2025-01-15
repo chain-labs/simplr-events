@@ -125,51 +125,66 @@ export default function LinkedAndVerifiedTicket() {
   const ticketsHistory = dummyTickets;
 
   return (
-    <Container className="my-[50px] max-w-[950px]">
-      <div className="flex gap-[64px]">
-        {/* suggestion */}
-        <ComponentWithLabel label="Similar tickets are being sold at:">
-          <TicketSuggestionCard ticketsHistory={ticketsHistory} />
-        </ComponentWithLabel>
+    <>
+      <ComponentWithLabel
+        label="Similar tickets are being sold at:"
+        className="m-[16px] flex text-simpleWhite md:hidden"
+      >
+        <TicketSuggestionCard ticketsHistory={ticketsHistory} />
+      </ComponentWithLabel>
+      <Container className="max-w-[950px] mb-[16px] md:my-[50px]">
+        <div className="flex md:gap-[64px]">
+          {/* suggestion */}
+          <ComponentWithLabel
+            label="Similar tickets are being sold at:"
+            className="hidden md:flex"
+          >
+            <TicketSuggestionCard ticketsHistory={ticketsHistory} />
+          </ComponentWithLabel>
 
-        {/* info */}
-        <div className="flex flex-col gap-[32px]">
-          <div className="flex flex-col gap-[16px]">
-            <H4 className="text-simpleGray700">
-              Your ticket has been linked & verified as authentic!
-            </H4>
+          {/* info */}
+          <div className="flex flex-col gap-[32px]">
+            <div className="flex flex-col gap-[16px]">
+              <H4 className="text-simpleGray700">
+                Your ticket has been linked & verified as authentic!
+              </H4>
+
+              <div className="flex flex-col gap-[8px]">
+                <PSmall className="text-simpleGray700">
+                  You can now sell your ticket.
+                </PSmall>
+                <Link href="/sell-your-ticket">
+                  <Button>sell my ticket</Button>
+                </Link>
+              </div>
+              <div className="flex flex-col gap-[8px]">
+                <PSmall className="text-simpleGray700">
+                  Learn how we establish trust with ticketing.
+                </PSmall>
+                <Button variant="secondary">
+                  how is it legit?
+                </Button>
+              </div>
+            </div>
+
+            <div className="h-[1px] w-full bg-simpleGray300" />
 
             <div className="flex flex-col gap-[8px]">
               <PSmall className="text-simpleGray700">
-                You can now sell your ticket.
+                Or, go to the 🏠 Home page, where you can:
+                <li>Manage all your tickets</li>
+                <li>View other tickets on sale</li>
+                <li>Go through other events happening around the world</li>
               </PSmall>
-              <Link href="/sell-your-ticket">
-                <Button>sell my ticket</Button>
+              <Link href="/">
+                <Button variant="secondary">
+                  go home
+                </Button>
               </Link>
             </div>
-            <div className="flex flex-col gap-[8px]">
-              <PSmall className="text-simpleGray700">
-                Learn how we establish trust with ticketing.
-              </PSmall>
-              <Button variant="secondary">how is it legit?</Button>
-            </div>
-          </div>
-
-          <div className="h-[1px] w-full bg-simpleGray300" />
-
-          <div className="flex flex-col gap-[8px]">
-            <PSmall className="text-simpleGray700">
-              Or, go to the 🏠 Home page, where you can:
-              <li>Manage all your tickets</li>
-              <li>View other tickets on sale</li>
-              <li>Go through other events happening around the world</li>
-            </PSmall>
-            <Link href="/">
-              <Button variant="secondary">go home</Button>
-            </Link>
           </div>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </>
   );
 }

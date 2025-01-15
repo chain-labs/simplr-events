@@ -1,3 +1,4 @@
+import { theme } from "./src/utils/theme";
 import type { Config } from "tailwindcss";
 
 export default {
@@ -17,9 +18,6 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        simpleWhite: "#FAFAFA",
-        simpleBlue: "#645DD7",
-        simpleYellow: "#F2FF49",
         simpleGray900: "#101828",
         simpleGray700: "#344054",
         simpleGray600: "#475467",
@@ -27,10 +25,14 @@ export default {
         simpleGray400: "#98A2B3",
         simpleGray300: "#D0D5DD",
         simpleGray200: "#EAECF0",
-        simpleBlack: "#050505",
-        simpleGreen: "#66C61C",
-        simpleRed: "#f24742",
-        simplePink: "#f16af8",
+        simpleWhite: theme.colors.brandWhite,
+        simpleBlue: theme.colors.brandBlue,
+        simpleYellow: theme.colors.brandYellow,
+        simpleBlack: theme.colors.brandBlack,
+        simpleGreen: theme.colors.brandGreen,
+        simpleRed: theme.colors.brandRed,
+        simplePink: theme.colors.brandPink,
+        simplePurple: theme.colors.brandPurple,
       },
       fontFamily: {
         gambarino: ['"Gambarino"', "serif"],

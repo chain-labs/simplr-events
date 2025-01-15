@@ -9,6 +9,7 @@ type EventCardComponentProps = Ticket & {
   status: "selected" | "grey" | "white" | "grey selected" | "closable";
   onClick?: () => void;
   onClose?: () => void;
+  parentClassName?: string;
 };
 
 export default function TicketCardComponent({
@@ -24,6 +25,7 @@ export default function TicketCardComponent({
   status,
   onClick,
   onClose,
+  parentClassName,
 }: EventCardComponentProps) {
   return (
     <div
@@ -34,7 +36,8 @@ export default function TicketCardComponent({
         status === "grey" && "bg-simpleGray200",
         status === "selected" && "bg-simpleBlue text-simpleWhite",
         status === "grey selected" && "bg-simpleGray200",
-        status === "closable" && "bg-simpleBlue text-simpleWhite"
+        status === "closable" && "bg-simpleBlue text-simpleWhite",
+        parentClassName
       )}
       onClick={onClick}
     >
@@ -82,7 +85,7 @@ export default function TicketCardComponent({
         // @ts-expect-error
         <PiXCircleDuotone
           size={24}
-          className="ml-auto text-[24px] w-[24px] h-[24px] text-simpleWhite cursor-pointer"
+          className="ml-auto h-[24px] w-[24px] cursor-pointer text-[24px] text-simpleWhite"
           onClick={(e) => {
             e.stopPropagation();
             onClose && onClose();

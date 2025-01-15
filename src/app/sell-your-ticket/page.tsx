@@ -11,21 +11,12 @@ import { Ticket } from "@/types/ticket";
 
 export default function LinkYourTicket() {
   const footerSteps: StepsType[] = [
+    { name: "Share your booking details", status: "completed" },
     {
-      name: "Your details",
-      status: "completed",
-      description: "Please provide your name and email",
-    },
-    {
-      name: "Company details",
+      name: "Review your booking",
       status: "active",
-      description: "A few details about your company",
     },
-    {
-      name: "Invite your team",
-      status: "pending",
-      description: "Start collaborating with your team",
-    },
+    { name: "Start selling your ticket", status: "pending" },
   ];
 
   const [selectedTickets, setSelectedTickets] = useState<Ticket[]>([]);
@@ -42,17 +33,19 @@ export default function LinkYourTicket() {
         <SellingLinkedTicket
           selectedTickets={selectedTickets}
           setSelectedTickets={setSelectedTickets}
+          nextStep={() => setState("setting-ticket-pricing")}
         />
       )}
       {state === "setting-ticket-pricing" && (
         <SettingTicketPricing
           selectedTickets={selectedTickets}
           setSelectedTickets={setSelectedTickets}
+          nextStep={() => setState("tickets-on-sell-message")}
         />
       )}
       {state === "tickets-on-sell-message" && <TicketsOnSellMessage />}
       {state === "send-ticket-to-buyer" && <SendTicketToBuyer />}
-      <FooterProgressBar STEPS={footerSteps} />
+      <FooterProgressBar STEPS={footerSteps} active="Start selling your ticket" />
     </>
   );
 }

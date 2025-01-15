@@ -15,6 +15,7 @@ import Select from "../ui/select";
 function TicketDetails({
   ticket,
   state,
+  className,
 }: {
   ticket: {
     price: string;
@@ -25,9 +26,10 @@ function TicketDetails({
     other: string;
   };
   state: "message" | "cancelling-reason" | "cancelling-success";
+  className?: string;
 }) {
   return (
-    <div className="flex flex-col gap-[16px]">
+    <div className={cn("flex flex-col gap-[16px]", className)}>
       <H4 className="text-simpleGray700">
         {state === "message" ? "Sell your ticket" : "Ticket details"}
       </H4>
@@ -54,7 +56,7 @@ function TicketDetails({
       </ComponentWithLabel>
 
       {/* ṣtart and end date */}
-      <div className="flex gap-[32px]">
+      <div className="flex flex-wrap gap-[32px] md:flex-row">
         <ComponentWithLabel label="Start Date" gap={6}>
           <PSmall className="whitespace-nowrap font-bold text-simpleGray700">
             {ticket.startDate}
@@ -86,7 +88,9 @@ function CancellingReason() {
 
   return (
     <div className="flex flex-col gap-[16px]">
-      <H4 className="text-simpleGray700">Please tell us why you're disputing this sale.</H4>
+      <H4 className="text-simpleGray700">
+        Please tell us why you're disputing this sale.
+      </H4>
       <Select
         options={disputeReasonsSelection}
         onSelect={setSelectedReason}
@@ -102,7 +106,9 @@ function CancellingSuccess() {
   return (
     <div className="flex flex-col gap-[32px]">
       <div className="flex flex-col gap-[16px]">
-        <H4 className="text-simpleGray700">Give us 2 days to look into this.</H4>
+        <H4 className="text-simpleGray700">
+          Give us 2 days to look into this.
+        </H4>
         <PSmall>
           <Link href="/contact-us" className="font-bold underline">
             Contact us
@@ -127,25 +133,34 @@ export default function SendTicketToBuyer() {
 
   const [state, setState] = useState<
     "message" | "cancelling-reason" | "cancelling-success"
-  >("cancelling-reason");
+  >("cancelling-success");
   return (
-    <Container className="my-[50px] max-w-[1000px]">
+    <Container className="max-w-[1000px] md:my-[50px]">
       <div
         className={cn(
           state !== "message"
-            ? "flex flex-row gap-[64px]"
-            : "flex flex-col gap-[32px]"
+            ? "flex flex-col gap-[32px] md:flex-row md:gap-[64px]"
+            : "flex flex-col gap-[32px] md:flex-col md:gap-[32px]"
         )}
       >
+        <TicketDetails
+          ticket={ticket}
+          state={state}
+          className="flex md:hidden"
+        />
         {state === "cancelling-reason" && <CancellingReason />}
         {state === "cancelling-success" && <CancellingSuccess />}
-        <TicketDetails ticket={ticket} state={state} />
+        <TicketDetails
+          ticket={ticket}
+          state={state}
+          className="hidden md:flex"
+        />
         {state === "message" && (
           <div className="flex flex-col gap-[8px]">
             <PSmall className="text-simpleGray700">
               Please confirm that you've sent the ticket to the buyer.
             </PSmall>
-            <div className="flex gap-[8px]">
+            <div className="flex flex-col gap-[8px] md:flex-row">
               <Button>yes, I've sent the ticket</Button>
               <Button variant="outline-danger">no, cancel this sale</Button>
             </div>

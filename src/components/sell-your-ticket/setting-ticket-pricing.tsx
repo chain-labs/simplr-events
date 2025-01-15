@@ -10,6 +10,8 @@ import { dummyTickets } from "@/utils/dummyData";
 
 import { ComponentWithLabel } from "../component/component-with-label";
 import Container from "../component/container";
+import EventCardComponent from "../link-your-ticket/event-card-component";
+import SearchWithComponent from "../search-with-component";
 import { Button } from "../ui/button";
 import Dropdown from "../ui/dropdown";
 import { H4 } from "../ui/heading";
@@ -21,13 +23,16 @@ import TicketSearchComponent from "./ticket-search-component";
 type SettingTicketPricingProps = {
   setSelectedTickets: Dispatch<SetStateAction<Ticket[]>>;
   selectedTickets: Ticket[];
+  nextStep: () => void;
 };
 
 export default function SettingTicketPricing({
   setSelectedTickets,
   selectedTickets,
+  nextStep,
 }: SettingTicketPricingProps) {
-  const dummyEvents = dummyTickets.map((ticket) => ticket.eventName);
+  const dummyEvents = dummyTickets;
+  const [selectedEvent, setSelectedEvent] = useState<Ticket>();
   const [settingPriceForAllTickets, setSettingPriceForAllTickets] = useState<{
     price: number;
     auto: boolean;
@@ -37,21 +42,61 @@ export default function SettingTicketPricing({
       [key: string]: number;
     }>({});
   return (
-    <Container className="my-[50px] max-w-[1000px]">
-      <div className="grid grid-cols-[auto_auto] gap-[64px]">
-        <div className="flex w-[320px] flex-col gap-[16px]">
+    <Container className="max-w-[1000px] md:my-[50px]">
+      <div className="grid grid-cols-1 gap-[32px] md:grid-cols-[auto_auto] md:gap-[64px]">
+        <div className="col-span-1 flex flex-col gap-[16px] md:col-auto md:w-[320px]">
           <H4 className="text-simpleGray700">Confirm selling details</H4>
 
           {/* event dropdown */}
           <ComponentWithLabel label="Choose your event">
-            <Dropdown options={dummyEvents} placeholder="Select event" />
+            <SearchWithComponent
+              placeholder="Search for event"
+              data={dummyEvents}
+              selectedItems={selectedEvent}
+              setSelectedItems={
+                setSelectedEvent as Dispatch<
+                  SetStateAction<Ticket | Ticket[] | undefined>
+                >
+              }
+              renderComponent={(item, isSelected, onClick) => (
+                <EventCardComponent
+                  {...item}
+                  status={isSelected ? "selected" : "grey"}
+                  onClick={onClick}
+                />
+              )}
+              filterFunction={(item, query) =>
+                item.eventName.toLowerCase().includes(query.toLowerCase())
+              }
+              getItemName={(item) => item.eventName}
+            />
           </ComponentWithLabel>
 
           {/* ticket search */}
           <ComponentWithLabel label="Choose the ticket to sell">
-            <TicketSearchComponent
-              selectedTickets={selectedTickets}
-              setSelectedTickets={setSelectedTickets}
+            <SearchWithComponent
+              selectedItems={selectedTickets}
+              setSelectedItems={
+                setSelectedTickets as Dispatch<
+                  SetStateAction<Ticket | Ticket[] | undefined>
+                >
+              }
+              data={dummyTickets.filter(
+                (ticket) => ticket.eventName === selectedEvent?.eventName
+              )}
+              placeholder="Search for ticket"
+              renderComponent={(item, isSelected, onClick) => (
+                <TicketCardComponent
+                  {...item}
+                  status={isSelected ? "selected" : "grey"}
+                  onClick={onClick}
+                />
+              )}
+              filterFunction={(item, query) =>
+                item.seat.toLowerCase().includes(query.toLowerCase())
+              }
+              getItemName={(item) => item.seat}
+              multiple
             />
           </ComponentWithLabel>
 
@@ -73,24 +118,27 @@ export default function SettingTicketPricing({
                     ? "Auto"
                     : settingPriceForAllTickets.price
                 }
-                onChange={(e) =>
+                onChange={(e) => {
                   setSettingPriceForAllTickets((prev) => ({
                     ...prev,
                     price: Number(e.target.value),
                     auto: false,
-                  }))
-                }
+                  }));
+                  setSelectedTickets((prev) =>
+                    prev.map((prevTicket) => ({ ...prevTicket, price: e.target.value }))
+                  );
+                }}
                 min={1}
               />
             </ComponentWithLabel>
           )}
         </div>
-        <div className="flex w-full flex-col gap-[16px]">
+        <div className="col-span-2 flex w-full flex-col gap-[16px] md:col-auto">
           {/* selected tickets */}
           <ComponentWithLabel label="Your selected tickets:">
             <div
               className={cn(
-                "grid grid-cols-2 gap-4",
+                "grid gap-4 md:grid-cols-2",
                 selectedTickets.length === 1 && "grid-cols-1"
               )}
             >
@@ -109,6 +157,7 @@ export default function SettingTicketPricing({
                         )
                       }
                       {...ticket}
+                      parentClassName="w-fit md:w-full"
                     />
                     {/* Price */}
                     <Input
@@ -132,6 +181,13 @@ export default function SettingTicketPricing({
                           ...prev,
                           auto: true,
                         }));
+                        setSelectedTickets((prev) =>
+                          prev.map((prevTicket) =>
+                            prevTicket.id === ticket.id
+                              ? { ...prevTicket, price: e.target.value }
+                              : prevTicket
+                          )
+                        );
                       }}
                       valid={
                         settingPriceForAllTickets.auto
@@ -150,7 +206,13 @@ export default function SettingTicketPricing({
                 </PSmall>
               )}
               {selectedTickets.length === 1 && (
-                <Button className="mx-auto" disabled={!selectedTickets.length}>
+                <Button
+                  className="mx-auto"
+                  disabled={
+                    !selectedTickets.length || !Number(selectedTickets[0]?.price)
+                  }
+                  onClick={nextStep}
+                >
                   sell ticket
                 </Button>
               )}
@@ -161,6 +223,7 @@ export default function SettingTicketPricing({
           <Button
             className="col-span-2 ml-auto"
             disabled={!selectedTickets.length}
+            onClick={nextStep}
           >
             {selectedTickets.length > 1 ? "confirm" : "select"}
           </Button>

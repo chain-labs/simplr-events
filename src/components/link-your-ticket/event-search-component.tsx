@@ -92,7 +92,6 @@ export default function EventSearchComponent({
           }
         }}
         onSubmit={(e) => {
-          console.log('onSubmit', e);
           if (selectedEvent === undefined || search === "") {
             e.preventDefault();
             e.currentTarget.reportValidity();

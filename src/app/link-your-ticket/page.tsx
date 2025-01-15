@@ -13,19 +13,26 @@ import { cn } from "@/utils/cn";
 import { dummyTickets } from "@/utils/dummyData";
 
 // Define the schema using zod
-export const linktingTicketFormSchema = z.object({
-  event: z.string().nonempty("Event is required"),
-  orderId: z.string().nonempty("Order ID is required"),
-  seatNumber: z.string().nonempty("Seat number is required"),
-});
+export const linktingTicketFormSchema = z
+  .object({
+    event: z.string().nonempty("Event is required"),
+    orderId: z.string().nonempty("Order ID is required"),
+    seatNumber: z.string().optional(),
+    seatType: z.string().optional(),
+  })
+  .refine((data) => data.seatType || data.seatNumber, {
+    message: "Either seat number or seat type is required",
+    path: ["seatNumber", "seatType"],
+  });
 
 export type LinkingTicketFormData = z.infer<typeof linktingTicketFormSchema>;
 
 type centralizeStateData = {
   event: string;
   orderId: string;
-  seatNumber: string;
+  seatNumber?: string;
   order: Order;
+  seatType?: string;
 };
 
 const emptyState: centralizeStateData = {
@@ -72,7 +79,16 @@ export default function LinkYourTicket() {
         ...prev.order,
         // TODO: Replace dummyTickets with real data
         ...fetchingOrderData[0],
-        tickets: fetchingOrderData,
+        ...data,
+        tickets: [
+          {
+            ...fetchingOrderData[0],
+            seat:
+              (data.seatNumber === "" && !data.seatNumber
+                ? data.seatType
+                : data.seatNumber) || "",
+          },
+        ],
       },
     }));
 
@@ -110,8 +126,8 @@ export default function LinkYourTicket() {
     <>
       <div
         className={cn(
-          state === "linking-ticket" ? "" : "hidden",
-          "h-full w-full flex-grow"
+          state === "linking-ticket" ? "flex" : "hidden",
+          "h-full w-full flex-grow items-center justify-center"
         )}
       >
         <LinkingTicketContainer
@@ -122,7 +138,16 @@ export default function LinkYourTicket() {
         <OrderDetails navigation={navigation} data={centralizeState.order} />
       )}
       {state === "link-and-verify-ticket" && <LinkedAndVerifiedTicket />}
-      <FooterProgressBar STEPS={footerSteps} />
+      <FooterProgressBar
+        STEPS={footerSteps}
+        active={
+          state === "linking-ticket"
+            ? "Share your booking details"
+            : state === "order-details"
+              ? "Review your booking"
+              : "Start selling your ticket"
+        }
+      />
     </>
   );
 }

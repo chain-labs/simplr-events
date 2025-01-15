@@ -47,7 +47,7 @@ export default function OrderDetails({
           </div>
 
           {/* start and end datetime */}
-          <div className="flex gap-[32px]">
+          <div className="flex flex-wrap md:flex-row gap-[16px] md:gap-[32px]">
             <div className="flex flex-col gap-[4px]">
               <ComponentWithLabel label="Start Date" gap={4}>
                 <PSmall className="font-bold">
@@ -71,12 +71,20 @@ export default function OrderDetails({
               <PSmall className="font-bold">{data.other}</PSmall>
             </ComponentWithLabel>
           </div>
-          <div className="flex w-full items-center justify-between">
-            <Button variant="secondary" onClick={navigation.back}>
+          <div className="mt-[16px] flex w-full items-center justify-between gap-[8px] md:mt-0">
+            <Button
+              variant="secondary"
+              onClick={navigation.back}
+              className="w-full md:w-auto"
+            >
               {" "}
               go back{" "}
             </Button>
-            <Button variant="primary" onClick={navigation.next}>
+            <Button
+              variant="primary"
+              onClick={navigation.next}
+              className="w-full md:w-auto"
+            >
               {" "}
               confirm & link{" "}
             </Button>

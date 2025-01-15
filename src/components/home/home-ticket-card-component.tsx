@@ -25,7 +25,7 @@ export default function HomeTicketCardComponent({
   return (
     <div
       key={ticket.ticketId}
-      className="grid-flex-row relative z-0 grid w-fit min-w-fit gap-[16px] overflow-hidden rounded-[16px] bg-simpleWhite p-[16px]"
+      className="grid-flex-row relative z-0 grid w-full min-w-fit gap-[16px] overflow-hidden rounded-[16px] bg-simpleWhite p-[16px] md:w-fit"
     >
       {/* bg gradient */}
       <div
@@ -107,7 +107,7 @@ export default function HomeTicketCardComponent({
 
       {/* link which lead to viewing ticket  */}
       <Link href={`/buy/${ticket.ticketId}`}>
-        <Button variant="primary-blue" size="sm">
+        <Button variant="primary-blue" size="sm" className="w-fit">
           view ticket
         </Button>
       </Link>

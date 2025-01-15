@@ -18,6 +18,7 @@ import Select from "../ui/select";
 function TicketDetails({
   ticket,
   state,
+  parentClassName,
 }: {
   ticket: {
     price: string;
@@ -34,9 +35,10 @@ function TicketDetails({
     | "dispute"
     | "dispute-confirmation"
     | "sold-out";
+  parentClassName?: string;
 }) {
   return (
-    <div className="flex flex-col gap-[32px]">
+    <div className={cn("flex flex-col gap-[32px]", parentClassName)}>
       <div className="flex flex-col gap-[16px]">
         <H4 className="text-simpleGray700">Ticket details</H4>
 
@@ -56,7 +58,7 @@ function TicketDetails({
         </ComponentWithLabel>
 
         {/* start and end datetime */}
-        <div className="flex gap-[32px]">
+        <div className="flex flex-wrap gap-[16px] md:gap-[32px] md:flex-row">
           <ComponentWithLabel gap={6} label="Start Date">
             <PSmall className="whitespace-nowrap font-bold text-simpleGray700">
               {ticket.startDate}
@@ -102,13 +104,13 @@ function TicketDetails({
         </div>
       )}
       {state === "confirmation" && (
-        <div className="flex gap-[8px]">
+        <div className="flex flex-wrap gap-[8px] md:flex-nowrap">
           <Button>verify & confirm ticket</Button>
           <Button variant="outline-danger">dispute Ticket</Button>
         </div>
       )}
       {state === "details" && (
-        <div className="flex justify-between">
+        <div className="flex justify-between gap-[8px]">
           <Button variant="secondary">go back</Button>
           <Button>buy ticket</Button>
         </div>
@@ -147,12 +149,12 @@ function Details() {
           </ol>
         </>
       ),
-      className: "bg-[#FB62F640] p-[16px] rounded-[16px] mx-[-16px]",
+      className: "bg-[#FB62F640] p-[16px] rounded-[16px] md:mx-[-16px]",
     },
     {
       data: (
         <>
-          If you feel like something’s off about the ticket and refuse it: We
+          If you feel like something's off about the ticket and refuse it: We
           reverse the payment back to your account from our escrow.{" "}
           <ol className="list-outside list-disc pl-[16px]">
             <li>
@@ -167,7 +169,7 @@ function Details() {
           </ol>
         </>
       ),
-      className: "bg-[#FF424240] p-[16px] rounded-[16px] mx-[-16px]",
+      className: "bg-[#FF424240] p-[16px] rounded-[16px] md:mx-[-16px]",
     },
   ];
   return (
@@ -319,16 +321,31 @@ export default function TicketDetail() {
     | "dispute"
     | "dispute-confirmation"
     | "sold-out"
-  >("details");
+  >("sold-out");
   return (
-    <Container className="my-[50px] max-w-[1000px]">
-      <div className={cn("flex gap-[64px]")}>
+    <Container className="my-[16px] md:my-[50px] max-w-[1000px]">
+      <div className={cn("flex flex-col gap-[32px] md:flex-row md:gap-[64px]")}>
+        <TicketDetails
+          ticket={ticket}
+          state={state}
+          parentClassName={cn(
+            "flex md:hidden",
+            state === "confirmation" && "hidden"
+          )}
+        />
         {state === "details" && <Details />}
         {state === "confirmation" && <Confirmation />}
         {state === "success" && <Success />}
         {state === "dispute" && <Dispute />}
         {state === "dispute-confirmation" && <DisputeConfirmation />}
-        <TicketDetails ticket={ticket} state={state} />
+        <TicketDetails
+          ticket={ticket}
+          state={state}
+          parentClassName={cn(
+            "hidden md:flex",
+            state === "confirmation" && "flex"
+          )}
+        />
       </div>
     </Container>
   );
