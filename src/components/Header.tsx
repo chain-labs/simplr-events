@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
+import { usePrivy } from "@privy-io/react-auth";
 import { PiCaretDown, PiWalletDuotone } from "react-icons/pi";
 
 import { cn } from "@/utils/cn";
@@ -25,6 +26,8 @@ export default function Header() {
     isConnected: true,
     wallet: "$250,000.0000",
   };
+
+  const { authenticated, connectOrCreateWallet, logout } = usePrivy();
 
   return (
     <header className="sticky top-0 z-50 mx-auto h-fit w-full max-w-[1280px] bg-simpleBlue px-[32px] py-[16px]">
@@ -63,19 +66,15 @@ export default function Header() {
                   : () => setWalletModelOpen(true)
               }
             >
-              {/* @ts-expect-error */}
               <PiWalletDuotone size={24} />
               {account.wallet}
-              {
-                // @ts-expect-error
-                <PiCaretDown
-                  size={16}
-                  className={cn(
-                    "transform transition-transform duration-300",
-                    walletModelOpen ? "rotate-180" : "rotate-0"
-                  )}
-                />
-              }
+              <PiCaretDown
+                size={16}
+                className={cn(
+                  "transform transition-transform duration-300",
+                  walletModelOpen ? "rotate-180" : "rotate-0"
+                )}
+              />
             </Button>
             {walletModelOpen && (
               <div className="absolute left-1/2 top-full flex -translate-x-1/2 flex-col items-center justify-center gap-[16px] rounded-[24px] bg-[#FFFFFF03] bg-simpleWhite p-[16px] shadow-[inset_2px_4px_4px_#FAFFD3BF,_inset_-2px_-4px_4px_#63680040,_inset_0_0_0_2px_#ffffff]">
@@ -96,12 +95,16 @@ export default function Header() {
           <Button variant="outline" size="sm">
             contact us
           </Button>
-          {account.isConnected ? (
-            <Button variant="outline" size="sm">
+          {authenticated ? (
+            <Button variant="outline" size="sm" onClick={() => logout()}>
               log out
             </Button>
           ) : (
-            <Button variant="primary" size="sm">
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => connectOrCreateWallet()}
+            >
               sign in
             </Button>
           )}

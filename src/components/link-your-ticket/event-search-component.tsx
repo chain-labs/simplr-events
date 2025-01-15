@@ -5,9 +5,10 @@ import { useEffect, useRef, useState } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
 import { PiMagnifyingGlass } from "react-icons/pi";
 
+import { Event } from "@/types/event";
 import { Ticket } from "@/types/ticket";
 import { cn } from "@/utils/cn";
-import { dummyTickets } from "@/utils/dummyData";
+import { dummyEvents, dummyTickets } from "@/utils/dummyData";
 
 import { Input } from "../ui/input";
 import EventCardComponent from "./event-card-component";
@@ -18,12 +19,12 @@ export default function EventSearchComponent({
   register: UseFormRegisterReturn<"event">;
 }) {
   // TODO: Replace dummyTickets with real data
-  const data = dummyTickets;
+  const data = dummyEvents;
 
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState<Ticket[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<Ticket>();
+  const [results, setResults] = useState<Event[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState<Event>();
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -67,10 +68,7 @@ export default function EventSearchComponent({
     <div className="relative" ref={wrapperRef}>
       <Input
         placeholder="Select event"
-        icon={
-          // @ts-expect-error
-          <PiMagnifyingGlass />
-        }
+        icon={<PiMagnifyingGlass />}
         iconPosition="left"
         value={search}
         onFocus={() => setIsOpen(true)}
@@ -92,7 +90,7 @@ export default function EventSearchComponent({
           }
         }}
         onSubmit={(e) => {
-          console.log('onSubmit', e);
+          console.log("onSubmit", e);
           if (selectedEvent === undefined || search === "") {
             e.preventDefault();
             e.currentTarget.reportValidity();
@@ -107,6 +105,7 @@ export default function EventSearchComponent({
             <EventCardComponent
               key={event.id}
               {...event}
+              startDate="1st May, 2025"
               status={
                 selectedEvent?.id === event.id ? "grey selected" : "white"
               }

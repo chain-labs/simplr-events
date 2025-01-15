@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 
 import Header from "@/components/header";
+import Privy from "@/components/privy";
 
 import "./globals.css";
 
@@ -36,9 +37,11 @@ export default function RootLayout({
         ></link>
       </head>
       <body className={`bg-simpleBlue font-switzer antialiased`}>
-        <div className="flex flex-col w-full h-full min-h-[100vh]">
-          <Header />
-          {children}
+        <div className="flex h-full min-h-[100vh] w-full flex-col">
+          <Privy>
+            <Header />
+            {children}
+          </Privy>
         </div>
       </body>
     </html>

@@ -7,6 +7,7 @@ import Container from "../component/container";
 import { Button } from "../ui/button";
 import { H4 } from "../ui/heading";
 import { PLarge, PMedium, PSmall } from "../ui/paragraph";
+import useLinkTicket from "./hooks/useLinkTicket";
 
 export default function OrderDetails({
   data,
@@ -18,6 +19,13 @@ export default function OrderDetails({
     back: () => void;
   };
 }) {
+  const { handleVerify, ready } = useLinkTicket();
+
+  const handleLink = async () => {
+    await handleVerify("0x02d5ee0b15f6598736A24C5AaA968FaeF49cd4B4", "90");
+    navigation.next();
+  };
+
   return (
     <Container className="max-w-[780px]">
       <div className="flex gap-[64px]">
@@ -76,7 +84,7 @@ export default function OrderDetails({
               {" "}
               go back{" "}
             </Button>
-            <Button variant="primary" onClick={navigation.next}>
+            <Button variant="primary" onClick={handleLink} disabled={!ready}>
               {" "}
               confirm & link{" "}
             </Button>

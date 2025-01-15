@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { PiLinkDuotone, PiQuestion } from "react-icons/pi";
@@ -9,7 +11,8 @@ import {
   LinkingTicketFormData,
   linktingTicketFormSchema,
 } from "@/app/link-your-ticket/page";
-import { dummyTickets } from "@/utils/dummyData";
+import { Event } from "@/types/event";
+import { dummyEvents, dummyTickets } from "@/utils/dummyData";
 
 import { ComponentWithLabel } from "../component/component-with-label";
 import Container from "../component/container";
@@ -25,8 +28,16 @@ export default function LinkingTicketContainer({
 }: {
   handleLinkingTicketSubmit: (data: LinkingTicketFormData) => void;
 }) {
-  // TODO: Replace dummyTickets with real data
-  const suggestedEvents = dummyTickets.slice(0, 2);
+  const [suggestedEvents, setSuggestedEvents] = useState<Event[]>([]);
+
+  useEffect(() => {
+    // TODO: Replace dummyTickets with real data
+    const randomIndexes = Array.from({ length: 2 }, () =>
+      Math.floor(Math.random() * dummyEvents.length)
+    );
+    const suggestedEvents = randomIndexes.map((index) => dummyEvents[index]);
+    setSuggestedEvents(suggestedEvents);
+  }, []);
 
   const {
     register,
@@ -43,7 +54,6 @@ export default function LinkingTicketContainer({
         className="flex gap-[64px]"
       >
         <div className="flex w-full flex-col gap-[16px]">
-          {/* @ts-expect-error */}
           <PiLinkDuotone className="text-[48px] text-simpleBlue" />
           <H4 className="text-simpleGray700">Link your ticket</H4>
 
@@ -58,7 +68,6 @@ export default function LinkingTicketContainer({
               placeholder="OD123456789"
               icon={
                 <TitleTag title="Order ID" position="bottom">
-                  {/* @ts-expect-error */}
                   <PiQuestion />
                 </TitleTag>
               }
@@ -85,7 +94,6 @@ export default function LinkingTicketContainer({
               placeholder="Seat A123"
               icon={
                 <TitleTag title="Seat Number" position="bottom">
-                  {/* @ts-expect-error */}
                   <PiQuestion />
                 </TitleTag>
               }
@@ -116,7 +124,12 @@ export default function LinkingTicketContainer({
             Suggested Events
           </p>
           {suggestedEvents.map((event) => (
-            <EventCardComponent key={event.id} {...event} status="grey" />
+            <EventCardComponent
+              startDate="25 Sep, 2025"
+              key={event.id}
+              {...event}
+              status="grey"
+            />
           ))}
           <Button variant="primary" type="submit">
             confirm ticket ↗️

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { z } from "zod";
 
 import FooterProgressBar, { StepsType } from "@/components/footer-progress-bar";
+import useLinkTicket from "@/components/link-your-ticket/hooks/useLinkTicket";
 import LinkedAndVerifiedTicket from "@/components/link-your-ticket/linked-and-verified-ticket";
 import LinkingTicketContainer from "@/components/link-your-ticket/linking-ticket-container";
 import OrderDetails from "@/components/link-your-ticket/order-details";
@@ -105,6 +106,7 @@ export default function LinkYourTicket() {
 
     return { next, back };
   })();
+
 
   return (
     <>

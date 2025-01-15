@@ -2,20 +2,22 @@
 
 import { PiCheck } from "react-icons/pi";
 
+import { Event } from "@/types/event";
 import { Ticket } from "@/types/ticket";
 import { cn } from "@/utils/cn";
 
 import { PSmall } from "../ui/paragraph";
 
-type EventCardComponentProps = Ticket & {
+type EventCardComponentProps = Event & {
   status: "selected" | "grey" | "white" | "grey selected";
   onClick?: () => void;
+  startDate: string;
 };
 export default function EventCardComponent({
   EventIcon,
   eventName,
-  startDate,
   location,
+  startDate,
   status,
   onClick,
 }: EventCardComponentProps) {
@@ -55,11 +57,9 @@ export default function EventCardComponent({
         </div>
       </div>
       {status === "selected" && (
-        //@ts-expect-error
         <PiCheck className="text-[20px] text-simpleWhite" />
       )}
       {status === "grey selected" && (
-        // @ts-expect-error
         <PiCheck className="text-[20px] text-simpleBlue" />
       )}
     </div>

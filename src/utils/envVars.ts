@@ -7,6 +7,7 @@ export const verifyEnvVar = (varName: string, value: string | undefined) => {
 };
 
 export const envVars = {
+  isTestNetwork: process.env.NEXT_PUBLIC_TEST_NETWORK === "true",
   privyAppId: verifyEnvVar(
     "NEXT_PUBLIC_PRIVY_APP_ID",
     process.env.NEXT_PUBLIC_PRIVY_APP_ID
