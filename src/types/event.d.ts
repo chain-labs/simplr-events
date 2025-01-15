@@ -11,4 +11,6 @@ interface Event {
   deadline: string; // event date to end - backend
   startDateTime: string; // event date - display as it is
   endDateTime: string; // event date - display as it is
+  seatInputType: "input" | "dropdown";
+  seatOptions?: string[]; // if seatInputType is dropdown
 }
