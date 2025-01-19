@@ -4,6 +4,8 @@ import SimpleBar from "simplebar-react";
 
 import Header from "@/components/Header";
 
+import { UserProvider } from "../../UserContext";
+
 export default function Template({
   children,
 }: Readonly<{
@@ -12,8 +14,10 @@ export default function Template({
   return (
     <SimpleBar style={{ maxHeight: "100vh" }}>
       <div className="flex h-full min-h-[100vh] w-full flex-col">
-        <Header />
-        {children}
+        <UserProvider>
+          <Header />
+          {children}
+        </UserProvider>
       </div>
     </SimpleBar>
   );

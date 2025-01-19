@@ -14,9 +14,12 @@ import {
   PiXDuotone,
 } from "react-icons/pi";
 
+import useKernelClient from "@/hooks/useKernelClient";
+import api from "@/utils/axios";
 import { cn } from "@/utils/cn";
 import { envVars } from "@/utils/envVars";
 
+import { useUser } from "../../UserContext";
 import { Button } from "./ui/button";
 import { LabelSmall } from "./ui/label";
 import { PMedium } from "./ui/paragraph";
@@ -35,6 +38,8 @@ export default function Header() {
   ];
 
   const privy = usePrivy();
+  const { ready } = useKernelClient();
+  const { user, setUser } = useUser();
 
   const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -58,7 +63,6 @@ export default function Header() {
 
   useEffect(() => {
     if (privy.user) {
-      console.log(privy.user);
       const emailAccount = privy.user.linkedAccounts.find(
         // @ts-expect-error - TS doesn't know that the user is authenticated
         (account) => account.email
@@ -76,14 +80,18 @@ export default function Header() {
       console.log({ email: emailAccount.email, name: name, address: wallet });
 
       // save user to db
-      axios
-        .post(`${envVars.apiEndpoint}/user/create`, {
+
+      api
+        .post(`/user/create`, {
           name,
           email,
           address: wallet?.address,
         })
         .then((response) => {
           console.log({ response });
+          const { data } = response;
+          const { _id, __v, ...user } = data.user;
+          setUser(user);
         })
         .catch((error) => {
           console.log({ error });

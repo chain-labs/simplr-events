@@ -18,11 +18,15 @@ import {
   getUserOperationGasPrice,
 } from "@zerodev/sdk";
 import { KERNEL_V3_1, getEntryPoint } from "@zerodev/sdk/constants";
+import axios from "axios";
 import { Account, concat, createPublicClient, http, keccak256 } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { arbitrumSepolia } from "viem/chains";
 
+import api from "@/utils/axios";
 import { envVars } from "@/utils/envVars";
+
+import { User, useUser } from "../../UserContext";
 
 const useKernelClient = () => {
   const [kernelClient, setKernelClient] =
@@ -31,8 +35,12 @@ const useKernelClient = () => {
   const [ready, setReady] = React.useState(false);
 
   const { wallets } = useWallets();
+  const { user, setUser } = useUser();
 
-  const initializeKernelClient = async (wallet: ConnectedWallet) => {
+  const initializeKernelClient = async (
+    wallet: ConnectedWallet,
+    user: User
+  ) => {
     console.log("Initializing Privy Zerodev Smart Account with sessions");
     const BUNDLER_RPC = `https://rpc.zerodev.app/api/v2/bundler/${envVars.zeroDevId}`;
     const PAYMASTER_RPC = `https://rpc.zerodev.app/api/v2/paymaster/${envVars.zeroDevId}`;
@@ -91,12 +99,30 @@ const useKernelClient = () => {
       kernelVersion: KERNEL_V3_1,
     });
 
-    const storedApproval = localStorage.getItem("kernelApproval");
+    const storedApproval = user?.sessionKeyString;
+
+    console.log({ storedApproval, user });
 
     const approval =
       storedApproval ?? (await serializePermissionAccount(kernelAccount));
 
-    localStorage.setItem("kernelApproval", approval);
+    if (!storedApproval) {
+      await api.put(`${envVars.apiEndpoint}/user/session-key`, {
+        email: user.email,
+        sessionKeyString: approval,
+      });
+    }
+
+    if (user) {
+      const savedUser = {
+        email: user?.email,
+        name: user?.name,
+        address: user?.address,
+        sessionKeyString: approval,
+      };
+
+      setUser(savedUser);
+    }
 
     const sessionKeyAccount = await deserializePermissionAccount(
       publicClient,
@@ -144,17 +170,17 @@ const useKernelClient = () => {
   };
 
   useEffect(() => {
-    if (wallets) {
+    if (wallets && user?.email) {
       const wallet = wallets.find(
         (wallet) => wallet.walletClientType === "privy"
       );
       console.log("Found Wallet", { wallet });
 
       if (wallet) {
-        initializeKernelClient(wallet);
+        initializeKernelClient(wallet, user);
       }
     }
-  }, [wallets]);
+  }, [wallets, user?.email]);
 
   return { kernelClient, kernelAccount, ready };
 };
