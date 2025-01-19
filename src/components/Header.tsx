@@ -29,18 +29,12 @@ export default function Header() {
   const MobileWalletModelRef = useRef<HTMLDivElement>(null);
   const Links = [
     { name: "home", href: "/" },
-    { name: "link your ticket", href: "/link-your-ticket" },
+    { name: "link your ticket", href: "/link-your-ticket", auth: true },
     { name: "buy", href: "/buy-ticket" },
     { name: "sell", href: "/sell-your-ticket" },
   ];
 
   const privy = usePrivy();
-
-  // const account = {
-  //   isConnected: true,
-  //   wallet: "$250,000.0000",
-  //   email: "testtesttesttesttest@example.com",
-  // };
 
   const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -147,18 +141,22 @@ export default function Header() {
         {/* desktop */}
         <>
           <ul className="hidden gap-[10px] md:flex">
-            {Links.map((link) => (
-              <li
-                key={link.href}
-                className="inline-block text-sm font-semibold text-[#333] transition-colors duration-300 hover:text-[#000]"
-              >
-                <Link href={link.href}>
-                  <Button variant="ghost" size="sm">
-                    {link.name}
-                  </Button>
-                </Link>
-              </li>
-            ))}
+            {Links.map((link) => {
+              return (
+                (link.auth ? link.auth && privy.authenticated : true) && (
+                  <li
+                    key={link.href}
+                    className="inline-block text-sm font-semibold text-[#333] transition-colors duration-300 hover:text-[#000]"
+                  >
+                    <Link href={link.href}>
+                      <Button variant="ghost" size="sm">
+                        {link.name}
+                      </Button>
+                    </Link>
+                  </li>
+                )
+              );
+            })}
           </ul>
           {privy.authenticated && (
             <div className="relative hidden md:block">
