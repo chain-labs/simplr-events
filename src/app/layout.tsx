@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 
-import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 
-import Header from "@/components/Header";
+import Privy from "@/components/providers/privy";
 
 import "./globals.css";
 
@@ -39,7 +38,7 @@ export default function RootLayout({
         ></link>
       </head>
       <body className={`bg-simpleBlue font-switzer antialiased`}>
-        {children}
+        <Privy>{children}</Privy>
       </body>
     </html>
   );

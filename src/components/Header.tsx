@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { usePrivy } from "@privy-io/react-auth";
+import axios from "axios";
 import {
   PiCaretDown,
   PiHouseDuotone,
@@ -13,6 +15,7 @@ import {
 } from "react-icons/pi";
 
 import { cn } from "@/utils/cn";
+import { envVars } from "@/utils/envVars";
 
 import { Button } from "./ui/button";
 import { LabelSmall } from "./ui/label";
@@ -31,11 +34,68 @@ export default function Header() {
     { name: "sell", href: "/sell-your-ticket" },
   ];
 
-  const account = {
-    isConnected: true,
-    wallet: "$250,000.0000",
-    email: "testtesttesttesttest@example.com",
+  const privy = usePrivy();
+
+  // const account = {
+  //   isConnected: true,
+  //   wallet: "$250,000.0000",
+  //   email: "testtesttesttesttest@example.com",
+  // };
+
+  const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      await privy.login();
+      // save user to db
+      // const response = await axios.post(`${envVars.apiEndpoint}/user/create`, {})
+    } catch (error) {
+      console.error("Error while logging in", error);
+    }
   };
+
+  const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      await privy.logout();
+    } catch (error) {
+      console.error("Error while logging out", error);
+    }
+  };
+
+  useEffect(() => {
+    if (privy.user) {
+      console.log(privy.user);
+      const emailAccount = privy.user.linkedAccounts.find(
+        // @ts-expect-error - TS doesn't know that the user is authenticated
+        (account) => account.email
+      );
+      // @ts-expect-error - TS doesn't know that the user is authenticated
+      const email = emailAccount?.email;
+      const name =
+        // @ts-expect-error - TS doesn't know that the user is authenticated
+        emailAccount?.name ??
+        // @ts-expect-error - TS doesn't know that the user is authenticated
+        privy.user.linkedAccounts.find((account) => account.name);
+
+      const wallet = privy.user.wallet;
+      // @ts-expect-error - TS doesn't know that the user is authenticated
+      console.log({ email: emailAccount.email, name: name, address: wallet });
+
+      // save user to db
+      axios
+        .post(`${envVars.apiEndpoint}/user/create`, {
+          name,
+          email,
+          address: wallet?.address,
+        })
+        .then((response) => {
+          console.log({ response });
+        })
+        .catch((error) => {
+          console.log({ error });
+        });
+    }
+  }, [privy.user]);
 
   useEffect(() => {
     let handleClickOutside = (e: any) => {
@@ -100,7 +160,7 @@ export default function Header() {
               </li>
             ))}
           </ul>
-          {account.isConnected && (
+          {privy.authenticated && (
             <div className="relative hidden md:block">
               <Button
                 variant="ghost"
@@ -111,11 +171,9 @@ export default function Header() {
                     : () => setWalletModelOpen(true)
                 }
               >
-                {/* @ts-expect-error */}
                 <PiWalletDuotone size={24} />
-                {account.wallet}
+                {"1$"}
                 {
-                  // @ts-expect-error
                   <PiCaretDown
                     size={16}
                     className={cn(
@@ -133,13 +191,13 @@ export default function Header() {
                   <div className="flex flex-col items-center justify-center gap-[8px] whitespace-nowrap text-left text-simpleGray700">
                     <LabelSmall>Your Email:</LabelSmall>
                     <PMedium className="text-[16px] font-bold leading-[26px] tracking-[0.02em]">
-                      {account.email}
+                      {privy.user?.email?.address}
                     </PMedium>
                   </div>
                   <div className="flex flex-col items-center justify-center gap-[8px] whitespace-nowrap text-left text-simpleGray700">
                     <LabelSmall>Your wallet Balance:</LabelSmall>
                     <PMedium className="text-[20px] font-bold leading-[26px] tracking-[0.02em]">
-                      {account.wallet}
+                      {privy.user?.wallet?.address}
                     </PMedium>
                   </div>
                   <Button variant="primary" size="sm">
@@ -153,12 +211,12 @@ export default function Header() {
             <Button variant="outline" size="sm">
               contact us
             </Button>
-            {account.isConnected ? (
-              <Button variant="outline" size="sm">
+            {privy.authenticated ? (
+              <Button variant="outline" size="sm" onClick={handleLogout}>
                 log out
               </Button>
             ) : (
-              <Button variant="primary" size="sm">
+              <Button variant="primary" size="sm" onClick={handleLogin}>
                 sign in
               </Button>
             )}
@@ -167,7 +225,7 @@ export default function Header() {
 
         {/* Mobile */}
         <div className="flex items-center justify-center gap-2 md:hidden">
-          {!account.isConnected ? (
+          {!privy.authenticated ? (
             <Button
               variant="primary"
               size="lg"
@@ -178,7 +236,6 @@ export default function Header() {
           ) : (
             <Link href="/">
               <Button className="grid h-[48px] w-[48px] place-items-center rounded-full p-0">
-                {/* @ts-expect-error */}
                 <PiHouseDuotone size={24} />
               </Button>
             </Link>
@@ -188,10 +245,8 @@ export default function Header() {
             className="grid h-[48px] w-[48px] place-items-center rounded-full p-0"
           >
             {hamMenuOpen ? (
-              // @ts-expect-error
               <PiXDuotone size={24} />
             ) : (
-              // @ts-expect-error
               <PiListDuotone size={24} />
             )}
           </Button>
@@ -215,7 +270,7 @@ export default function Header() {
                 </li>
               ))}
 
-              {account.isConnected && (
+              {privy.authenticated && (
                 <>
                   <div className="h-[1px] w-full bg-simpleBlack opacity-25"></div>
                   <div className="md:hidden">
@@ -228,11 +283,9 @@ export default function Header() {
                           : () => setWalletModelOpen(true)
                       }
                     >
-                      {/* @ts-expect-error */}
                       <PiWalletDuotone size={24} />
-                      {account.wallet}
+                      {"1 USD"}
                       {
-                        // @ts-expect-error
                         <PiCaretDown
                           size={16}
                           className={cn(
@@ -250,13 +303,13 @@ export default function Header() {
                         <div className="flex flex-col items-center justify-center gap-[8px] whitespace-nowrap text-left text-simpleGray700">
                           <LabelSmall>Your Email:</LabelSmall>
                           <PMedium className="text-[16px] font-bold leading-[26px] tracking-[0.02em]">
-                            {account.email}
+                            {privy.user?.email?.address}
                           </PMedium>
                         </div>
                         <div className="flex flex-col items-center justify-center gap-[8px] whitespace-nowrap text-left text-simpleGray700">
                           <LabelSmall>Your wallet Balance:</LabelSmall>
                           <PMedium className="text-[20px] font-bold leading-[26px] tracking-[0.02em]">
-                            {account.wallet}
+                            {"1 USD"}
                           </PMedium>
                         </div>
                         <Button variant="primary" size="sm">
@@ -277,7 +330,7 @@ export default function Header() {
                 >
                   contact us
                 </Button>
-                {account.isConnected && (
+                {privy.authenticated && (
                   <Button
                     variant="secondary"
                     size="sm"

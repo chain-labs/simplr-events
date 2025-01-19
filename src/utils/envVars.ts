@@ -19,5 +19,11 @@ export const envVars = {
     "NEXT_PUBLIC_ZERODEV_ID",
     process.env.NEXT_PUBLIC_ZERODEV_ID
   ),
+  isTestNetwork:
+    process.env.NEXT_PUBLIC_IS_TEST_NETWORK?.toLowerCase() === "true",
+  apiEndpoint: verifyEnvVar(
+    "NEXT_PUBLIC_API_ENDPOINT",
+    process.env.NEXT_PUBLIC_API_ENDPOINT
+  ),
   // Add other environment variables here as needed
 };
