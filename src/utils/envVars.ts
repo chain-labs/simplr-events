@@ -25,5 +25,9 @@ export const envVars = {
     "NEXT_PUBLIC_API_ENDPOINT",
     process.env.NEXT_PUBLIC_API_ENDPOINT
   ),
+  etherspotApi: verifyEnvVar(
+    "NEXT_PUBLIC_ETHERSPOT_API",
+    process.env.NEXT_PUBLIC_ETHERSPOT_API
+  ),
   // Add other environment variables here as needed
 };

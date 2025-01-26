@@ -25,8 +25,8 @@ const Privy = ({ children }: Props) => {
           accentColor: `${theme.colors.brandBlue}` as `#${string}`,
           logo: logo_faces.png.blue,
         },
-        supportedChains: [arbitrumSepolia, arbitrum, base],
-        defaultChain: envVars.isTestNetwork ? arbitrumSepolia : arbitrum,
+        supportedChains: [arbitrumSepolia],
+        defaultChain: arbitrumSepolia,
         embeddedWallets: {
           createOnLogin: "users-without-wallets",
         },

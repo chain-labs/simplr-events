@@ -14,6 +14,7 @@ import {
   PiXDuotone,
 } from "react-icons/pi";
 
+import useEtherspot from "@/hooks/useEtherspot";
 import useKernelClient from "@/hooks/useKernelClient";
 import api from "@/utils/axios";
 import { cn } from "@/utils/cn";
@@ -38,7 +39,8 @@ export default function Header() {
   ];
 
   const privy = usePrivy();
-  const { ready } = useKernelClient();
+  // const { ready } = useKernelClient();
+  useEtherspot();
   const { user, setUser } = useUser();
 
   const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
