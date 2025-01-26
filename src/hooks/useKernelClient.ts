@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useCallback, useEffect } from "react";
 
 import { ConnectedWallet, useWallets } from "@privy-io/react-auth";
@@ -101,10 +103,12 @@ const useKernelClient = () => {
 
     const storedApproval = user?.sessionKeyString;
 
-    console.log({ storedApproval, user });
-
     const approval =
-      storedApproval ?? (await serializePermissionAccount(kernelAccount));
+      storedApproval !== ""
+        ? storedApproval
+        : await serializePermissionAccount(kernelAccount);
+
+    console.log({ approval });
 
     if (!storedApproval) {
       await api.put(`${envVars.apiEndpoint}/user/session-key`, {
@@ -182,7 +186,7 @@ const useKernelClient = () => {
     }
   }, [wallets, user?.email]);
 
-  return { kernelClient, kernelAccount, ready };
+  return { ready, account: kernelAccount?.address, kernelClient };
 };
 
 export default useKernelClient;

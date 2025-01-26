@@ -3,6 +3,7 @@ import Script from "next/script";
 
 import "simplebar-react/dist/simplebar.min.css";
 
+import Wagmi from "@/components/providers/Wagmi";
 import Privy from "@/components/providers/privy";
 
 import "./globals.css";
@@ -38,7 +39,9 @@ export default function RootLayout({
         ></link>
       </head>
       <body className={`bg-simpleBlue font-switzer antialiased`}>
-        <Privy>{children}</Privy>
+        <Wagmi>
+          <Privy>{children}</Privy>
+        </Wagmi>
       </body>
     </html>
   );
