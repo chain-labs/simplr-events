@@ -1,17 +1,17 @@
 "use client";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider, createConfig, http } from "wagmi";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { arbitrumSepolia, mainnet, sepolia } from "wagmi/chains";
+import { arbitrumSepolia, base, mainnet, sepolia } from "wagmi/chains";
 
 const config = createConfig({
-  chains: [arbitrumSepolia],
+  chains: [base],
   transports: {
-    [arbitrumSepolia.id]: http(),
+    [base.id]: http(),
   },
 });
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 const Wagmi = ({ children }: { children: React.ReactNode }) => {
   return (

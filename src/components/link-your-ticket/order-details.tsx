@@ -1,6 +1,6 @@
 "use client";
 
-import { ButtonHTMLAttributes, MouseEvent, useMemo } from "react";
+import { ButtonHTMLAttributes, MouseEvent, useEffect, useMemo } from "react";
 
 import { useReadContract } from "wagmi";
 
@@ -27,7 +27,15 @@ export default function OrderDetails({
   const EventContract = useEventContract();
 
   const { data: tokenIdCounter, error } = useReadContract({
-    abi: EventContract.abi,
+    abi: [
+      {
+        type: "function",
+        inputs: [],
+        name: "tokenIdCounter",
+        outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+        stateMutability: "view",
+      },
+    ],
     address: data.eventObj.contractAddress as `0x${string}`,
     functionName: "tokenIdCounter",
     args: [],
@@ -35,6 +43,13 @@ export default function OrderDetails({
       enabled: !!data.eventObj.contractAddress,
     },
   });
+
+  useEffect(() => {
+    // Your effect logic here
+    if (error) {
+      console.log({ error });
+    }
+  }, [error]);
 
   const tokenId = useMemo(() => {
     console.log({ tokenIdCounter });

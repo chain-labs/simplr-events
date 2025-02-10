@@ -14,8 +14,7 @@ const useEventContract = () => {
   const [contract, setContract] = useState<IContract>({ abi, address: "0x" });
   useEffect(() => {
     if (isTestNetwork) {
-      const address = CONTRACTS[arbitrumSepolia.id]
-        .event as unknown as `0x${string}`;
+      const address = CONTRACTS[base.id].event as unknown as `0x${string}`;
       setContract({ abi, address });
     } else {
       const address = CONTRACTS[base.id].event as unknown as `0x${string}`;

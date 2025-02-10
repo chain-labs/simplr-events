@@ -18,7 +18,7 @@ const useMarketplaceContract = () => {
 
   useEffect(() => {
     const address = isTestNetwork
-      ? (CONTRACTS[arbitrumSepolia.id].marketplace as unknown as `0x${string}`)
+      ? (CONTRACTS[base.id].marketplace as unknown as `0x${string}`)
       : (CONTRACTS[base.id].marketplace as unknown as `0x${string}`);
 
     setContractDetails({ abi, address });

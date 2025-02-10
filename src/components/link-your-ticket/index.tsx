@@ -9,6 +9,7 @@ import api from "@/utils/axios";
 import { cn } from "@/utils/cn";
 
 import FooterProgressBar, { StepsType } from "../footer-progress-bar";
+import useLinkTicket from "./hooks/useLinkTicket";
 import useTicketVerification from "./hooks/useTicketVerification";
 import LinkedAndVerifiedTicket from "./linked-and-verified-ticket";
 import LinkingTicketContainer from "./linking-ticket-container";
@@ -68,13 +69,14 @@ export default function LinkYourTicket() {
 
   const handleLinkingTicketSubmit = async (data: centralizedState) => {
     console.log({ data });
+
     // // Verification
     const ticketData = await verifyTicketData({
       seat: data.seat,
       orderNumber: data.orderNumber,
       eventObj: data.eventObj,
     });
-    // // Update the state with the form data
+    // Update the state with the form data
     setCentralizeState((prev) => ({
       ...prev,
       ...data,

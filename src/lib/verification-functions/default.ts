@@ -1,12 +1,13 @@
 "use client";
 
+import { NexusClient } from "@biconomy/abstractjs";
 import { concat, encodeAbiParameters, keccak256 } from "viem";
 
 import { TicketData } from "@/components/link-your-ticket/hooks/useTicketVerification";
 
 const verification_default = async (
   ticketData: TicketData,
-  kernelClient: any,
+  nexusClient: NexusClient | null,
   account: `0x${string}` | undefined
 ) => {
   const { orderNumber, eventObj } = ticketData;
@@ -18,11 +19,11 @@ const verification_default = async (
     ])
   );
 
-  if (!kernelClient) {
+  if (!nexusClient) {
     return;
   }
 
-  const signature = await kernelClient?.signMessage({ message: messageHash });
+  const signature = await nexusClient?.signMessage({ message: messageHash });
 
   const data = encodeAbiParameters(
     [{ type: "address" }, { type: "uint256" }, { type: "bytes" }],

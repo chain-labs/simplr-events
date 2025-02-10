@@ -23,7 +23,7 @@ import { KERNEL_V3_1, getEntryPoint } from "@zerodev/sdk/constants";
 import axios from "axios";
 import { Account, concat, createPublicClient, http, keccak256 } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { arbitrumSepolia } from "viem/chains";
+import { arbitrumSepolia, base } from "viem/chains";
 
 import api from "@/utils/axios";
 import { envVars } from "@/utils/envVars";
@@ -45,9 +45,10 @@ const useKernelClient = () => {
   ) => {
     console.log("Initializing Privy Zerodev Smart Account with sessions");
     const BUNDLER_RPC = `https://rpc.zerodev.app/api/v2/bundler/${envVars.zeroDevId}`;
-    const PAYMASTER_RPC = `https://rpc.zerodev.app/api/v2/paymaster/${envVars.zeroDevId}`;
+    const PAYMASTER_RPC = `https://rpc.zerodev.app/api/v2/paymaster/${envVars.zeroDevId}?selfFunded=true`;
+    // const PAYMASTER_RPC = `https://rpc.zerodev.app/api/v2/paymaster/9140f1f4-90c3-4a0f-8d92-62f700ac67a0?selfFunded=true`;
 
-    const chain = arbitrumSepolia;
+    const chain = base;
     const entryPoint = getEntryPoint("0.7");
 
     if (!wallet) return null;
@@ -71,7 +72,7 @@ const useKernelClient = () => {
     const publicClient = await createPublicClient({
       chain,
       transport: http(
-        `https://arb-sepolia.g.alchemy.com/v2/${envVars.alchemyApiKey}`
+        `https://base-mainnet.g.alchemy.com/v2/${envVars.alchemyApiKey}`
       ),
     });
 

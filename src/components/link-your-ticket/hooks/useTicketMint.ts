@@ -1,16 +1,25 @@
 import React from "react";
 
-import { encodeFunctionData, keccak256, toBytes } from "viem";
+import {
+  encodeFunctionData,
+  keccak256,
+  parseEther,
+  parseUnits,
+  toBytes,
+} from "viem";
 
 import useEventContract from "@/contracts/Event";
 import useKernelClient from "@/hooks/useKernelClient";
+import useNexusClient from "@/hooks/useNexusClient";
 import { Event } from "@/types/event";
 import api from "@/utils/axios";
 import { envVars } from "@/utils/envVars";
 
 const useTicketMint = () => {
   const EventContract = useEventContract();
-  const { kernelClient } = useKernelClient();
+  // const { kernelClient } = useKernelClient();
+  const { nexusClient, accountAddress } = useNexusClient();
+
   const uploadNftMetadata = async (
     tokenId: string,
     eventObj: Event,
@@ -41,7 +50,7 @@ const useTicketMint = () => {
     orderNumber: string;
     ticketData: string;
   }) => {
-    if (!kernelClient) return null;
+    if (!nexusClient) return null;
     await uploadNftMetadata(tokenId, eventObj, seat, orderNumber);
     const options = {
       address: eventObj?.contractAddress,
@@ -55,26 +64,44 @@ const useTicketMint = () => {
           ticketEncryptedDataUri: "", // lit protocol's encrypted data
           ticketMetadata: `https://simplr-events-server-production.up.railway.app/nft-metadata/${eventObj.contractAddress}/${tokenId}`, // public metadata
         },
-      ] as const,
+      ],
     };
-    // @ts-expect-error
-    const userOpHash = await kernelClient?.signUserOperation({
-      callData: await kernelClient?.account?.encodeCalls([
+
+    // const userOpHash = await kernelClient?.signUserOperation({
+    //   callData: await nexusClient?.account?.encodeCalls([
+    //     {
+    //       to: eventObj.contractAddress as `0x${string}`,
+    //       data: encodeFunctionData({
+    //         abi: options.abi,
+    //         functionName: options.functionName,
+    //         args: [...options.args],
+    //       }),
+    //     },
+    //   ]),
+    //   callGasLimit: BigInt("1000000"),
+    //   verificationGasLimit: BigInt("10000000"),
+    //   preVerificationGas: BigInt("1000000"),
+    // });
+
+    // console.log({ userOpHash });
+
+    const hash = await nexusClient.debugUserOperation({
+      calls: [
         {
-          to: eventObj.contractAddress as `0x${string}`,
+          to: options.address as `0x${string}`,
           data: encodeFunctionData({
             abi: options.abi,
             functionName: options.functionName,
-            args: [...options.args],
+            args: options.args,
           }),
         },
-      ]),
-      callGasLimit: BigInt("1000000"),
-      verificationGasLimit: BigInt("10000000"),
-      preVerificationGas: BigInt("1000000"),
+      ],
+      maxFeePerGas: parseUnits("0.01", 9),
     });
 
-    console.log({ userOpHash });
+    console.log({ hash });
+
+    // const receipt = await nexusClient.waitForUserOperationReceipt({ hash });
 
     // const receipt = await kernelClient?.waitForUserOperationReceipt({
     //   hash: userOpHash,

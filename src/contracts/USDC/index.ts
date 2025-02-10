@@ -24,7 +24,7 @@ const useUSDCContract = () => {
 
   useEffect(() => {
     if (isTestNetwork) {
-      const address = CONTRACTS[arbitrumSepolia.id]
+      const address = CONTRACTS[base.id]
         .paymentToken as unknown as `0x${string}`;
       const decimals = 6;
       setContract({ abi, address, decimals });

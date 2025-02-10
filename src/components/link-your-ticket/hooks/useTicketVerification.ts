@@ -2,6 +2,7 @@
 
 import useEventContract from "@/contracts/Event";
 import useKernelClient from "@/hooks/useKernelClient";
+import useNexusClient from "@/hooks/useNexusClient";
 import verification_default from "@/lib/verification-functions/default";
 import { Event } from "@/types/event";
 
@@ -13,7 +14,8 @@ export type TicketData = {
 
 const useTicketVerification = () => {
   const EventContract = useEventContract();
-  const { ready, account, kernelClient } = useKernelClient();
+  // const { ready, account, kernelClient } = useKernelClient();
+  const { nexusClient, accountAddress } = useNexusClient();
   const verifyTicketData = async (ticketData: TicketData) => {
     const verificationType = ticketData.eventObj.verificationType;
 
@@ -23,8 +25,8 @@ const useTicketVerification = () => {
       default: {
         verificationData = await verification_default(
           ticketData,
-          kernelClient,
-          account
+          nexusClient,
+          accountAddress ?? "0x"
         );
       }
     }
