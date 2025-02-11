@@ -52,8 +52,6 @@ export default function LinkingTicketContainer({
     mode: "onSubmit", // Ensure validation is triggered on submit
   });
 
-  console.log("Form errors:", errors); // Add this log to check for validation errors
-
   const event = getEventFromId(watch("event"));
   const [isLoading, setIsLoading] = useState(false);
 

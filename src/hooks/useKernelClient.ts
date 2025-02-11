@@ -23,7 +23,7 @@ import { KERNEL_V3_1, getEntryPoint } from "@zerodev/sdk/constants";
 import axios from "axios";
 import { Account, concat, createPublicClient, http, keccak256 } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { arbitrumSepolia } from "viem/chains";
+import { arbitrumSepolia, base } from "viem/chains";
 
 import api from "@/utils/axios";
 import { envVars } from "@/utils/envVars";
@@ -43,11 +43,10 @@ const useKernelClient = () => {
     wallet: ConnectedWallet,
     user: User
   ) => {
-    console.log("Initializing Privy Zerodev Smart Account with sessions");
     const BUNDLER_RPC = `https://rpc.zerodev.app/api/v2/bundler/${envVars.zeroDevId}`;
     const PAYMASTER_RPC = `https://rpc.zerodev.app/api/v2/paymaster/${envVars.zeroDevId}`;
 
-    const chain = arbitrumSepolia;
+    const chain = base;
     const entryPoint = getEntryPoint("0.7");
 
     if (!wallet) return null;
@@ -108,8 +107,6 @@ const useKernelClient = () => {
         ? storedApproval
         : await serializePermissionAccount(kernelAccount);
 
-    console.log({ approval });
-
     if (!storedApproval) {
       await api.put(`${envVars.apiEndpoint}/user/session-key`, {
         email: user.email,
@@ -135,12 +132,6 @@ const useKernelClient = () => {
       approval,
       agent_SessionKeySigner
     );
-
-    console.log({
-      sessionKeyAccount: sessionKeyAccount.address,
-      kernelAccount: kernelAccount.address,
-      wallet: wallet.address,
-    });
 
     const kernelClient = createKernelAccountClient({
       account: sessionKeyAccount,
@@ -178,7 +169,6 @@ const useKernelClient = () => {
       const wallet = wallets.find(
         (wallet) => wallet.walletClientType === "privy"
       );
-      console.log("Found Wallet", { wallet });
 
       if (wallet) {
         initializeKernelClient(wallet, user);

@@ -14,8 +14,6 @@ import {
   PiXDuotone,
 } from "react-icons/pi";
 
-import useEtherspot from "@/hooks/useEtherspot";
-import useKernelClient from "@/hooks/useKernelClient";
 import api from "@/utils/axios";
 import { cn } from "@/utils/cn";
 import { envVars } from "@/utils/envVars";
@@ -39,8 +37,6 @@ export default function Header() {
   ];
 
   const privy = usePrivy();
-  // const { ready } = useKernelClient();
-  useEtherspot();
   const { user, setUser } = useUser();
 
   const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -78,8 +74,6 @@ export default function Header() {
         privy.user.linkedAccounts.find((account) => account.name);
 
       const wallet = privy.user.wallet;
-      // @ts-expect-error - TS doesn't know that the user is authenticated
-      console.log({ email: emailAccount.email, name: name, address: wallet });
 
       // save user to db
 
@@ -90,7 +84,6 @@ export default function Header() {
           address: wallet?.address,
         })
         .then((response) => {
-          console.log({ response });
           const { data } = response;
           const { _id, __v, ...user } = data.user;
           setUser(user);

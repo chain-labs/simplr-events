@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+
 import { arbitrum, arbitrumSepolia, base } from "wagmi/chains";
 
-import { envVars } from "@/lib/envVars";
+import { envVars } from "@/utils/envVars";
 
 import { CONTRACTS } from "../contracts";
-
 import abi from "./abi.json";
 
 const { isTestNetwork } = envVars;

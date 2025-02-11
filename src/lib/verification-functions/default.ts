@@ -6,23 +6,36 @@ import { TicketData } from "@/components/link-your-ticket/hooks/useTicketVerific
 
 const verification_default = async (
   ticketData: TicketData,
-  kernelClient: any,
+  signMessage: any,
   account: `0x${string}` | undefined
 ) => {
   const { orderNumber, eventObj } = ticketData;
   const { contractAddress } = eventObj;
-  const messageHash = keccak256(
-    concat([
-      contractAddress as `0x${string}`,
-      Number(orderNumber).toString(16) as `0x${string}`,
-    ])
-  );
+  const messageHash = concat([
+    contractAddress as `0x${string}`,
+    Number(orderNumber).toString(16) as `0x${string}`,
+  ]);
 
-  if (!kernelClient) {
+  console.log({ messageHash });
+
+  if (!signMessage) {
     return;
   }
 
-  const signature = await kernelClient?.signMessage({ message: messageHash });
+  const signature = await signMessage(
+    { message: messageHash },
+    {
+      uiOptions: {
+        description: "Verification",
+        buttonText: "Yes, I confirm",
+        showWalletUIs: true,
+        title: "Confirm Your Ticket",
+        cancellable: true,
+      },
+    }
+  );
+
+  console.log({ signature });
 
   const data = encodeAbiParameters(
     [{ type: "address" }, { type: "uint256" }, { type: "bytes" }],

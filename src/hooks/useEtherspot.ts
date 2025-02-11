@@ -8,7 +8,7 @@ import {
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { ethers } from "ethers";
 import { Address, createWalletClient, http } from "viem";
-import { arbitrumSepolia } from "viem/chains";
+import { arbitrumSepolia, base } from "viem/chains";
 
 import { envVars } from "@/utils/envVars";
 
@@ -33,7 +33,7 @@ const useEtherspot = () => {
 
     const ethereumProvider = createWalletClient({
       account: wallet.address as `0x${string}`,
-      chain: arbitrumSepolia,
+      chain: base,
       transport: http(
         `https://testnet-rpc.etherspot.io/v2/421614?api-key=${envVars.etherspotApi}`
       ),
@@ -42,11 +42,8 @@ const useEtherspot = () => {
     console.log({ wallet, provider });
 
     const modularSdk = new ModularSdk(ethereumProvider, {
-      chainId: arbitrumSepolia.id,
-      bundlerProvider: new EtherspotBundler(
-        arbitrumSepolia.id,
-        envVars.etherspotApi
-      ),
+      chainId: base.id,
+      bundlerProvider: new EtherspotBundler(base.id, envVars.etherspotApi),
     });
 
     console.log({ modularSdk });
@@ -58,7 +55,7 @@ const useEtherspot = () => {
       domain: {
         name: "EtherspotModular",
         version: "1.0.0",
-        chainId: arbitrumSepolia.id,
+        chainId: base.id,
         verifyingContract: `0x${address.slice(2)}` as Address,
       },
       types: {
