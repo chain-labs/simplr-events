@@ -11,10 +11,12 @@ const verification_default = async (
 ) => {
   const { orderNumber, eventObj } = ticketData;
   const { contractAddress } = eventObj;
-  const messageHash = concat([
-    contractAddress as `0x${string}`,
-    Number(orderNumber).toString(16) as `0x${string}`,
-  ]);
+  const messageHash = keccak256(
+    concat([
+      contractAddress as `0x${string}`,
+      Number(orderNumber).toString(16) as `0x${string}`,
+    ])
+  );
 
   console.log({ messageHash });
 

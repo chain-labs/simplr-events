@@ -4,6 +4,8 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import { PiSealWarningDuotone } from "react-icons/pi";
 
+import { useTicketStore } from "@/app/sell-your-ticket/context";
+import { Event } from "@/types/event";
 import { Ticket } from "@/types/ticket";
 import { dummyTickets } from "@/utils/dummyData";
 import { useDataFilter } from "@/utils/useDataFilter";
@@ -19,24 +21,45 @@ import { PSmall } from "../ui/paragraph";
 import TicketCardComponent from "./ticket-card-component";
 
 type SellingLinkedTicketProps = {
-  setSelectedTickets: Dispatch<SetStateAction<Ticket[]>>;
-  selectedTickets: Ticket[];
   nextStep: () => void;
 };
 
 export default function SellingLinkedTicket({
-  setSelectedTickets,
-  selectedTickets,
   nextStep,
 }: SellingLinkedTicketProps) {
-  const dummyEvents = dummyTickets;
-  const [selectedEvent, setSelectedEvent] = useState<Ticket>();
-  const { filters, filteredData, setFilter, removeFilterElement } =
-    useDataFilter(dummyTickets);
+  const [selectedEvent, setSelectedEvent] = useState<Event>();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const { ticketsOwned, eventsList, selectedTickets, setSelectedTickets } =
+    useTicketStore();
+
+  const {
+    filters: eventFilters,
+    filteredData: filteredDataEvents,
+    setFilter: setEventFilters,
+    removeFilterElement: removeEventFilterElement,
+  } = useDataFilter(eventsList);
+
+  const {
+    filters: ticketFilters,
+    filteredData: filteredDataTickets,
+    setFilter: setTicketFilters,
+    removeFilterElement: removeTicketFilterElement,
+  } = useDataFilter(ticketsOwned);
 
   useEffect(() => {
     if (selectedTickets.length) {
-      removeFilterElement("id", selectedTickets[0].id);
+      removeTicketFilterElement("_id", selectedTickets[0]._id);
+    }
+  }, [selectedTickets]);
+
+  useEffect(() => {
+    if (selectedTickets.length) {
+      removeTicketFilterElement("_id", selectedTickets[0]._id);
     }
   }, [selectedTickets]);
 
@@ -50,6 +73,11 @@ export default function SellingLinkedTicket({
 
   // when user visit it for first time or user haven't linked any ticket
   const [firstTime, setFirstTime] = useState(true);
+
+  if (!isMounted) {
+    return null;
+  }
+
   return (
     <Container className="max-w-[1000px] md:my-[50px]">
       <div className="grid grid-cols-1 gap-y-[32px] md:grid-cols-[auto_auto] md:gap-[64px]">
@@ -58,14 +86,15 @@ export default function SellingLinkedTicket({
 
           {/* event dropdown */}
           <ComponentWithLabel label="Choose your event">
-            <SearchWithComponent
-              data={filteredData}
+            <SearchWithComponent<Event>
+              data={filteredDataEvents}
               selectedItems={selectedEvent}
               setSelectedItems={setSelectedEvent}
               placeholder="Search for event"
               renderComponent={(item, isSelected, onClick) => (
-                <TicketCardComponent
-                  {...item}
+                <EventCardComponent
+                  key={item._id}
+                  event={item}
                   status={isSelected ? "selected" : "grey"}
                   onClick={onClick}
                 />
@@ -76,22 +105,23 @@ export default function SellingLinkedTicket({
 
           {/* ticket search */}
           <ComponentWithLabel label="Choose the ticket to sell">
-            <SearchWithComponent
+            <SearchWithComponent<Ticket>
               selectedItems={selectedTickets}
               setSelectedItems={setSelectedTickets}
-              data={filteredData.filter(
-                (ticket) => ticket.eventName === selectedEvent?.eventName
+              data={filteredDataTickets.filter(
+                (ticket) => ticket.event.eventName === selectedEvent?.eventName
               )}
               placeholder="Search for ticket"
               renderComponent={(item, isSelected, onClick) => (
                 <TicketCardComponent
-                  {...item}
+                  key={item._id}
+                  ticketData={item}
                   status={isSelected ? "selected" : "grey"}
                   onClick={onClick}
                 />
               )}
               filterFunction={(item, query) => {
-                setFilter("seat", query);
+                setTicketFilters("seat", query);
                 return item.seat.toLowerCase().includes(query.toLowerCase());
               }}
               getItemName={(item) => item.seat}
@@ -101,7 +131,7 @@ export default function SellingLinkedTicket({
           </ComponentWithLabel>
 
           {/* suggested ticket */}
-          <ComponentWithLabel label="Suggested ticket:">
+          {/* <ComponentWithLabel label="Suggested ticket:">
             <TicketCardComponent
               {...{ ...dummyTickets[0], status: "grey" }}
               onClick={() => {
@@ -115,7 +145,7 @@ export default function SellingLinkedTicket({
                 });
               }}
             />
-          </ComponentWithLabel>
+          </ComponentWithLabel> */}
         </div>
 
         {/*  */}
@@ -128,7 +158,6 @@ export default function SellingLinkedTicket({
                 parentClassName="text-simpleGray700"
               />
               <div className="mt-[16px] grid grid-cols-[24px_auto] gap-[8px] rounded-[16px] bg-[#F2FF49A8] p-[16px]">
-                {/* @ts-expect-error */}
                 <PiSealWarningDuotone className="text-[24px] text-simpleRed" />
                 <span>
                   Please be warned that multiple violations in bad faith
@@ -146,13 +175,13 @@ export default function SellingLinkedTicket({
               {selectedTickets.length ? (
                 selectedTickets.map((ticket) => (
                   <TicketCardComponent
-                    key={ticket.id}
-                    {...ticket}
+                    key={ticket._id}
+                    ticketData={ticket}
                     status="closable"
                     onClose={() => {
                       setSelectedTickets((prev) =>
                         prev.filter(
-                          (selectedTicket) => selectedTicket.id !== ticket.id
+                          (selectedTicket) => selectedTicket._id !== ticket._id
                         )
                       );
                     }}

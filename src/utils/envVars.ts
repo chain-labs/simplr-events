@@ -29,5 +29,9 @@ export const envVars = {
     "NEXT_PUBLIC_ETHERSPOT_API",
     process.env.NEXT_PUBLIC_ETHERSPOT_API
   ),
+  subgraphUrl: verifyEnvVar(
+    "NEXT_PUBLIC_SUBGRAPH_URL",
+    process.env.NEXT_PUBLIC_SUBGRAPH_URL
+  ),
   // Add other environment variables here as needed
 };

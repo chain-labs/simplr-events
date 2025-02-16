@@ -13,6 +13,8 @@ import {
   PiWalletDuotone,
   PiXDuotone,
 } from "react-icons/pi";
+import { createWalletClient, custom } from "viem";
+import { useAccount, useConfig, useDisconnect } from "wagmi";
 
 import api from "@/utils/axios";
 import { cn } from "@/utils/cn";
@@ -38,61 +40,84 @@ export default function Header() {
 
   const privy = usePrivy();
   const { user, setUser } = useUser();
+  const account = useAccount();
+  const { disconnect } = useDisconnect();
+  const config = useConfig();
 
   const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    // try {
+    //   await privy.login();
+    //   // save user to db
+    //   // const response = await axios.post(`${envVars.apiEndpoint}/user/create`, {})
+    // } catch (error) {
+    //   console.error("Error while logging in", error);
+    // }
+
     try {
-      await privy.login();
-      // save user to db
-      // const response = await axios.post(`${envVars.apiEndpoint}/user/create`, {})
+      if (typeof window.ethereum !== "undefined") {
+        const [address] = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        const client = createWalletClient({
+          transport: custom(window.ethereum),
+        });
+        console.log("Wallet connected:", address);
+        return client;
+      } else {
+        console.log("Please install MetaMask");
+      }
     } catch (error) {
-      console.error("Error while logging in", error);
+      console.error("Error while connecting wallet", error);
     }
   };
 
   const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    // try {
+    //   await privy.logout();
+    // } catch (error) {
+    //   console.error("Error while logging out", error);
+    // }
+
     try {
-      await privy.logout();
+      disconnect();
     } catch (error) {
-      console.error("Error while logging out", error);
+      console.error("Error while disconnecting wallet", error);
     }
   };
 
   useEffect(() => {
-    if (privy.user) {
-      const emailAccount = privy.user.linkedAccounts.find(
-        // @ts-expect-error - TS doesn't know that the user is authenticated
-        (account) => account.email
-      );
-      // @ts-expect-error - TS doesn't know that the user is authenticated
-      const email = emailAccount?.email;
-      const name =
-        // @ts-expect-error - TS doesn't know that the user is authenticated
-        emailAccount?.name ??
-        // @ts-expect-error - TS doesn't know that the user is authenticated
-        privy.user.linkedAccounts.find((account) => account.name);
-
-      const wallet = privy.user.wallet;
+    if (typeof window !== "undefined" && account.address) {
+      console.log({ account });
 
       // save user to db
+      api.get(`/user/${account.address}`).then((response) => {
+        console.log({ userData: response });
 
-      api
-        .post(`/user/create`, {
-          name,
-          email,
-          address: wallet?.address,
-        })
-        .then((response) => {
+        if (response.data) {
           const { data } = response;
-          const { _id, __v, ...user } = data.user;
+          const { _id, __v, ...user } = data;
           setUser(user);
-        })
-        .catch((error) => {
-          console.log({ error });
-        });
+        } else {
+          api
+            .post(`/user/create`, {
+              name: window.prompt("Enter your name"),
+              email: window.prompt("Enter your email"),
+              address: account?.address,
+            })
+            .then((response) => {
+              const { data } = response;
+              const { _id, __v, ...user } = data.user;
+              setUser(user);
+            })
+            .catch((error) => {
+              console.log({ error });
+            });
+        }
+      });
     }
-  }, [privy.user]);
+  }, [account.address]);
 
   useEffect(() => {
     let handleClickOutside = (e: any) => {
@@ -146,7 +171,7 @@ export default function Header() {
           <ul className="hidden gap-[10px] md:flex">
             {Links.map((link) => {
               return (
-                (link.auth ? link.auth && privy.authenticated : true) && (
+                (link.auth ? link.auth && account.address : true) && (
                   <li
                     key={link.href}
                     className="inline-block text-sm font-semibold text-[#333] transition-colors duration-300 hover:text-[#000]"
@@ -161,7 +186,7 @@ export default function Header() {
               );
             })}
           </ul>
-          {privy.authenticated && (
+          {account.address && (
             <div className="relative hidden md:block">
               <Button
                 variant="ghost"
@@ -192,13 +217,13 @@ export default function Header() {
                   <div className="flex flex-col items-center justify-center gap-[8px] whitespace-nowrap text-left text-simpleGray700">
                     <LabelSmall>Your Email:</LabelSmall>
                     <PMedium className="text-[16px] font-bold leading-[26px] tracking-[0.02em]">
-                      {privy.user?.email?.address}
+                      {user?.email}
                     </PMedium>
                   </div>
                   <div className="flex flex-col items-center justify-center gap-[8px] whitespace-nowrap text-left text-simpleGray700">
                     <LabelSmall>Your wallet Balance:</LabelSmall>
                     <PMedium className="text-[20px] font-bold leading-[26px] tracking-[0.02em]">
-                      {privy.user?.wallet?.address}
+                      {user?.address}
                     </PMedium>
                   </div>
                   <Button variant="primary" size="sm">
@@ -212,7 +237,7 @@ export default function Header() {
             <Button variant="outline" size="sm">
               contact us
             </Button>
-            {privy.authenticated ? (
+            {account.address ? (
               <Button variant="outline" size="sm" onClick={handleLogout}>
                 log out
               </Button>
@@ -226,7 +251,7 @@ export default function Header() {
 
         {/* Mobile */}
         <div className="flex items-center justify-center gap-2 md:hidden">
-          {!privy.authenticated ? (
+          {!account.address ? (
             <Button
               variant="primary"
               size="lg"
@@ -258,7 +283,7 @@ export default function Header() {
             ref={MobileMenuRef}
             className="absolute top-full mt-[8px] block w-full rounded-[24px] bg-simpleYellow p-[16px] md:hidden"
           >
-            <ol className="flex flex-col gap-[8px]">
+            <ul className="flex flex-col gap-[8px]">
               {Links.map((link) => (
                 <li key={link.href}>
                   <Button
@@ -271,7 +296,7 @@ export default function Header() {
                 </li>
               ))}
 
-              {privy.authenticated && (
+              {account.address && (
                 <>
                   <div className="h-[1px] w-full bg-simpleBlack opacity-25"></div>
                   <div className="md:hidden">
@@ -331,7 +356,7 @@ export default function Header() {
                 >
                   contact us
                 </Button>
-                {privy.authenticated && (
+                {account.address && (
                   <Button
                     variant="secondary"
                     size="sm"
@@ -341,7 +366,7 @@ export default function Header() {
                   </Button>
                 )}
               </li>
-            </ol>
+            </ul>
           </div>
         )}
       </nav>

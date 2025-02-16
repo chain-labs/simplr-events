@@ -1,6 +1,7 @@
 "use client";
 
 import { usePrivy } from "@privy-io/react-auth";
+import { useAccount, useWalletClient } from "wagmi";
 
 import useEventContract from "@/contracts/Event";
 import useKernelClient from "@/hooks/useKernelClient";
@@ -16,23 +17,25 @@ export type TicketData = {
 const useTicketVerification = () => {
   const EventContract = useEventContract();
   const { signMessage } = usePrivy();
-  const { ready, account, kernelClient } = useKernelClient();
+  const { ready, kernelClient } = useKernelClient();
+  const account = useAccount();
+
+  const { data: walletClient, isFetched: walletFetched } = useWalletClient();
+
   const verifyTicketData = async (ticketData: TicketData) => {
-    const verificationType = ticketData.eventObj.verificationType;
-
     let verificationData;
-
-    switch (verificationType) {
-      default: {
-        verificationData = await verification_default(
-          ticketData,
-          // kernelClient,
-          signMessage,
-          account
-        );
+    const verificationType = ticketData.eventObj.verificationType;
+    if (walletFetched && walletClient) {
+      switch (verificationType) {
+        default: {
+          verificationData = await verification_default(
+            ticketData,
+            walletClient.signMessage,
+            account.address
+          );
+        }
       }
     }
-
     return verificationData;
   };
 

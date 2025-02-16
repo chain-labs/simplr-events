@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import Container from "../component/container";
 import { Button } from "../ui/button";
 import { H4 } from "../ui/heading";
@@ -17,7 +19,9 @@ export default function TicketsOnSellMessage() {
               <li>Go through other events happening around the world</li>
             </ul>
           </PSmall>
-          <Button>go home</Button>
+          <Link href="/">
+            <Button>go home</Button>
+          </Link>
         </div>
       </div>
     </Container>

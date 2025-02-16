@@ -9,7 +9,16 @@ import SettingTicketPricing from "@/components/sell-your-ticket/setting-ticket-p
 import TicketsOnSellMessage from "@/components/sell-your-ticket/tickets-on-sell-message";
 import { Ticket } from "@/types/ticket";
 
+import { TicketStoreProvider } from "./context";
+
 export default function LinkYourTicket() {
+  const [state, setState] = useState<
+    | "selling-linked-ticket"
+    | "setting-ticket-pricing"
+    | "tickets-on-sell-message"
+    | "send-ticket-to-buyer"
+  >("selling-linked-ticket");
+
   const footerSteps: StepsType[] = [
     { name: "Share your booking details", status: "completed" },
     {
@@ -19,33 +28,24 @@ export default function LinkYourTicket() {
     { name: "Start selling your ticket", status: "pending" },
   ];
 
-  const [selectedTickets, setSelectedTickets] = useState<Ticket[]>([]);
-
-  const [state, setState] = useState<
-    | "selling-linked-ticket"
-    | "setting-ticket-pricing"
-    | "tickets-on-sell-message"
-    | "send-ticket-to-buyer"
-  >("selling-linked-ticket");
   return (
-    <>
+    <TicketStoreProvider>
       {state === "selling-linked-ticket" && (
         <SellingLinkedTicket
-          selectedTickets={selectedTickets}
-          setSelectedTickets={setSelectedTickets}
           nextStep={() => setState("setting-ticket-pricing")}
         />
       )}
       {state === "setting-ticket-pricing" && (
         <SettingTicketPricing
-          selectedTickets={selectedTickets}
-          setSelectedTickets={setSelectedTickets}
           nextStep={() => setState("tickets-on-sell-message")}
         />
       )}
       {state === "tickets-on-sell-message" && <TicketsOnSellMessage />}
       {state === "send-ticket-to-buyer" && <SendTicketToBuyer />}
-      <FooterProgressBar STEPS={footerSteps} active="Start selling your ticket" />
-    </>
+      <FooterProgressBar
+        STEPS={footerSteps}
+        active="Start selling your ticket"
+      />
+    </TicketStoreProvider>
   );
 }

@@ -26,15 +26,13 @@ import { Event } from "./event";
 interface Ticket {
   _id: string;
   event: Event;
-  orderNumber: string;
   tokenId: string;
   seat: string;
-  ticketData: string;
-  additionalInfo?: Object;
 }
 
-interface OrderMock {
+interface Order {
   id: string;
   ticket: TicketMock;
   price: string;
+  signature: string;
 }

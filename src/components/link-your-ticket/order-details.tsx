@@ -1,6 +1,6 @@
 "use client";
 
-import { ButtonHTMLAttributes, MouseEvent, useMemo } from "react";
+import { ButtonHTMLAttributes, MouseEvent, useMemo, useState } from "react";
 
 import { useReadContract } from "wagmi";
 
@@ -25,6 +25,7 @@ export default function OrderDetails({
   };
 }) {
   const EventContract = useEventContract();
+  const [mintLoading, setMintLoading] = useState(false);
 
   const { data: tokenIdCounter, error } = useReadContract({
     abi: EventContract.abi,
@@ -49,7 +50,10 @@ export default function OrderDetails({
 
   const handleConfirm = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    setMintLoading(true);
     const { eventObj, seat, orderNumber, ticketData } = data;
+    console.log({ data });
+
     await mintTicket({
       eventObj,
       tokenId: tokenId.toString(),
@@ -57,6 +61,9 @@ export default function OrderDetails({
       orderNumber,
       ticketData: ticketData ?? "",
     });
+
+    setMintLoading(false);
+    navigation.next();
   };
 
   return (
@@ -120,6 +127,7 @@ export default function OrderDetails({
               variant="primary"
               onClick={handleConfirm}
               className="w-full md:w-auto"
+              isLoading={mintLoading}
             >
               {" "}
               confirm & link{" "}

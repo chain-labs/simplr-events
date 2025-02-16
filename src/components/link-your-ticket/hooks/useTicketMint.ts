@@ -1,6 +1,7 @@
 import React from "react";
 
 import { encodeFunctionData, keccak256, toBytes } from "viem";
+import { useAccount, useWriteContract } from "wagmi";
 
 import useEventContract from "@/contracts/Event";
 import useKernelClient from "@/hooks/useKernelClient";
@@ -11,6 +12,9 @@ import { envVars } from "@/utils/envVars";
 const useTicketMint = () => {
   const EventContract = useEventContract();
   const { kernelClient } = useKernelClient();
+  const account = useAccount();
+  const { writeContractAsync: mint } = useWriteContract();
+
   const uploadNftMetadata = async (
     tokenId: string,
     eventObj: Event,
@@ -41,59 +45,66 @@ const useTicketMint = () => {
     orderNumber: string;
     ticketData: string;
   }) => {
-    if (!kernelClient) return null;
-    await uploadNftMetadata(tokenId, eventObj, seat, orderNumber);
-    const options = {
-      address: eventObj?.contractAddress,
-      abi: EventContract?.abi,
-      functionName: "createTicket",
-      args: [
-        {
-          ticketSerialNumberHash: keccak256(toBytes(orderNumber)),
-          seat: seat,
-          verificationData: ticketData, // bytes data
-          ticketEncryptedDataUri: "", // lit protocol's encrypted data
-          ticketMetadata: `https://simplr-events-server-production.up.railway.app/nft-metadata/${eventObj.contractAddress}/${tokenId}`, // public metadata
-        },
-      ] as const,
-    };
-    // @ts-expect-error
-    const userOpHash = await kernelClient?.signUserOperation({
-      callData: await kernelClient?.account?.encodeCalls([
-        {
-          to: eventObj.contractAddress as `0x${string}`,
-          data: encodeFunctionData({
-            abi: options.abi,
-            functionName: options.functionName,
-            args: [...options.args],
-          }),
-        },
-      ]),
-      callGasLimit: BigInt("1000000"),
-      verificationGasLimit: BigInt("10000000"),
-      preVerificationGas: BigInt("1000000"),
-    });
+    try {
+      await uploadNftMetadata(tokenId, eventObj, seat, orderNumber);
+      const options = {
+        address: eventObj?.contractAddress,
+        abi: EventContract?.abi,
+        functionName: "createTicket",
+        args: [
+          {
+            ticketSerialNumberHash: keccak256(toBytes(orderNumber)),
+            seat: seat,
+            verificationData: ticketData, // bytes data
+            ticketEncryptedDataUri: "", // lit protocol's encrypted data
+            ticketMetadata: `https://simplr-events-server-production.up.railway.app/nft-metadata/${eventObj.contractAddress}/${tokenId}`, // public metadata
+          },
+        ] as const,
+      };
+      // @ts-expect-error
+      // const userOpHash = await kernelClient?.signUserOperation({
+      //   callData: await kernelClient?.account?.encodeCalls([
+      //     {
+      //       to: eventObj.contractAddress as `0x${string}`,
+      //       data: encodeFunctionData({
+      //         abi: options.abi,
+      //         functionName: options.functionName,
+      //         args: [...options.args],
+      //       }),
+      //     },
+      //   ]),
+      //   callGasLimit: BigInt("1000000"),
+      //   verificationGasLimit: BigInt("10000000"),
+      //   preVerificationGas: BigInt("1000000"),
+      // });
 
-    console.log({ userOpHash });
+      const hash = await mint(options);
 
-    // const receipt = await kernelClient?.waitForUserOperationReceipt({
-    //   hash: userOpHash,
-    // });
+      console.log({ hash });
 
-    // const userOpHash = await kernelClient?.sendUserOperation({
-    //   callData: await kernelClient?.account?.encodeCalls([
-    //     {
-    //       to: eventObj.contractAddress,
-    //       data: encodeFunctionData({
-    //         abi: EventContract.abi,
-    //         functionName: "createTicket",
-    //         args: [args1, args2],
-    //       }),
-    //     },
-    //   ]),
-    // });
-    console.log({ options });
-    return tokenId;
+      // const receipt = await kernelClient?.waitForUserOperationReceipt({
+      //   hash: userOpHash,
+      // });
+
+      // const userOpHash = await kernelClient?.sendUserOperation({
+      //   callData: await kernelClient?.account?.encodeCalls([
+      //     {
+      //       to: eventObj.contractAddress,
+      //       data: encodeFunctionData({
+      //         abi: EventContract.abi,
+      //         functionName: "createTicket",
+      //         args: [args1, args2],
+      //       }),
+      //     },
+      //   ]),
+      // });
+      console.log({ options });
+      return tokenId;
+    } catch (error) {
+      console.error(error);
+    }
+
+    return null;
   };
 
   return {
