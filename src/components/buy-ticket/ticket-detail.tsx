@@ -8,14 +8,13 @@ import { PiSealWarningDuotone } from "react-icons/pi";
 import { cn } from "@/utils/cn";
 
 import { ComponentWithLabel } from "../component/component-with-label";
-import Container from "../component/container";
 import { Button } from "../ui/button";
 import { H4 } from "../ui/heading";
 import { List, ListProps } from "../ui/list";
 import { PLarge, PSmall } from "../ui/paragraph";
 import Select from "../ui/select";
 
-function TicketDetails({
+export function TicketDetails({
   ticket,
   state,
   parentClassName,
@@ -58,7 +57,7 @@ function TicketDetails({
         </ComponentWithLabel>
 
         {/* start and end datetime */}
-        <div className="flex flex-wrap gap-[16px] md:gap-[32px] md:flex-row">
+        <div className="flex flex-wrap gap-[16px] md:flex-row md:gap-[32px]">
           <ComponentWithLabel gap={6} label="Start Date">
             <PSmall className="whitespace-nowrap font-bold text-simpleGray700">
               {ticket.startDate}
@@ -120,7 +119,7 @@ function TicketDetails({
   );
 }
 
-function Details() {
+export function Details() {
   const HowToSecureYourPayments: ListProps["items"] = [
     "You make the payment for the ticket today. It is stored in our escrow. We don't transfer it to the Seller yet.",
     "You receive the ticket from the Seller.",
@@ -183,7 +182,7 @@ function Details() {
   );
 }
 
-function Confirmation() {
+export function Confirmation() {
   const WhatHappensNext: ListProps["items"] = [
     "You receive the ticket from the Seller.",
     <>
@@ -236,7 +235,7 @@ function Confirmation() {
   );
 }
 
-function Success() {
+export function Success() {
   return (
     <div className="flex flex-col gap-[16px]">
       <H4 className="text-simpleGray700">
@@ -257,7 +256,7 @@ function Success() {
   );
 }
 
-function Dispute() {
+export function Dispute() {
   const DisputeReasons = [
     "Expired Ticket",
     "Invalid Ticket",
@@ -282,7 +281,7 @@ function Dispute() {
   );
 }
 
-function DisputeConfirmation() {
+export function DisputeConfirmation() {
   return (
     <div className="flex flex-col gap-[16px]">
       <H4 className="text-simpleGray700">
@@ -301,52 +300,5 @@ function DisputeConfirmation() {
         <Button>go home</Button>
       </Link>
     </div>
-  );
-}
-
-export default function TicketDetail() {
-  const ticket = {
-    price: "$500.00",
-    orderId: "OD123456789",
-    seat: "2B",
-    startDate: "Oct 14, 2024 | 11AM ET",
-    endDate: "Oct 24, 2024 | 12PM ET",
-    other: "Field Detail Info",
-  };
-
-  const [state, setState] = useState<
-    | "details"
-    | "confirmation"
-    | "success"
-    | "dispute"
-    | "dispute-confirmation"
-    | "sold-out"
-  >("sold-out");
-  return (
-    <Container className="my-[16px] md:my-[50px] max-w-[1000px]">
-      <div className={cn("flex flex-col gap-[32px] md:flex-row md:gap-[64px]")}>
-        <TicketDetails
-          ticket={ticket}
-          state={state}
-          parentClassName={cn(
-            "flex md:hidden",
-            state === "confirmation" && "hidden"
-          )}
-        />
-        {state === "details" && <Details />}
-        {state === "confirmation" && <Confirmation />}
-        {state === "success" && <Success />}
-        {state === "dispute" && <Dispute />}
-        {state === "dispute-confirmation" && <DisputeConfirmation />}
-        <TicketDetails
-          ticket={ticket}
-          state={state}
-          parentClassName={cn(
-            "hidden md:flex",
-            state === "confirmation" && "flex"
-          )}
-        />
-      </div>
-    </Container>
   );
 }
