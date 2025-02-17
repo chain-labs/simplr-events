@@ -35,6 +35,7 @@ export function TicketDetails({
   parentClassName,
   disabled,
   setState,
+  isLoading,
 }: {
   order: Order;
   buyTicketFn: () => void;
@@ -42,6 +43,7 @@ export function TicketDetails({
   parentClassName?: string;
   disabled?: boolean;
   setState: (state: stateBuyPageStateType) => void;
+  isLoading: boolean;
 }) {
   const [buyLoading, setBuyLoading] = React.useState(false);
 
@@ -51,6 +53,10 @@ export function TicketDetails({
     setBuyLoading(false);
   };
 
+  // If loading, return skeleton
+  if (isLoading) {
+    return <TicketDetailsSkeleton parentClassName={parentClassName} />;
+  }
   return (
     <div className={cn("flex flex-col gap-[32px]", parentClassName)}>
       <div className="flex flex-col gap-[16px]">
@@ -166,6 +172,58 @@ export function TicketDetails({
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+export function TicketDetailsSkeleton({
+  parentClassName,
+}: {
+  parentClassName?: string;
+}) {
+  return (
+    <div className={cn("flex flex-col gap-[32px]", parentClassName)}>
+      <div className="flex flex-col gap-[16px]">
+        {/* Title skeleton */}
+        <div className="h-[24px] w-[120px] animate-pulse rounded-md bg-simpleGray200" />
+
+        {/* Price skeleton */}
+        <ComponentWithLabel gap={6} label="Price">
+          <div className="h-[24px] w-[80px] animate-pulse rounded-md bg-simpleGray200" />
+        </ComponentWithLabel>
+
+        {/* Event Ticket ID skeleton */}
+        <ComponentWithLabel gap={6} label="Event Ticket ID">
+          <div className="h-[24px] w-[100px] animate-pulse rounded-md bg-simpleGray200" />
+        </ComponentWithLabel>
+
+        {/* Seat skeleton */}
+        <ComponentWithLabel gap={6} label="Your Seat">
+          <div className="h-[24px] w-[120px] animate-pulse rounded-md bg-simpleGray200" />
+        </ComponentWithLabel>
+
+        {/* Date skeletons */}
+        <div className="flex flex-wrap gap-[16px] md:flex-row md:gap-[32px]">
+          <ComponentWithLabel gap={6} label="Start Date">
+            <div className="h-[20px] w-[160px] animate-pulse rounded-md bg-simpleGray200" />
+          </ComponentWithLabel>
+
+          <ComponentWithLabel gap={6} label="End Date">
+            <div className="h-[20px] w-[160px] animate-pulse rounded-md bg-simpleGray200" />
+          </ComponentWithLabel>
+        </div>
+
+        {/* Additional Info skeleton */}
+        <ComponentWithLabel gap={6} label="Another Field">
+          <div className="h-[20px] w-[200px] animate-pulse rounded-md bg-simpleGray200" />
+        </ComponentWithLabel>
+      </div>
+
+      {/* Button skeleton */}
+      <div className="flex justify-between gap-[8px]">
+        <div className="h-[40px] w-[100px] animate-pulse rounded-md bg-simpleGray200" />
+        <div className="h-[40px] w-[100px] animate-pulse rounded-md bg-simpleGray200" />
+      </div>
     </div>
   );
 }

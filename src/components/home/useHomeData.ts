@@ -14,6 +14,7 @@ const useHomeData = () => {
     Record<string, Order[]>
   >({});
   const [eventMap, setEventMap] = React.useState<Record<string, Event>>();
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
   const account = useAccount();
 
@@ -71,6 +72,7 @@ const useHomeData = () => {
         });
         setMarketplaceTickets(marketPlace);
         setEventMap(data.eventMap);
+        setIsLoading(false);
       });
   }, []);
 
@@ -88,6 +90,7 @@ const useHomeData = () => {
     sellingTickets,
     marketplaceTickets,
     eventMap,
+    isLoading,
   };
 };
 

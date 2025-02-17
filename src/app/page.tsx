@@ -11,7 +11,9 @@ import {
 } from "react-icons/pi";
 
 import Container from "@/components/component/container";
-import HomeTicketCardComponent from "@/components/home/home-ticket-card-component";
+import HomeTicketCardComponent, {
+  HomeTicketCardSkeleton,
+} from "@/components/home/home-ticket-card-component";
 import useHomeData from "@/components/home/useHomeData";
 import { Button } from "@/components/ui/button";
 import { H2, H5 } from "@/components/ui/heading";
@@ -24,6 +26,7 @@ export default function Home() {
     escrowTickets,
     marketplaceTickets,
     eventMap,
+    isLoading,
   } = useHomeData();
   const SingleMyTicketRef = useRef<HTMLDivElement>(null);
   const [widthOfSingleMyTicket, setWidthOfSingleMyTicket] =
@@ -145,13 +148,17 @@ export default function Home() {
             <div className="flex w-full flex-col gap-[16px] overflow-x-auto md:pb-[5px]">
               <H2 className="text-simpleWhite md:hidden">Tickets in Escrow</H2>
               <div className="flex flex-col gap-[16px] md:flex-row">
-                {escrowTickets.map((order, index) => (
-                  <HomeTicketCardComponent
-                    key={index}
-                    order={order}
-                    bgGradient="yellow"
-                  />
-                ))}
+                {!isLoading
+                  ? escrowTickets.map((order, index) => (
+                      <HomeTicketCardComponent
+                        key={index}
+                        order={order}
+                        bgGradient="yellow"
+                      />
+                    ))
+                  : [{}, {}, {}].map((_, index) => (
+                      <HomeTicketCardSkeleton key={index} isLoading />
+                    ))}
               </div>
               <Button variant="tertiary" size="sm" className="block md:hidden">
                 View All
@@ -170,13 +177,17 @@ export default function Home() {
             </Button>
           </div>
           <div className="flex w-full max-w-[min(calc(((100vw-1280px)/2)+1280px),100%)] flex-col gap-[16px] overflow-x-auto md:flex-row md:pb-[5px]">
-            {sellingTickets.map((order, index) => (
-              <HomeTicketCardComponent
-                key={index}
-                order={order}
-                bgGradient="pink"
-              />
-            ))}
+            {!isLoading
+              ? sellingTickets.map((order, index) => (
+                  <HomeTicketCardComponent
+                    key={index}
+                    order={order}
+                    bgGradient="pink"
+                  />
+                ))
+              : [{}, {}, {}].map((_, index) => (
+                  <HomeTicketCardSkeleton key={index} isLoading />
+                ))}
             <Button variant="tertiary" size="sm" className="block md:hidden">
               View All
             </Button>

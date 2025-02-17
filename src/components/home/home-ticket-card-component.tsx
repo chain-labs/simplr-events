@@ -19,12 +19,19 @@ import { LabelSmall } from "../ui/label";
 type HomeTicketCardComponentProps = {
   order: Order;
   bgGradient?: "yellow" | "pink";
+  isLoading?: boolean;
 };
 
 export default function HomeTicketCardComponent({
   order,
   bgGradient,
+  isLoading,
 }: HomeTicketCardComponentProps) {
+
+  if (isLoading || !order) {
+    return <HomeTicketCardSkeleton />;
+  }
+
   return (
     <div
       key={order?.ticket?._id}
@@ -123,6 +130,56 @@ export default function HomeTicketCardComponent({
           view ticket
         </Button>
       </Link>
+    </div>
+  );
+}
+
+export function HomeTicketCardSkeleton() {
+  return (
+    <div className="grid-flex-row relative z-0 grid w-full min-w-fit animate-pulse gap-[16px] overflow-hidden rounded-[16px] bg-simpleWhite p-[16px] md:w-fit">
+      {/* Event name skeleton */}
+      <div className="flex items-center gap-[4px]">
+        <div className="h-[24px] w-[24px] rounded-full bg-gray-200" />
+        <div className="h-[24px] w-[150px] rounded-md bg-gray-200" />
+      </div>
+
+      {/* Seat and token ID skeleton */}
+      <div className="flex flex-col gap-[8px]">
+        <div className="h-[20px] w-[80px] rounded-md bg-gray-200" />
+        <div className="h-[24px] w-[100px] rounded-md bg-gray-200" />
+      </div>
+
+      <div className="h-[1px] w-full bg-simpleGray400" />
+
+      {/* Date skeletons */}
+      <div className="grid items-center gap-[16px] md:grid-flow-col">
+        <div className="flex flex-col gap-[4px]">
+          <div className="h-[16px] w-[100px] rounded-md bg-gray-200" />
+          <div className="h-[20px] w-[120px] rounded-md bg-gray-200" />
+        </div>
+        <div className="hidden h-full w-[1px] bg-simpleGray400 md:block" />
+        <div className="flex flex-col gap-[4px]">
+          <div className="h-[16px] w-[100px] rounded-md bg-gray-200" />
+          <div className="h-[20px] w-[120px] rounded-md bg-gray-200" />
+        </div>
+      </div>
+
+      {/* Additional info skeleton */}
+      <div className="flex flex-col gap-[4px]">
+        <div className="h-[16px] w-[120px] rounded-md bg-gray-200" />
+        <div className="h-[20px] w-[150px] rounded-md bg-gray-200" />
+      </div>
+
+      <div className="h-[1px] w-full bg-simpleGray400" />
+
+      {/* Price skeleton */}
+      <div className="flex flex-col gap-[4px]">
+        <div className="h-[16px] w-[60px] rounded-md bg-gray-200" />
+        <div className="h-[20px] w-[100px] rounded-md bg-gray-200" />
+      </div>
+
+      {/* Button skeleton */}
+      <div className="h-[36px] w-[120px] rounded-md bg-gray-200" />
     </div>
   );
 }

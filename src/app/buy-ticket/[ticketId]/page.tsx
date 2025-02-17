@@ -14,6 +14,7 @@ import {
   SellerCancellingSuccess,
   Success,
   TicketDetails,
+  TicketDetailsSkeleton,
 } from "@/components/buy-ticket/ticket-detail";
 import useTicketActions from "@/components/buy-ticket/useTicketActions";
 import Container from "@/components/component/container";
@@ -51,12 +52,19 @@ export default function BuyTicket() {
         <div
           className={cn("flex flex-col gap-[32px] md:flex-row md:gap-[64px]")}
         >
-          {listing && (
+          {listing ? (
             <TicketDetails
               buyTicketFn={buyTicketHandler}
               setState={setState}
               order={listing}
               state={state}
+              parentClassName={cn(
+                "flex md:hidden",
+                state === "confirmation" && "hidden"
+              )}
+            />
+          ) : (
+            <TicketDetailsSkeleton
               parentClassName={cn(
                 "flex md:hidden",
                 state === "confirmation" && "hidden"
@@ -73,12 +81,19 @@ export default function BuyTicket() {
             <SellerCancellingSuccess />
           )}
 
-          {listing && (
+          {listing ? (
             <TicketDetails
               buyTicketFn={buyTicketHandler}
               setState={setState}
               order={listing}
               state={state}
+              parentClassName={cn(
+                "hidden md:flex",
+                state === "confirmation" && "flex"
+              )}
+            />
+          ) : (
+            <TicketDetailsSkeleton
               parentClassName={cn(
                 "hidden md:flex",
                 state === "confirmation" && "flex"
