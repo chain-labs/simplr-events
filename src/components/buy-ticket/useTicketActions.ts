@@ -79,7 +79,7 @@ const useTicketActions = () => {
       });
       const tx = await writeContract({
         ...options,
-        gas: BigInt(Math.max(Number(sim as bigint) + 200000, 2000000)),
+        gas: BigInt(Math.max(Number(sim as bigint) + 200000, 1000000)),
       });
 
       await waitForTransactionReceipt(config, { hash: tx });

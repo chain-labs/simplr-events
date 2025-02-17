@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
+import { motion } from "framer-motion";
 import {
   PiLinkedinLogoDuotone,
   PiRocketLaunchDuotone,
@@ -72,10 +73,44 @@ export default function Home() {
       },
     },
   ];
+
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const handleViewAll = (section: string) => {
+    if (expandedSection === section) {
+      setExpandedSection(null);
+    } else {
+      setExpandedSection(section);
+    }
+  };
+
+  // Animation variants
+  const containerVariants = {
+    grid: {
+      gridTemplateColumns: "auto auto",
+      gap: "32px",
+    },
+    expanded: {
+      gridTemplateColumns: "1fr",
+      gap: "0px",
+    },
+  };
+
+  const sectionVariants = {
+    visible: {
+      opacity: 1,
+      height: "auto",
+      transition: { duration: 0.3 },
+    },
+    hidden: {
+      opacity: 0,
+      height: 0,
+      transition: { duration: 0.3 },
+    },
+  };
   return (
     <div className="my-[16px] w-full px-[16px] md:mx-auto md:my-[50px] xl:px-0">
       {/* <div className="ml-auto flex w-full max-w-[calc(((100vw-1200px)/2)+1200px)] flex-col gap-[32px] overflow-hidden md:grid md:grid-cols-[auto_auto]"> */}
-      <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-[32px] md:grid md:grid-cols-[auto_auto]">
+      <motion.div className="mx-auto flex w-full max-w-[1280px] flex-col gap-[32px] md:grid md:grid-cols-[auto_auto]">
         <div className="flex flex-col gap-[16px]">
           <div className="flex w-full max-w-[1280px] gap-[16px]">
             {/* my tickets header */}
@@ -221,7 +256,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

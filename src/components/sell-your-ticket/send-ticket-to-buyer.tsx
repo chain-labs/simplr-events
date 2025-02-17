@@ -41,7 +41,7 @@ function TicketDetails({
       )}
 
       {/* ticket price */}
-      <ComponentWithLabel label="Order ID" gap={6}>
+      <ComponentWithLabel label="Price" gap={6}>
         <PLarge className="text-simpleGray700">{ticket.price}</PLarge>
       </ComponentWithLabel>
 

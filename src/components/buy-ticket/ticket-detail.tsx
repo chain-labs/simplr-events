@@ -15,7 +15,18 @@ import { H4 } from "../ui/heading";
 import { List, ListProps } from "../ui/list";
 import { PLarge, PSmall } from "../ui/paragraph";
 import Select from "../ui/select";
-import useTicketActions from "./useTicketActions";
+
+export type stateBuyPageStateType =
+  | "details"
+  | "confirmation"
+  | "success"
+  | "dispute"
+  | "dispute-confirmation"
+  | "sold-out"
+  | "seller-ticket-detail"
+  | "seller-confirmation"
+  | "seller-dispute"
+  | "seller-dispute-confirmation";
 
 export function TicketDetails({
   order,
@@ -23,18 +34,14 @@ export function TicketDetails({
   state,
   parentClassName,
   disabled,
+  setState,
 }: {
   order: Order;
   buyTicketFn: () => void;
-  state:
-    | "details"
-    | "confirmation"
-    | "success"
-    | "dispute"
-    | "dispute-confirmation"
-    | "sold-out";
+  state: stateBuyPageStateType;
   parentClassName?: string;
   disabled?: boolean;
+  setState: (state: stateBuyPageStateType) => void;
 }) {
   const [buyLoading, setBuyLoading] = React.useState(false);
 
@@ -47,7 +54,18 @@ export function TicketDetails({
   return (
     <div className={cn("flex flex-col gap-[32px]", parentClassName)}>
       <div className="flex flex-col gap-[16px]">
-        <H4 className="text-simpleGray700">Ticket details</H4>
+        <H4 className="text-simpleGray700">
+          {state === "seller-ticket-detail"
+            ? "Sell your ticket"
+            : "Ticket details"}
+        </H4>
+
+        {state === "seller-ticket-detail" && (
+          <PSmall className="font-bold text-simpleGray700">
+            ⚠️ Failure in sending the ticket to the buyer will result in
+            auto-rejection of your sale.
+          </PSmall>
+        )}
 
         {/* price */}
         <ComponentWithLabel gap={6} label="Price">
@@ -132,6 +150,22 @@ export function TicketDetails({
         </div>
       )}
       {state === "sold-out" && <Button>sold out</Button>}
+      {state === "seller-ticket-detail" && (
+        <div className="flex flex-col gap-[8px]">
+          <PSmall className="text-simpleGray700">
+            Please confirm that you've sent the ticket to the buyer.
+          </PSmall>
+          <div className="flex flex-col gap-[8px] md:flex-row">
+            <Button>yes, I've sent the ticket</Button>
+            <Button
+              variant="outline-danger"
+              onClick={() => setState("seller-dispute")}
+            >
+              no, cancel this sale
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -316,6 +350,71 @@ export function DisputeConfirmation() {
       <Link href="/" className="mt-[16px]">
         <Button>go home</Button>
       </Link>
+    </div>
+  );
+}
+
+export function SellerConfirmation() {
+  return (
+    <div className="flex flex-col gap-[16px]">
+      <H4 className="text-simpleGray700">Your ticket are on sale!</H4>
+      <div className="flex flex-col gap-[8px]">
+        <PSmall className="text-simpleGray700">
+          Go to the 🏠 Home page, where you can:
+          <ul className="list-inside list-disc">
+            <li>Manage all your tickets</li>
+            <li>View other tickets on sale</li>
+            <li>Go through other events happening around the world</li>
+          </ul>
+        </PSmall>
+        <Link href="/">
+          <Button>go home</Button>
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+export function SellerCancellingReason() {
+  const disputeReasonsSelection = [
+    "Expired ticket",
+    "Invalid ticket",
+    "Different seat/day/other detail from what it was listed",
+    "Changed my mind / plans",
+  ];
+  const [selectedReason, setSelectedReason] = useState<string>("");
+
+  return (
+    <div className="flex flex-col gap-[16px]">
+      <H4 className="text-simpleGray700">
+        Please tell us why you're disputing this sale.
+      </H4>
+      <Select
+        options={disputeReasonsSelection}
+        onSelect={setSelectedReason}
+        allowUserInput
+        userInputPlaceholder="Provide another reason..."
+      />
+      <Button>submit</Button>
+    </div>
+  );
+}
+
+export function SellerCancellingSuccess() {
+  return (
+    <div className="flex flex-col gap-[32px]">
+      <div className="flex flex-col gap-[16px]">
+        <H4 className="text-simpleGray700">
+          Give us 2 days to look into this.
+        </H4>
+        <PSmall>
+          <Link href="/contact-us" className="font-bold underline">
+            Contact us
+          </Link>{" "}
+          if you haven't received a response in 2 days.
+        </PSmall>
+      </div>
+      <Button>go home</Button>
     </div>
   );
 }

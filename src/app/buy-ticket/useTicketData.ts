@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 
 import { useAccount } from "wagmi";
 
+import { stateBuyPageStateType } from "@/components/buy-ticket/ticket-detail";
 import { Order } from "@/types/ticket";
 import api from "@/utils/axios";
 
@@ -16,14 +17,7 @@ export interface Escrow {
 const useTicketData = (ticketId: string) => {
   const [listing, setListing] = React.useState<Order>();
   const [escrow, setEscrow] = React.useState<Escrow>();
-  const [state, setState] = React.useState<
-    | "details"
-    | "confirmation"
-    | "success"
-    | "dispute"
-    | "dispute-confirmation"
-    | "sold-out"
-  >("details");
+  const [state, setState] = React.useState<stateBuyPageStateType>("details");
 
   const account = useAccount();
 
@@ -37,18 +31,21 @@ const useTicketData = (ticketId: string) => {
   }, [ticketId]);
 
   useEffect(() => {
+    console.log("escrow", escrow);
     if (escrow?.isEscrow) {
       if (!escrow.isResolved && !escrow.isDisputed) {
         if (account.address?.toLowerCase() === escrow.seller.toLowerCase()) {
-          setState("dispute");
+          setState("seller-ticket-detail");
         } else if (
           account.address?.toLowerCase() === escrow.buyer.toLowerCase()
         ) {
           setState("confirmation");
+        } else {
+          setState("sold-out");
         }
       }
     } else {
-      setState("sold-out");
+      setState("details");
     }
   }, [escrow]);
 

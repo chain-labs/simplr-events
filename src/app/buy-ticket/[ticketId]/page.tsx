@@ -10,18 +10,15 @@ import {
   Details,
   Dispute,
   DisputeConfirmation,
+  SellerCancellingReason,
+  SellerCancellingSuccess,
   Success,
   TicketDetails,
 } from "@/components/buy-ticket/ticket-detail";
 import useTicketActions from "@/components/buy-ticket/useTicketActions";
 import Container from "@/components/component/container";
 import FooterProgressBar, { StepsType } from "@/components/footer-progress-bar";
-import {
-  TICKET_RESPONSE_TYPE,
-  USER_TICKET_QUERY,
-} from "@/gql/queries/user-tickets.query";
 import { cn } from "@/utils/cn";
-import { envVars } from "@/utils/envVars";
 
 import useTicketData from "../useTicketData";
 
@@ -57,6 +54,7 @@ export default function BuyTicket() {
           {listing && (
             <TicketDetails
               buyTicketFn={buyTicketHandler}
+              setState={setState}
               order={listing}
               state={state}
               parentClassName={cn(
@@ -70,9 +68,15 @@ export default function BuyTicket() {
           {state === "success" && <Success />}
           {state === "dispute" && <Dispute />}
           {state === "dispute-confirmation" && <DisputeConfirmation />}
+          {state === "seller-dispute" && <SellerCancellingReason />}
+          {state === "seller-dispute-confirmation" && (
+            <SellerCancellingSuccess />
+          )}
+
           {listing && (
             <TicketDetails
               buyTicketFn={buyTicketHandler}
+              setState={setState}
               order={listing}
               state={state}
               parentClassName={cn(
