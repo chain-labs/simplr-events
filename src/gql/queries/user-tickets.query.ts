@@ -33,3 +33,33 @@ export const USER_TICKETS_QUERY = gql`
     }
   }
 `;
+
+export interface TICKET_RESPONSE_TYPE {
+  ticket: {
+    listings: {
+      items: {
+        price: string;
+      }[];
+    };
+    seat: string;
+    event: {
+      eventDate: string;
+    };
+  };
+}
+
+export const USER_TICKET_QUERY = gql`
+  query Ticket($ticketId: String!) {
+    ticket(id: $ticketId) {
+      listings {
+        items {
+          price
+        }
+      }
+      seat
+      event {
+        eventDate
+      }
+    }
+  }
+`;
