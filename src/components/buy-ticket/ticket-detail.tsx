@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import React, { useState } from "react";
 
 import { PiSealWarningDuotone } from "react-icons/pi";
+import { formatUnits } from "viem";
 
+import { Order } from "@/types/ticket";
 import { cn } from "@/utils/cn";
 
 import { ComponentWithLabel } from "../component/component-with-label";
@@ -13,20 +15,17 @@ import { H4 } from "../ui/heading";
 import { List, ListProps } from "../ui/list";
 import { PLarge, PSmall } from "../ui/paragraph";
 import Select from "../ui/select";
+import useTicketActions from "./useTicketActions";
 
 export function TicketDetails({
-  ticket,
+  order,
+  buyTicketFn,
   state,
   parentClassName,
+  disabled,
 }: {
-  ticket: {
-    price: string;
-    orderId: string;
-    seat: string;
-    startDate: string;
-    endDate: string;
-    other: string;
-  };
+  order: Order;
+  buyTicketFn: () => void;
   state:
     | "details"
     | "confirmation"
@@ -35,7 +34,16 @@ export function TicketDetails({
     | "dispute-confirmation"
     | "sold-out";
   parentClassName?: string;
+  disabled?: boolean;
 }) {
+  const [buyLoading, setBuyLoading] = React.useState(false);
+
+  const handleBuy = async () => {
+    setBuyLoading(true);
+    await buyTicketFn();
+    setBuyLoading(false);
+  };
+
   return (
     <div className={cn("flex flex-col gap-[32px]", parentClassName)}>
       <div className="flex flex-col gap-[16px]">
@@ -43,30 +51,34 @@ export function TicketDetails({
 
         {/* price */}
         <ComponentWithLabel gap={6} label="Price">
-          <PLarge className="text-simpleGray700">{ticket.price}</PLarge>
+          <PLarge className="text-simpleGray700">
+            ${formatUnits(BigInt(order.price), 6)}
+          </PLarge>
         </ComponentWithLabel>
 
         {/* order id */}
         <ComponentWithLabel gap={6} label="Event Ticket ID">
-          <PLarge className="text-simpleGray700">{ticket.orderId}</PLarge>
+          <PLarge className="text-simpleGray700">{order.ticket.tokenId}</PLarge>
         </ComponentWithLabel>
 
         {/* seat */}
         <ComponentWithLabel gap={6} label="Your Seat">
-          <PLarge className="text-simpleGray700">Seat {ticket.seat}</PLarge>
+          <PLarge className="text-simpleGray700">
+            Seat {order.ticket.seat}
+          </PLarge>
         </ComponentWithLabel>
 
         {/* start and end datetime */}
         <div className="flex flex-wrap gap-[16px] md:flex-row md:gap-[32px]">
           <ComponentWithLabel gap={6} label="Start Date">
             <PSmall className="whitespace-nowrap font-bold text-simpleGray700">
-              {ticket.startDate}
+              {order.ticket.event.startDateTime}
             </PSmall>
           </ComponentWithLabel>
 
           <ComponentWithLabel gap={6} label="End Date">
             <PSmall className="whitespace-nowrap font-bold text-simpleGray700">
-              {ticket.endDate}
+              {order.ticket.event.endDateTime}
             </PSmall>
           </ComponentWithLabel>
         </div>
@@ -74,10 +86,11 @@ export function TicketDetails({
         {/* other field */}
         <ComponentWithLabel gap={6} label="Another Field">
           <PSmall className="font-bold text-simpleGray700">
-            {ticket.other}
+            {order.ticket.event.additionalInfo[0]}
           </PSmall>
         </ComponentWithLabel>
       </div>
+
       {state === "confirmation" && (
         <div className="flex flex-col gap-[8px]">
           <PSmall>
@@ -109,7 +122,13 @@ export function TicketDetails({
       {state === "details" && (
         <div className="flex justify-between gap-[8px]">
           <Button variant="secondary">go back</Button>
-          <Button>buy ticket</Button>
+          <Button
+            disabled={disabled}
+            onClick={handleBuy}
+            isLoading={buyLoading}
+          >
+            buy ticket
+          </Button>
         </div>
       )}
       {state === "sold-out" && <Button>sold out</Button>}
