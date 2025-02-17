@@ -43,6 +43,18 @@ const useTicketData = (ticketId: string) => {
         } else {
           setState("sold-out");
         }
+      } else if (escrow.isResolved) {
+        setState("success");
+      } else if (escrow.isDisputed) {
+        if (account.address?.toLowerCase() === escrow.seller.toLowerCase()) {
+          setState("seller-dispute");
+        } else if (
+          account.address?.toLowerCase() === escrow.buyer.toLowerCase()
+        ) {
+          setState("dispute");
+        } else {
+          setState("sold-out");
+        }
       }
     } else {
       setState("details");

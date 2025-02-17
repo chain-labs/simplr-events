@@ -15,6 +15,7 @@ import { H4 } from "../ui/heading";
 import { List, ListProps } from "../ui/list";
 import { PLarge, PSmall } from "../ui/paragraph";
 import Select from "../ui/select";
+import useTicketActions from "./useTicketActions";
 
 export type stateBuyPageStateType =
   | "details"
@@ -46,6 +47,7 @@ export function TicketDetails({
   isLoading: boolean;
 }) {
   const [buyLoading, setBuyLoading] = React.useState(false);
+  const { confirmBuy, actionLoading } = useTicketActions();
 
   const handleBuy = async () => {
     setBuyLoading(true);
@@ -139,7 +141,17 @@ export function TicketDetails({
       )}
       {state === "confirmation" && (
         <div className="flex flex-wrap gap-[8px] md:flex-nowrap">
-          <Button>verify & confirm ticket</Button>
+          <Button
+            onClick={() =>
+              confirmBuy(
+                order.ticket.tokenId,
+                order.ticket.event.contractAddress
+              )
+            }
+            isLoading={actionLoading}
+          >
+            verify & confirm ticket
+          </Button>
           <Button variant="outline-danger">dispute Ticket</Button>
         </div>
       )}
@@ -162,7 +174,7 @@ export function TicketDetails({
             Please confirm that you've sent the ticket to the buyer.
           </PSmall>
           <div className="flex flex-col gap-[8px] md:flex-row">
-            <Button>yes, I've sent the ticket</Button>
+            <Button disabled>yes, I've sent the ticket</Button>
             <Button
               variant="outline-danger"
               onClick={() => setState("seller-dispute")}
@@ -365,15 +377,27 @@ export function Success() {
   );
 }
 
-export function Dispute() {
+export function Dispute({
+  tokenId,
+  eventContract,
+  setState,
+}: {
+  tokenId: string | undefined;
+  eventContract: string | undefined;
+  setState: (state: stateBuyPageStateType) => void;
+}) {
   const DisputeReasons = [
     "Expired Ticket",
     "Invalid Ticket",
     "Different seat/day/other detail from what it was listed",
     "Changed my mind / plans",
   ];
+  const { disputeTicket, actionLoading } = useTicketActions();
 
   const [selectedReason, setSelectedReason] = useState<string | null>(null);
+
+  if (!tokenId || !eventContract) return;
+
   return (
     <div className="flex flex-col gap-[16px]">
       <H4 className="text-simpleGray700">
@@ -385,7 +409,15 @@ export function Dispute() {
         allowUserInput
         userInputPlaceholder="Provide another reason..."
       />
-      <Button>submit</Button>
+      <Button
+        onClick={() => {
+          disputeTicket(tokenId, eventContract);
+          setState("dispute-confirmation");
+        }}
+        isLoading={actionLoading}
+      >
+        submit
+      </Button>
     </div>
   );
 }
@@ -433,7 +465,15 @@ export function SellerConfirmation() {
   );
 }
 
-export function SellerCancellingReason() {
+export function SellerCancellingReason({
+  tokenId,
+  eventContract,
+  setState,
+}: {
+  tokenId: string | undefined;
+  eventContract: string | undefined;
+  setState: (state: stateBuyPageStateType) => void;
+}) {
   const disputeReasonsSelection = [
     "Expired ticket",
     "Invalid ticket",
@@ -441,6 +481,10 @@ export function SellerCancellingReason() {
     "Changed my mind / plans",
   ];
   const [selectedReason, setSelectedReason] = useState<string>("");
+
+  const { disputeTicket, actionLoading } = useTicketActions();
+
+  if (!tokenId || !eventContract) return;
 
   return (
     <div className="flex flex-col gap-[16px]">
@@ -453,7 +497,15 @@ export function SellerCancellingReason() {
         allowUserInput
         userInputPlaceholder="Provide another reason..."
       />
-      <Button>submit</Button>
+      <Button
+        onClick={() => {
+          disputeTicket(tokenId, eventContract);
+          setState("seller-dispute-confirmation");
+        }}
+        isLoading={actionLoading}
+      >
+        submit
+      </Button>
     </div>
   );
 }

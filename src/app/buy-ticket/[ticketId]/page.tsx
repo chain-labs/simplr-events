@@ -62,6 +62,7 @@ export default function BuyTicket() {
                 "flex md:hidden",
                 state === "confirmation" && "hidden"
               )}
+              isLoading={false}
             />
           ) : (
             <TicketDetailsSkeleton
@@ -74,9 +75,21 @@ export default function BuyTicket() {
           {state === "details" && <Details />}
           {state === "confirmation" && <Confirmation />}
           {state === "success" && <Success />}
-          {state === "dispute" && <Dispute />}
+          {state === "dispute" && (
+            <Dispute
+              tokenId={listing?.ticket.tokenId}
+              eventContract={listing?.ticket.event.contractAddress}
+              setState={setState}
+            />
+          )}
           {state === "dispute-confirmation" && <DisputeConfirmation />}
-          {state === "seller-dispute" && <SellerCancellingReason />}
+          {state === "seller-dispute" && (
+            <SellerCancellingReason
+              tokenId={listing?.ticket.tokenId}
+              eventContract={listing?.ticket.event.contractAddress}
+              setState={setState}
+            />
+          )}
           {state === "seller-dispute-confirmation" && (
             <SellerCancellingSuccess />
           )}
@@ -91,6 +104,7 @@ export default function BuyTicket() {
                 "hidden md:flex",
                 state === "confirmation" && "flex"
               )}
+              isLoading={false}
             />
           ) : (
             <TicketDetailsSkeleton
