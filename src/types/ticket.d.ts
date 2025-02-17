@@ -31,7 +31,6 @@ interface Ticket {
 }
 
 interface Order {
-  id: string;
   ticket: Ticket;
   price: string;
   signature: string;
