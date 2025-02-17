@@ -1,5 +1,6 @@
-import { theme } from "./src/utils/theme";
 import type { Config } from "tailwindcss";
+
+import { theme } from "./src/utils/theme";
 
 export default {
   content: [

@@ -18,7 +18,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
           type={type}
           className={cn(
-            "border-1 placeholder:text-simpleGray500 focus-visible:ring-ring flex h-10 w-full rounded-[8px] border border-simpleGray300 bg-white px-[12px] py-[8px] font-switzer text-sm text-simpleGray900 shadow-[0_1px_2px_#1018280D] ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+            "border-1 focus-visible:ring-ring flex h-10 w-full rounded-[8px] border border-simpleGray300 bg-white px-[12px] py-[8px] font-switzer text-sm text-simpleGray900 shadow-[0_1px_2px_#1018280D] ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-simpleGray500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
             icon && iconPosition === "left" && "pl-[42px]",
             icon && iconPosition === "right" && "pr-[42px]",
             props.valid &&

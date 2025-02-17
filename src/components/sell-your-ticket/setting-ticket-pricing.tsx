@@ -2,7 +2,7 @@
 
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-import { PiCurrencyCircleDollar, PiMoneyDuotone, } from "react-icons/pi";
+import { PiCurrencyCircleDollar, PiMoneyDuotone } from "react-icons/pi";
 import { set } from "zod";
 
 import { useTicketStore } from "@/app/sell-your-ticket/context";
@@ -202,7 +202,9 @@ export default function SettingTicketPricing({
                     <Input
                       type="number"
                       placeholder="Enter price"
-                      icon={<PiCurrencyCircleDollar className="text-simpleGray500" />}
+                      icon={
+                        <PiCurrencyCircleDollar className="text-simpleGray500" />
+                      }
                       value={
                         settingPriceForAllTickets.auto
                           ? settingPriceForSelectedTickets[ticket._id]

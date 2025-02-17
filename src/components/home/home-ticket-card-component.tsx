@@ -27,7 +27,6 @@ export default function HomeTicketCardComponent({
   bgGradient,
   isLoading,
 }: HomeTicketCardComponentProps) {
-
   if (isLoading || !order) {
     return <HomeTicketCardSkeleton />;
   }
