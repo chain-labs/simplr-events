@@ -1,78 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { waitForTransactionReceipt } from "@wagmi/core";
 import {
   useAccount,
   useConfig,
   usePublicClient,
-  useReadContract,
   useWriteContract,
 } from "wagmi";
 
-import useMarketplaceContract from "@/contracts/Marketplace";
-import useUSDCContract from "@/contracts/USDC";
-import { Order } from "@/types/ticket";
-import api from "@/utils/axios";
+import useEscrowContract from "@/contracts/Escrow";
 
 const useTicketActions = () => {
-  const [allowance, setAllowance] = useState<bigint>(BigInt(0));
-  const { writeContractAsync: writeContract } = useWriteContract();
-  const account = useAccount();
-  const USDC = useUSDCContract();
-  const MarketplaceContract = useMarketplaceContract();
-  const { data: allowanceData } = useReadContract({
-    abi: USDC.abi,
-    address: USDC.address,
-    functionName: "allowance",
-  });
+  const [loading, setLoading] = React.useState(false);
 
+  const { writeContractAsync: writeContract } = useWriteContract();
   const config = useConfig();
   const client = usePublicClient();
 
-  useEffect(() => {
-    if (allowanceData) {
-      setAllowance(allowanceData as bigint);
-    }
-  }, [allowanceData]);
+  const account = useAccount();
 
-  const allowFundsTransfer = async (fund: bigint) => {
-    const tx = await writeContract({
-      abi: USDC.abi,
-      address: USDC.address as `0x${string}`,
-      functionName: "approve",
-      args: [MarketplaceContract.address, fund],
-    });
+  const EscrowContract = useEscrowContract();
 
-    const receipt = await waitForTransactionReceipt(config, { hash: tx });
-  };
-
-  const buyTicket = async (order: Order, seller: string) => {
-    if ((allowance as bigint) < BigInt(order.price)) {
-      try {
-        await allowFundsTransfer(BigInt(order.price));
-        setAllowance(BigInt(order.price));
-      } catch (error) {
-        console.log("Error setting allowance");
-        return;
-      }
-    }
-    const options = {
-      abi: MarketplaceContract.abi,
-      address: MarketplaceContract.address,
-      functionName: "purchaseTicket",
-      args: [
-        {
-          eventContract: order.ticket.event.contractAddress,
-          tokenId: BigInt(order.ticket.tokenId),
-          price: BigInt(order.price),
-          seller: seller,
-          deadline: BigInt(order.ticket.event.deadline),
-        },
-        order.signature,
-      ],
-    };
-
+  const disputeTicket = async (tokenId: string, eventContract: string) => {
+    setLoading(true);
     try {
+      const options = {
+        abi: EscrowContract.abi,
+        address: EscrowContract.address,
+        functionName: "dispute",
+        args: [BigInt(tokenId), eventContract],
+      };
+
       const sim = await client?.estimateGas({
         ...options,
         account: account.address,
@@ -83,19 +41,41 @@ const useTicketActions = () => {
       });
 
       await waitForTransactionReceipt(config, { hash: tx });
-
-      await api.post("/listing/sold", {
-        ticketId: order.ticket._id,
-        eventId: order.ticket.event._id,
-        buyerAddress: account.address,
-        expiryHours: "24",
-      });
     } catch (error) {
-      console.log("Error while buying ticket");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  return { buyTicket };
+  const confirmBuy = async (tokenId: string, eventContract: string) => {
+    setLoading(true);
+    try {
+      const options = {
+        abi: EscrowContract.abi,
+        address: EscrowContract.address,
+        functionName: "releaseFunds",
+        args: [BigInt(tokenId), eventContract],
+      };
+
+      const sim = await client?.estimateGas({
+        ...options,
+        account: account.address,
+      });
+      const tx = await writeContract({
+        ...options,
+        gas: BigInt(Math.max(Number(sim as bigint) + 200000, 1000000)),
+      });
+
+      await waitForTransactionReceipt(config, { hash: tx });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { confirmBuy, disputeTicket, actionLoading: loading };
 };
 
 export default useTicketActions;

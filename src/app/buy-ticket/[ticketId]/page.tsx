@@ -16,7 +16,7 @@ import {
   TicketDetails,
   TicketDetailsSkeleton,
 } from "@/components/buy-ticket/ticket-detail";
-import useTicketActions from "@/components/buy-ticket/useTicketActions";
+import useTicketBuy from "@/components/buy-ticket/useTicketBuy";
 import Container from "@/components/component/container";
 import FooterProgressBar, { StepsType } from "@/components/footer-progress-bar";
 import { cn } from "@/utils/cn";
@@ -38,7 +38,7 @@ export default function BuyTicket() {
 
   const { listing, escrow, state, setState } = useTicketData(ticketId);
 
-  const { buyTicket } = useTicketActions();
+  const { buyTicket } = useTicketBuy();
   const buyTicketHandler = async () => {
     if (listing && escrow) {
       await buyTicket(listing, escrow?.seller);
