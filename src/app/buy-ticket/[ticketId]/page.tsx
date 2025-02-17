@@ -1,5 +1,6 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import { use, useEffect, useState } from "react";
 
 import axios from "axios";
@@ -24,13 +25,9 @@ import { envVars } from "@/utils/envVars";
 
 import useTicketData from "../useTicketData";
 
-export default function BuyTicket({
-  params,
-}: {
-  params: Promise<{ ticketId: string }>;
-}) {
-  const resolvedParams = use(params);
-  const ticketId = resolvedParams.ticketId;
+export default function BuyTicket() {
+  const resolvedParams = useParams();
+  const ticketId = resolvedParams.ticketId as string;
 
   const footerSteps: StepsType[] = [
     { name: "Share your booking details", status: "completed" },
