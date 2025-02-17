@@ -12,8 +12,8 @@ export default function Template({
   children: React.ReactNode;
 }>) {
   return (
-    <SimpleBar style={{ maxHeight: "100vh" }}>
-      <div className="flex h-full min-h-[100vh] w-full flex-col">
+    <SimpleBar style={{ maxHeight: "100vh", maxWidth: "100vw" }}>
+      <div className="flex h-full min-h-[100vh] w-full max-w-[100vw] flex-col overflow-x-hidden">
         <UserProvider>
           <Header />
           {children}

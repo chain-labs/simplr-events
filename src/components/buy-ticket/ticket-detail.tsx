@@ -85,7 +85,6 @@ export function TicketDetails({
             confirm the ticket to process your payment.
           </PSmall>
           <div className="grid grid-cols-[24px_auto] gap-[8px] rounded-[16px] bg-[#F2FF49A8] p-[16px]">
-            {/* @ts-expect-error */}
             <PiSealWarningDuotone className="text-[24px] text-simpleRed" />
             <PSmall className="font-bold text-simpleGray700">
               Keep in mind that verifying and confirming the ticket is permanent
@@ -93,7 +92,6 @@ export function TicketDetails({
             </PSmall>
           </div>
           <div className="grid grid-cols-[24px_auto] gap-[8px] rounded-[16px] bg-[#F2FF49A8] p-[16px]">
-            {/* @ts-expect-error */}
             <PiSealWarningDuotone className="text-[24px] text-simpleRed" />
             <PSmall className="font-bold text-simpleGray700">
               If you don't confirm the ticket within 48 hours, the ticket will

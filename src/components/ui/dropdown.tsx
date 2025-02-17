@@ -115,7 +115,6 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
           )}
         >
           {selectedOption ? selectedOption.label : placeholder}{" "}
-          {/* @ts-expect-error */}
           <div className="text-[20px] text-simpleGray500">{Icon}</div>
         </button>
         {isOpen && (

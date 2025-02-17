@@ -49,7 +49,6 @@ function TicketSuggestionCard({
           {/* price */}
           <div className="flex flex-col items-start justify-start gap-[4px]">
             <LabelSmall className="text-simpleGray700">
-              {/* @ts-expect-error */}
               <PiMoneyWavyDuotone />
               Price
             </LabelSmall>
@@ -62,7 +61,6 @@ function TicketSuggestionCard({
 
           {/* event, seat and ticketid */}
           <div className="flex items-center gap-[1ch] text-[16px] leading-[24px] text-simpleGray700">
-            {/* @ts-expect-error */}
             <ticket.EventIcon className="text-[24px]" />
             {ticket.eventName}
           </div>
@@ -81,7 +79,6 @@ function TicketSuggestionCard({
           <div className="grid grid-flow-col items-center gap-[8px]">
             <div className="flex flex-col gap-[4px] whitespace-nowrap">
               <LabelSmall className="text-simpleGray700">
-                {/* @ts-expect-error */}
                 <PiCalendarDotDuotone />
                 Start Date
               </LabelSmall>
@@ -93,7 +90,6 @@ function TicketSuggestionCard({
             <div className="h-full w-[1px] bg-simpleGray400" />
             <div className="flex flex-col gap-[4px] whitespace-nowrap">
               <LabelSmall className="text-simpleGray700">
-                {/* @ts-expect-error */}
                 <PiCalendarDotsDuotone />
                 End Date
               </LabelSmall>
@@ -106,7 +102,6 @@ function TicketSuggestionCard({
           {/* additional info */}
           <div className="flex flex-col gap-[4px]">
             <LabelSmall className="text-simpleGray700">
-              {/* @ts-expect-error */}
               <PiInfoDuotone />
               Additional Feild
             </LabelSmall>
@@ -132,7 +127,7 @@ export default function LinkedAndVerifiedTicket() {
       >
         <TicketSuggestionCard ticketsHistory={ticketsHistory} />
       </ComponentWithLabel>
-      <Container className="max-w-[950px] mb-[16px] md:my-[50px]">
+      <Container className="mb-[16px] max-w-[950px] md:my-[50px]">
         <div className="flex md:gap-[64px]">
           {/* suggestion */}
           <ComponentWithLabel
@@ -161,9 +156,7 @@ export default function LinkedAndVerifiedTicket() {
                 <PSmall className="text-simpleGray700">
                   Learn how we establish trust with ticketing.
                 </PSmall>
-                <Button variant="secondary">
-                  how is it legit?
-                </Button>
+                <Button variant="secondary">how is it legit?</Button>
               </div>
             </div>
 
@@ -177,9 +170,7 @@ export default function LinkedAndVerifiedTicket() {
                 <li>Go through other events happening around the world</li>
               </PSmall>
               <Link href="/">
-                <Button variant="secondary">
-                  go home
-                </Button>
+                <Button variant="secondary">go home</Button>
               </Link>
             </div>
           </div>

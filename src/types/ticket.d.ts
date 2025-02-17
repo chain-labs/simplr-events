@@ -32,7 +32,7 @@ interface Ticket {
 
 interface Order {
   id: string;
-  ticket: TicketMock;
+  ticket: Ticket;
   price: string;
   signature: string;
 }
