@@ -118,7 +118,7 @@ export default function HomeTicketCardComponent({
       </div>
 
       {/* link which lead to viewing ticket  */}
-      <Link href={`/buy/${order?.ticket?._id}`}>
+      <Link href={`/buy-ticket/${order?.ticket?._id}`}>
         <Button variant="primary-blue" size="sm" className="w-fit">
           view ticket
         </Button>

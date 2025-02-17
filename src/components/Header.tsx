@@ -197,8 +197,7 @@ export default function Header() {
                     : () => setWalletModelOpen(true)
                 }
               >
-                <PiWalletDuotone size={24} />
-                {"1$"}
+                <PiWalletDuotone size={24} />${user?.balance}
                 {
                   <PiCaretDown
                     size={16}
@@ -223,7 +222,7 @@ export default function Header() {
                   <div className="flex flex-col items-center justify-center gap-[8px] whitespace-nowrap text-left text-simpleGray700">
                     <LabelSmall>Your wallet Balance:</LabelSmall>
                     <PMedium className="text-[20px] font-bold leading-[26px] tracking-[0.02em]">
-                      {user?.address}
+                      ${user?.balance}
                     </PMedium>
                   </div>
                   <Button variant="primary" size="sm">

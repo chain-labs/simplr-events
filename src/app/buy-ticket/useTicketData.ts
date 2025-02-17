@@ -13,7 +13,7 @@ export interface Escrow {
   isResolved: boolean;
 }
 
-const useTicketData = () => {
+const useTicketData = (ticketId: string) => {
   const [listing, setListing] = React.useState<Order>();
   const [escrow, setEscrow] = React.useState<Escrow>();
   const [state, setState] = React.useState<
@@ -28,13 +28,13 @@ const useTicketData = () => {
   const account = useAccount();
 
   useEffect(() => {
-    const ticketId = "ticket-0x7d41cadc4ad09af751bda042ca78ee1d1f282cbd-15";
-    api.get(`/listing/${ticketId}?network=${"base"}`).then(({ data }) => {
-      const { order, escrow } = data;
-      setListing(order);
-      setEscrow(escrow);
-    });
-  }, []);
+    if (ticketId)
+      api.get(`/listing/${ticketId}?network=${"base"}`).then(({ data }) => {
+        const { order, escrow } = data;
+        setListing(order);
+        setEscrow(escrow);
+      });
+  }, [ticketId]);
 
   useEffect(() => {
     if (escrow?.isEscrow) {
@@ -48,7 +48,7 @@ const useTicketData = () => {
         }
       }
     } else {
-      setState("details");
+      setState("sold-out");
     }
   }, [escrow]);
 

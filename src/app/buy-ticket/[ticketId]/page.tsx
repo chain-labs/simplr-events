@@ -41,7 +41,7 @@ export default function BuyTicket({
     { name: "Start selling your ticket", status: "pending" },
   ];
 
-  const { listing, escrow, state, setState } = useTicketData();
+  const { listing, escrow, state, setState } = useTicketData(ticketId);
 
   const { buyTicket } = useTicketActions();
   const buyTicketHandler = async () => {
