@@ -1,17 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
+import axios from "axios";
 import {
   PiCalendarDotDuotone,
   PiCalendarDotsDuotone,
   PiInfoDuotone,
   PiMoneyWavyDuotone,
+  PiShootingStar,
 } from "react-icons/pi";
+import { formatUnits } from "viem";
 
-import { Ticket } from "@/types/ticket";
+import { Order } from "@/types/ticket";
+import api from "@/utils/axios";
 import { cn } from "@/utils/cn";
-import { dummyTickets } from "@/utils/dummyData";
 
 import { ComponentWithLabel } from "../component/component-with-label";
 import Container from "../component/container";
@@ -20,30 +24,34 @@ import { H4 } from "../ui/heading";
 import { LabelSmall } from "../ui/label";
 import { PSmall } from "../ui/paragraph";
 
-function TicketSuggestionCard({
-  ticketsHistory,
-}: {
-  ticketsHistory: Ticket[];
-}) {
+function TicketSuggestionCard() {
+  const [orders, setOrders] = useState<Order[]>([]);
+
+  useEffect(() => {
+    api.get("/listing/examples?network=base").then((res) => {
+      setOrders(res.data.examples);
+    });
+  }, []);
+
   return (
     <div className="flex flex-col gap-[8px]">
-      {ticketsHistory.map((ticket) => (
+      {orders?.map((order, index) => (
         <div
-          key={ticket.ticketId}
+          key={order.ticket._id}
           className="grid-flex-row grid gap-[8px] rounded-[16px] bg-simpleGray200 p-[16px]"
         >
           {/* price category tag */}
           <div
             className={cn(
               "w-fit rounded-full px-[16px] py-[8px] text-[12px] font-semibold uppercase leading-[15.6px] tracking-[0.1em]",
-              ticket.priceCategory === "average"
+              index === 1
                 ? "bg-simpleYellow text-simpleGray900"
-                : ticket.priceCategory === "highest"
+                : index === 2
                   ? "bg-simpleGreen text-simpleWhite"
                   : "bg-simpleBlue text-simpleWhite"
             )}
           >
-            {ticket.priceCategory} Price
+            {index === 1 ? "average" : index === 2 ? "highest" : "lowest"} Price
           </div>
 
           {/* price */}
@@ -53,7 +61,7 @@ function TicketSuggestionCard({
               Price
             </LabelSmall>
             <p className="text-[20px] font-bold leading-[20px] text-simpleGray900">
-              {ticket.price}
+              ${formatUnits(BigInt(order.price), 6)}
             </p>
           </div>
 
@@ -61,15 +69,15 @@ function TicketSuggestionCard({
 
           {/* event, seat and ticketid */}
           <div className="flex items-center gap-[1ch] text-[16px] leading-[24px] text-simpleGray700">
-            <ticket.EventIcon className="text-[24px]" />
-            {ticket.eventName}
+            <PiShootingStar size={24} />
+            {order.ticket.event.eventName}
           </div>
           <div className="flex flex-col">
             <p className="text-[20px] font-bold leading-[20px] text-simpleGray900">
-              {ticket.seat}
+              {order.ticket.seat}
             </p>
             <p className="flex gap-[1ch] text-[16px] leading-[24px] text-simpleGray700">
-              {ticket.orderId}
+              {order.ticket._id}
             </p>
           </div>
 
@@ -84,7 +92,7 @@ function TicketSuggestionCard({
               </LabelSmall>
 
               <p className="text-[16px] font-semibold leading-[20px] text-simpleGray900">
-                {ticket.startDate} | Day {ticket.startDay}
+                {order.ticket.event.endDateTime}
               </p>
             </div>
             <div className="h-full w-[1px] bg-simpleGray400" />
@@ -94,7 +102,7 @@ function TicketSuggestionCard({
                 End Date
               </LabelSmall>
               <p className="text-[16px] font-semibold leading-[20px] text-simpleGray900">
-                {ticket.endDate} | Day {ticket.endDay}
+                {order.ticket.event.endDateTime}
               </p>
             </div>
           </div>
@@ -106,7 +114,7 @@ function TicketSuggestionCard({
               Additional Feild
             </LabelSmall>
             <p className="text-[16px] font-semibold leading-[20px] text-simpleGray900">
-              {ticket.other}
+              {order.ticket.event.additionalInfo}
             </p>
           </div>
         </div>
@@ -116,16 +124,13 @@ function TicketSuggestionCard({
 }
 
 export default function LinkedAndVerifiedTicket() {
-  // TODO: Replace dummyTickets with real data
-  const ticketsHistory = dummyTickets;
-
   return (
     <>
       <ComponentWithLabel
         label="Similar tickets are being sold at:"
         className="m-[16px] flex text-simpleWhite md:hidden"
       >
-        <TicketSuggestionCard ticketsHistory={ticketsHistory} />
+        <TicketSuggestionCard />
       </ComponentWithLabel>
       <Container className="mb-[16px] max-w-[950px] md:my-[50px]">
         <div className="flex md:gap-[64px]">
@@ -134,7 +139,7 @@ export default function LinkedAndVerifiedTicket() {
             label="Similar tickets are being sold at:"
             className="hidden md:flex"
           >
-            <TicketSuggestionCard ticketsHistory={ticketsHistory} />
+            <TicketSuggestionCard />
           </ComponentWithLabel>
 
           {/* info */}

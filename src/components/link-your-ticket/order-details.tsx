@@ -17,12 +17,14 @@ import useTicketMint from "./hooks/useTicketMint";
 export default function OrderDetails({
   data,
   navigation,
+  setStates
 }: {
   data: centralizedState;
   navigation: {
     next: () => void;
     back: () => void;
   };
+  setStates: React.Dispatch<React.SetStateAction<"linking-ticket" | "order-details" | "link-and-verify-ticket">>;
 }) {
   const EventContract = useEventContract();
   const [mintLoading, setMintLoading] = useState(false);
@@ -63,7 +65,7 @@ export default function OrderDetails({
     });
 
     setMintLoading(false);
-    navigation.next();
+    setStates("link-and-verify-ticket")
   };
 
   return (

@@ -136,7 +136,7 @@ export default function LinkYourTicket() {
         />
       </div>
       {pageState === "order-details" && (
-        <OrderDetails navigation={navigation} data={centralizeState} />
+        <OrderDetails navigation={navigation} data={centralizeState} setStates={setPageState} />
       )}
       {pageState === "link-and-verify-ticket" && <LinkedAndVerifiedTicket />}
       <FooterProgressBar
