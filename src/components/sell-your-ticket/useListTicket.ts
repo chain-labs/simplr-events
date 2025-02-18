@@ -125,7 +125,7 @@ const useListTicket = () => {
           functionName: "listTicket",
           args: [
             {
-              eventContract: EventContract.address,
+              eventContract: ticket?.event?.contractAddress,
               tokenId: ticket.tokenId,
               price: parseUnits(price, PaymentContract.decimals),
               seller: account.address as `0x${string}`,

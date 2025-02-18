@@ -79,7 +79,7 @@ export function TicketDetails({
         {/* price */}
         <ComponentWithLabel gap={6} label="Price">
           <PLarge className="text-simpleGray700">
-            ${formatUnits(BigInt(order.price), 6)}
+            ${order?.price ? formatUnits(BigInt(order.price), 6) : "N/A"}
           </PLarge>
         </ComponentWithLabel>
 
@@ -134,8 +134,8 @@ export function TicketDetails({
           <div className="grid grid-cols-[24px_auto] gap-[8px] rounded-[16px] bg-[#F2FF49A8] p-[16px]">
             <PiSealWarningDuotone className="text-[24px] text-simpleRed" />
             <PSmall className="font-bold text-simpleGray700">
-              If you don't confirm the ticket within 48 hours, the ticket will
-              be auto-confirmed on your behalf.
+              If you don&apos;t confirm the ticket within 48 hours, the ticket
+              will be auto-confirmed on your behalf.
             </PSmall>
           </div>
         </div>
@@ -172,10 +172,10 @@ export function TicketDetails({
       {state === "seller-ticket-detail" && (
         <div className="flex flex-col gap-[8px]">
           <PSmall className="text-simpleGray700">
-            Please confirm that you've sent the ticket to the buyer.
+            Please confirm that you&apos;ve sent the ticket to the buyer.
           </PSmall>
           <div className="flex flex-col gap-[8px] md:flex-row">
-            <Button disabled>yes, I've sent the ticket</Button>
+            <Button disabled>yes, I&apos;ve sent the ticket</Button>
             <Button
               variant="outline-danger"
               onClick={() => setState("seller-dispute")}
@@ -246,7 +246,7 @@ export function Details() {
     "You make the payment for the ticket today. It is stored in our escrow. We don't transfer it to the Seller yet.",
     "You receive the ticket from the Seller.",
     <>
-      You verify the ticket and confirm that you've received it.{" "}
+      You verify the ticket and confirm that you&apos;ve received it.{" "}
       <b>
         {" "}
         Keep in mind, we check the legitimacy of all tickets on our platform by
@@ -256,8 +256,8 @@ export function Details() {
     {
       data: (
         <>
-          If everything's okay and you verify & confirm the ticket: We transfer
-          your payment from our escrow to the Seller.{" "}
+          If everything&apos;s okay and you verify & confirm the ticket: We
+          transfer your payment from our escrow to the Seller.{" "}
           <ol className="list-outside list-disc pl-[16px]">
             <li>
               {" "}
@@ -275,8 +275,8 @@ export function Details() {
     {
       data: (
         <>
-          If you feel like something's off about the ticket and refuse it: We
-          reverse the payment back to your account from our escrow.{" "}
+          If you feel like something&apos;s off about the ticket and refuse it:
+          We reverse the payment back to your account from our escrow.{" "}
           <ol className="list-outside list-disc pl-[16px]">
             <li>
               {" "}
@@ -308,15 +308,15 @@ export function Confirmation() {
   const WhatHappensNext: ListProps["items"] = [
     "You receive the ticket from the Seller.",
     <>
-      You verify the ticket and confirm that you've received it.{" "}
+      You verify the ticket and confirm that you&apos;ve received it.{" "}
       <b>
         Keep in mind, we check the legitimacy of all tickets on our platform by
         default, but do not assure 100% guarantee on expired/invalid tickets.
       </b>
     </>,
     <>
-      If everything's okay and you verify & confirm the ticket: We transfer your
-      payment from our escrow to the Seller.{" "}
+      If everything&apos;s okay and you verify & confirm the ticket: We transfer
+      your payment from our escrow to the Seller.{" "}
       <ol className="list-outside list-disc pl-[24px]">
         <li>
           Your ticket is now available in your account. Go{" "}
@@ -329,7 +329,7 @@ export function Confirmation() {
       </ol>
     </>,
     <>
-      If you feel like something's off about the ticket and refuse it: We
+      If you feel like something&apos;s off about the ticket and refuse it: We
       reverse the payment back to your account from our escrow.{" "}
       <ol className="list-outside list-disc pl-[24px]">
         <li>
@@ -347,7 +347,7 @@ export function Confirmation() {
     <div className="flex flex-col gap-[16px]">
       <H4 className="text-simpleGray700">
         Your payment is in escrow!
-        <br /> Here's what happens next...
+        <br /> Here&apos;s what happens next...
       </H4>
       <List
         items={WhatHappensNext}
@@ -404,7 +404,7 @@ export function Dispute({
   return (
     <div className="flex flex-col gap-[16px]">
       <H4 className="text-simpleGray700">
-        Please tell us why you're disputing this ticket.
+        Please tell us why you&apos;re disputing this ticket.
       </H4>
       <Select
         options={DisputeReasons}
@@ -435,16 +435,16 @@ export function DisputeConfirmation() {
   return (
     <div className="flex flex-col gap-[16px]">
       <H4 className="text-simpleGray700">
-        Give us 2 days to look into this and you'll receive a refund if your
-        dispute is verified.
+        Give us 2 days to look into this and you&apos;ll receive a refund if
+        your dispute is verified.
       </H4>
       <PSmall>
         <Link href="/contact-us" className="font-bold underline">
           Contact us
         </Link>{" "}
-        if you haven't received a response in 2 days. <br /> <br /> We encourage
-        you to view other tickets from the Marketplace. We don't want you to
-        miss out on the event! .
+        if you haven&apos;t received a response in 2 days. <br /> <br /> We
+        encourage you to view other tickets from the Marketplace. We don&apos;t
+        want you to miss out on the event! .
       </PSmall>
       <Link href="/" className="mt-[16px]">
         <Button>go home</Button>
@@ -500,7 +500,7 @@ export function SellerCancellingReason({
   return (
     <div className="flex flex-col gap-[16px]">
       <H4 className="text-simpleGray700">
-        Please tell us why you're disputing this sale.
+        Please tell us why you&apos;re disputing this sale.
       </H4>
       <Select
         options={disputeReasonsSelection}
@@ -538,7 +538,7 @@ export function SellerCancellingSuccess() {
           <Link href="/contact-us" className="font-bold underline">
             Contact us
           </Link>{" "}
-          if you haven't received a response in 2 days.
+          if you haven&apos;t received a response in 2 days.
         </PSmall>
       </div>
       <Button>go home</Button>

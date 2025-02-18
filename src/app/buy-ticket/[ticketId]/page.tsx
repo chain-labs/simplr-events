@@ -39,10 +39,15 @@ export default function BuyTicket() {
   const { listing, escrow, state, setState } = useTicketData(ticketId);
 
   const { buyTicket } = useTicketBuy();
+
   const buyTicketHandler = async () => {
     if (listing && escrow) {
-      await buyTicket(listing, escrow?.seller);
-      setState("confirmation");
+      try {
+        await buyTicket(listing, escrow?.seller);
+        setState("confirmation");
+      } catch (error) {
+        console.log({ error });
+      }
     }
   };
 

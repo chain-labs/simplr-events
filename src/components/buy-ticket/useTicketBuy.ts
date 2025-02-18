@@ -72,6 +72,8 @@ const useTicketBuy = () => {
       ],
     };
 
+    console.log({ options });
+
     try {
       const sim = await client?.estimateGas({
         ...options,
@@ -91,7 +93,7 @@ const useTicketBuy = () => {
         expiryHours: "24",
       });
     } catch (error) {
-      console.log("Error while buying ticket");
+      console.error("Error while buying ticket", error);
     }
   };
 
