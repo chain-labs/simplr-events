@@ -62,24 +62,26 @@ export default function SettingTicketPricing({
   const handleList = async () => {
     setListLoading(true);
     // Implement the logic to sell the selected tickets
+    try {
+      for (const ticket of selectedTickets) {
+        await approveTransfer(ticket.event.contractAddress as `0x${string}`);
+        const signature = await signTypedData({
+          tokenId: ticket.tokenId,
+          price: settingPriceForSelectedTickets[ticket._id]?.toString(),
+          event: ticket.event,
+        });
+        await listTicket({
+          price: settingPriceForSelectedTickets[ticket._id]?.toString(),
+          ticket,
+          signature,
+        });
+      }
 
-    for (const ticket of selectedTickets) {
-      await approveTransfer(ticket.event.contractAddress as `0x${string}`);
-      const signature = await signTypedData({
-        tokenId: ticket.tokenId,
-        price: settingPriceForSelectedTickets[ticket._id]?.toString(),
-        event: ticket.event,
-      });
-      await listTicket({
-        price: settingPriceForSelectedTickets[ticket._id]?.toString(),
-        ticket,
-        signature,
-      });
+      nextStep();
+      console.log("Listed tickets");
+    } catch (error) {
+      console.log("Error while listing", { error });
     }
-
-    nextStep();
-
-    console.log("Listed tickets");
   };
 
   return (

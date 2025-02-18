@@ -134,6 +134,8 @@ const useListTicket = () => {
           ],
         };
 
+        console.log({ options });
+
         const sim = await client?.estimateContractGas({
           ...options,
           account: account.address,
@@ -161,7 +163,8 @@ const useListTicket = () => {
         }
       }
     } catch (error) {
-      console.log({ error });
+      console.error("Error while listing", { error });
+      throw new Error("Failed to list ticket");
     }
   };
 
