@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 
 import { PiSealWarningDuotone } from "react-icons/pi";
 
@@ -50,6 +50,12 @@ export default function SellingLinkedTicket({
     setFilter: setTicketFilters,
     removeFilterElement: removeTicketFilterElement,
   } = useDataFilter(ticketsOwned);
+
+  const suggestedTickets = useMemo(() => {
+    if (ticketsOwned.length) {
+      return ticketsOwned.slice(0, 2);
+    }
+  }, [ticketsOwned]);
 
   useEffect(() => {
     if (selectedTickets.length) {
@@ -131,21 +137,25 @@ export default function SellingLinkedTicket({
           </ComponentWithLabel>
 
           {/* suggested ticket */}
-          {/* <ComponentWithLabel label="Suggested ticket:">
-            <TicketCardComponent
-              {...{ ...dummyTickets[0], status: "grey" }}
-              onClick={() => {
-                setSelectedTickets((prev) => {
-                  if (
-                    !prev.some((ticket) => ticket.id === dummyTickets[0].id)
-                  ) {
-                    return [...prev, dummyTickets[0]];
-                  }
-                  return prev;
-                });
-              }}
-            />
-          </ComponentWithLabel> */}
+          <ComponentWithLabel label="Suggested ticket:">
+            {suggestedTickets?.map((ticket) => (
+              <TicketCardComponent
+                key={ticket._id}
+                status="grey"
+                ticketData={ticket}
+                onClick={() => {
+                  setSelectedTickets((prev) => {
+                    if (
+                      !prev.some((ownTicket) => ownTicket._id === ticket._id)
+                    ) {
+                      return [...prev, ticket];
+                    }
+                    return prev;
+                  });
+                }}
+              />
+            ))}
+          </ComponentWithLabel>
         </div>
 
         {/*  */}
