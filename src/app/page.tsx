@@ -52,7 +52,7 @@ export default function Home() {
       },
     },
     {
-      name: "Angel Larka",
+      name: "Angel Lakra",
       image: "/images/angel-larka.png",
       position: "Co-Founder & Senior Engineering Lead",
       socials: {
