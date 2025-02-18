@@ -7,7 +7,8 @@ import React, {
 } from "react";
 
 import { formatUnits } from "viem";
-import { useReadContract } from "wagmi";
+import { arbitrum } from "viem/chains";
+import { useAccount, useChainId, useReadContract, useSwitchChain } from "wagmi";
 
 import useUSDCContract from "@/contracts/USDC";
 
@@ -30,6 +31,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const USDC = useUSDCContract();
 
+  const { switchChainAsync } = useSwitchChain();
+  const account = useAccount();
+
   const { data: userBalance } = useReadContract({
     address: USDC.address,
     abi: USDC.abi,
@@ -39,6 +43,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       enabled: !!user?.address,
     },
   });
+
+  useEffect(() => {
+    if (account.chainId !== arbitrum.id) {
+      switchChainAsync({ chainId: arbitrum.id });
+    }
+  }, [account.chainId]);
 
   useEffect(() => {
     if (userBalance && user?.address) {
