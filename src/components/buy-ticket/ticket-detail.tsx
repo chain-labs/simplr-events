@@ -5,6 +5,7 @@ import React, { useState } from "react";
 
 import { PiSealWarningDuotone } from "react-icons/pi";
 import { formatUnits } from "viem";
+import { useAccount } from "wagmi";
 
 import { Order } from "@/types/ticket";
 import { cn } from "@/utils/cn";
@@ -396,6 +397,8 @@ export function Dispute({
 
   const [selectedReason, setSelectedReason] = useState<string | null>(null);
 
+  const account = useAccount();
+
   if (!tokenId || !eventContract) return;
 
   return (
@@ -411,10 +414,16 @@ export function Dispute({
       />
       <Button
         onClick={() => {
-          disputeTicket(tokenId, eventContract);
-          setState("dispute-confirmation");
+          if (selectedReason) {
+            disputeTicket(tokenId, eventContract, account.address as string, {
+              reason: selectedReason ?? "",
+              from: "Buyer",
+            });
+            setState("dispute-confirmation");
+          }
         }}
         isLoading={actionLoading}
+        disabled={!selectedReason}
       >
         submit
       </Button>
@@ -501,10 +510,16 @@ export function SellerCancellingReason({
       />
       <Button
         onClick={() => {
-          disputeTicket(tokenId, eventContract);
-          setState("seller-dispute-confirmation");
+          if (selectedReason) {
+            disputeTicket(tokenId, eventContract, buyer, {
+              reason: selectedReason,
+              from: "Seller",
+            });
+            setState("seller-dispute-confirmation");
+          }
         }}
         isLoading={actionLoading}
+        disabled={!selectedReason}
       >
         submit
       </Button>

@@ -64,7 +64,7 @@ const useTicketMint = () => {
             seat: seat,
             verificationData: ticketData, // bytes data
             ticketEncryptedDataUri: "", // lit protocol's encrypted data
-            ticketMetadata: `https://simplr-events-server-production.up.railway.app/nft-metadata/${eventObj.contractAddress}/${tokenId}`, // public metadata
+            ticketMetadata: `${envVars.nftMetadataPrefix}/nft-metadata/${eventObj.contractAddress}/${tokenId}`, // public metadata
           },
         ] as const,
       };

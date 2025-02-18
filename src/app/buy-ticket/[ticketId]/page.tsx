@@ -88,6 +88,7 @@ export default function BuyTicket() {
               tokenId={listing?.ticket.tokenId}
               eventContract={listing?.ticket.event.contractAddress}
               setState={setState}
+              buyer={escrow?.buyer ?? ""}
             />
           )}
           {state === "seller-dispute-confirmation" && (
