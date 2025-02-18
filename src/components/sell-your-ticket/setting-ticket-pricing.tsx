@@ -3,26 +3,21 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import { PiCurrencyCircleDollar, PiMoneyDuotone } from "react-icons/pi";
-import { set } from "zod";
 
 import { useTicketStore } from "@/app/sell-your-ticket/context";
 import { Event } from "@/types/event";
 import { Ticket } from "@/types/ticket";
 import { cn } from "@/utils/cn";
-import { dummyTickets } from "@/utils/dummyData";
 
-import { useUser } from "../../../UserContext";
 import { ComponentWithLabel } from "../component/component-with-label";
 import Container from "../component/container";
 import EventCardComponent from "../link-your-ticket/event-card-component";
 import SearchWithComponent from "../search-with-component";
 import { Button } from "../ui/button";
-import Dropdown from "../ui/dropdown";
 import { H4 } from "../ui/heading";
 import { Input } from "../ui/input";
 import { PSmall } from "../ui/paragraph";
 import TicketCardComponent from "./ticket-card-component";
-import TicketSearchComponent from "./ticket-search-component";
 import useListTicket from "./useListTicket";
 
 type SettingTicketPricingProps = {

@@ -32,7 +32,7 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
       options,
       placeholder = "Select an option",
       onChange,
-      Icon = PiCaretDown,
+      Icon = PiCaretDown as IconType,
       inputSearchable = false,
       openingDirection = "down",
       valid = false,
@@ -115,7 +115,9 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
           )}
         >
           {selectedOption ? selectedOption.label : placeholder}{" "}
-          <div className="text-[20px] text-simpleGray500">{Icon}</div>
+          <div className="text-[20px] text-simpleGray500">
+            {typeof Icon === "function" ? <Icon /> : Icon}
+          </div>
         </button>
         {isOpen && (
           <div
@@ -161,5 +163,7 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
     );
   }
 );
+
+Dropdown.displayName = "Dropdown";
 
 export default Dropdown;

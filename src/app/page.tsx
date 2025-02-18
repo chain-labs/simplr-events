@@ -35,7 +35,7 @@ export default function Home() {
   useLayoutEffect(() => {
     if (SingleMyTicketRef.current) {
       const resizeObserver = new ResizeObserver(() => {
-        setWidthOfSingleMyTicket(SingleMyTicketRef.current?.offsetWidth + "px");
+        setWidthOfSingleMyTicket(`${SingleMyTicketRef.current?.offsetWidth  }px`);
       });
       resizeObserver.observe(SingleMyTicketRef.current);
       return () => resizeObserver.disconnect();
@@ -186,7 +186,7 @@ export default function Home() {
                   />
                 ))
               : [{}, {}, {}].map((_, index) => (
-                  <HomeTicketCardSkeleton key={index} isLoading />
+                  <HomeTicketCardSkeleton key={index} />
                 ))}
             <Button variant="tertiary" size="sm" className="block md:hidden">
               View All

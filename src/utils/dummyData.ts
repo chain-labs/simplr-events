@@ -97,114 +97,79 @@ export const dummyTickets: Ticket[] = [
     event: dummyEvents[0],
     tokenId: "123",
     seat: "A123",
-    ticketData: "QR_CODE_DATA_HERE",
-    additionalInfo: {
-      accessLevel: "VIP",
-      notes: "Backstage access included",
-    },
   },
   {
     _id: "2",
     event: dummyEvents[1],
     tokenId: "456",
     seat: "B2",
-    ticketData: "NFC_TAG_DATA_HERE",
-    additionalInfo: {
-      workshopAccess: true,
-      dietaryRestrictions: "Vegetarian",
-    },
   },
   {
     _id: "3",
     event: dummyEvents[2],
     tokenId: "789",
     seat: "C45",
-    ticketData: "QR_CODE_DATA_HERE",
-    additionalInfo: {
-      audioGuideLanguage: "English",
-      catalogNumber: "AE2024-001",
-    },
   },
   {
     _id: "4",
     event: dummyEvents[3],
     tokenId: "101",
     seat: "Block A",
-    ticketData: "NFC_TAG_DATA_HERE",
-    additionalInfo: {
-      parkingZone: "P1",
-      refreshmentVoucher: true,
-    },
   },
   {
     _id: "5",
     event: dummyEvents[4],
     tokenId: "102",
     seat: "D78",
-    ticketData: "QR_CODE_DATA_HERE",
-    additionalInfo: {
-      networkingPass: true,
-      swagBagCode: "SB2024-102",
-    },
   },
   {
     _id: "6",
     event: dummyEvents[0],
     tokenId: "103",
     seat: "B89",
-    ticketData: "QR_CODE_DATA_HERE",
-    additionalInfo: {
-      accessLevel: "Standard",
-      notes: "Main arena access",
-    },
   },
   {
     _id: "7",
     event: dummyEvents[1],
     tokenId: "104",
     seat: "A2",
-    ticketData: "NFC_TAG_DATA_HERE",
-    additionalInfo: {
-      workshopAccess: false,
-      dietaryRestrictions: "None",
-    },
   },
 ];
 
 export const dummyOrders: Order[] = [
   {
-    id: "OD123456789",
     ticket: dummyTickets[0],
-    price: "250",
-  },
-  {
-    id: "OD987654321",
-    ticket: dummyTickets[1],
-    price: "500",
-  },
-  {
-    id: "OD345678912",
-    ticket: dummyTickets[2],
     price: "100",
+    signature: "0x123",
   },
   {
-    id: "OD567891234",
-    ticket: dummyTickets[3],
+    ticket: dummyTickets[1],
     price: "150",
+    signature: "0x456",
   },
   {
-    id: "OD678912345",
-    ticket: dummyTickets[4],
+    ticket: dummyTickets[2],
     price: "200",
+    signature: "0x789",
   },
   {
-    id: "OD789123456",
+    ticket: dummyTickets[3],
+    price: "250",
+    signature: "0x101",
+  },
+  {
+    ticket: dummyTickets[4],
+    price: "300",
+    signature: "0x102",
+  },
+  {
     ticket: dummyTickets[5],
-    price: "50",
+    price: "350",
+    signature: "0x103",
   },
   {
-    id: "OD891234567",
     ticket: dummyTickets[6],
-    price: "75",
+    price: "400",
+    signature: "0x104",
   },
 ];

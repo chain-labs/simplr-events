@@ -101,7 +101,7 @@ export default function Header() {
           setUser(user);
         } else {
           api
-            .post(`/user/create`, {
+            .post("/user/create", {
               name: window.prompt("Enter your name"),
               email: window.prompt("Enter your email"),
               address: account?.address,
@@ -120,7 +120,7 @@ export default function Header() {
   }, [account.address]);
 
   useEffect(() => {
-    let handleClickOutside = (e: any) => {
+    const handleClickOutside = (e: any) => {
       if (MobileMenuRef.current && !MobileMenuRef.current.contains(e.target)) {
         setHamMenuOpen(false);
       }
