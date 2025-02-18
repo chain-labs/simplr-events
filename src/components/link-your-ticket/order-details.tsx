@@ -33,7 +33,11 @@ export default function OrderDetails({
   const EventContract = useEventContract();
   const [mintLoading, setMintLoading] = useState(false);
 
-  const { data: tokenIdCounter, error } = useReadContract({
+  const {
+    data: tokenIdCounter,
+    error,
+    isFetched: tokenIdCounterFetched,
+  } = useReadContract({
     abi: EventContract.abi,
     address: data.eventObj.contractAddress as `0x${string}`,
     functionName: "tokenIdCounter",
@@ -45,12 +49,12 @@ export default function OrderDetails({
 
   const tokenId = useMemo(() => {
     console.log({ tokenIdCounter });
-    if (tokenIdCounter) {
+    if (tokenIdCounterFetched) {
       return (tokenIdCounter as bigint) + BigInt(1);
     }
 
-    return 0;
-  }, [tokenIdCounter]);
+    return BigInt(1);
+  }, [tokenIdCounter, tokenIdCounterFetched]);
 
   const { mintTicket } = useTicketMint();
 
