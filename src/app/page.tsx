@@ -17,7 +17,6 @@ import HomeTicketCardComponent, {
 import useHomeData from "@/components/home/useHomeData";
 import { Button } from "@/components/ui/button";
 import { H2, H5 } from "@/components/ui/heading";
-import { dummyOrders } from "@/utils/dummyData";
 
 export default function Home() {
   const {
@@ -35,7 +34,7 @@ export default function Home() {
   useLayoutEffect(() => {
     if (SingleMyTicketRef.current) {
       const resizeObserver = new ResizeObserver(() => {
-        setWidthOfSingleMyTicket(`${SingleMyTicketRef.current?.offsetWidth  }px`);
+        setWidthOfSingleMyTicket(`${SingleMyTicketRef.current?.offsetWidth}px`);
       });
       resizeObserver.observe(SingleMyTicketRef.current);
       return () => resizeObserver.disconnect();
@@ -171,7 +170,7 @@ export default function Home() {
         {/* tickets im selling */}
         <div className="flex w-full flex-col gap-[16px] md:col-span-2">
           <div className="flex w-full max-w-[min(1280px,100%)] items-center justify-between">
-            <H2 className="text-simpleWhite">Tickets I'm selling</H2>
+            <H2 className="text-simpleWhite">Tickets I&apos;m selling</H2>
             <Button variant="tertiary" size="sm" className="hidden md:block">
               View All
             </Button>
@@ -199,6 +198,7 @@ export default function Home() {
         <div className="flex w-full gap-[12px] py-[16px] md:col-span-2">
           {Object.keys(marketplaceTickets).map((event) => (
             <a
+              key={event}
               href={`#${event}`}
               className="rounded-[16px] bg-simpleBlack/25 p-[12px] shadow-[inset_0px_-2px_0px_#F2FF49]"
             >

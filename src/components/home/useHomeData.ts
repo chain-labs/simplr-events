@@ -74,15 +74,7 @@ const useHomeData = () => {
         setEventMap(data.eventMap);
         setIsLoading(false);
       });
-  }, []);
-
-  useEffect(() => {
-    console.log("myTickets:", myTickets);
-    console.log("escrowTickets:", escrowTickets);
-    console.log("sellingTickets:", sellingTickets);
-    console.log("marketplaceTickets:", marketplaceTickets);
-    console.log("eventMap:", eventMap);
-  }, [myTickets, escrowTickets, sellingTickets, marketplaceTickets, eventMap]);
+  }, [account.address]);
 
   return {
     myTickets,
