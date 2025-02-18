@@ -1,9 +1,11 @@
 import Link from "next/link";
 
 import {
+  PiArrowUpRightBold,
   PiCalendarDotDuotone,
   PiCalendarDotsDuotone,
   PiInfoDuotone,
+  PiLink,
   PiMoneyWavyDuotone,
   PiShootingStar,
   PiShootingStarDuotone,
@@ -27,12 +29,9 @@ export default function HomeTicketCardComponent({
   bgGradient,
   isLoading,
 }: HomeTicketCardComponentProps) {
-  if (isLoading || !order) {
+  if (isLoading) {
     return <HomeTicketCardSkeleton />;
   }
-
-  
-
   return (
     <div
       key={order?.ticket?._id}
@@ -181,6 +180,74 @@ export function HomeTicketCardSkeleton() {
 
       {/* Button skeleton */}
       <div className="h-[36px] w-[120px] rounded-md bg-gray-200" />
+    </div>
+  );
+}
+
+export function HomeEmptyState({
+  title,
+  redirectLink,
+  linkText = "Buy Ticket",
+}: {
+  title: string;
+  redirectLink: string;
+  linkText?: string;
+}) {
+  return (
+    <div className="grid-flex-row relative z-0 grid w-full min-w-fit gap-[16px] overflow-hidden rounded-[16px] bg-simpleWhite p-[16px] md:w-fit">
+      {/* Background gradient - similar to other tickets */}
+      <div className="absolute bottom-0 left-0 z-[-1] h-[20%] w-full" />
+
+      {/* Icon and Title section - replaces event name */}
+      <div className="flex items-center gap-[4px] text-[16px] leading-[24px] text-simpleGray700">
+        <PiShootingStarDuotone size={24} />
+        No Tickets Found
+      </div>
+
+      {/* Empty space for maintaining layout */}
+      <div className="flex flex-col">
+        <p className="text-[20px] font-bold leading-[20px] text-simpleGray900">
+          {title}
+        </p>
+      </div>
+
+      <div className="h-[1px] w-full bg-simpleGray400" />
+
+      {/* Placeholder content to maintain height */}
+      <div className="grid items-center gap-[16px] md:grid-flow-col">
+        <div className="flex flex-col gap-[4px] whitespace-nowrap">
+          <LabelSmall className="text-simpleGray700">
+            <PiCalendarDotDuotone />
+            Start Date
+          </LabelSmall>
+          <p className="text-[16px] font-semibold leading-[20px] text-simpleGray700">
+            -
+          </p>
+        </div>
+        <div className="hidden h-full w-[1px] bg-simpleGray400 md:block" />
+        <div className="flex flex-col gap-[4px] whitespace-nowrap">
+          <LabelSmall className="text-simpleGray700">
+            <PiCalendarDotsDuotone />
+            End Date
+          </LabelSmall>
+          <p className="text-[16px] font-semibold leading-[20px] text-simpleGray700">
+            -
+          </p>
+        </div>
+      </div>
+
+      <div className="h-[1px] w-full bg-simpleGray400" />
+
+      {/* Action button at the bottom */}
+      <Link href={redirectLink} className="w-fit">
+        <Button
+          variant="primary-blue"
+          size="sm"
+          className="flex items-center justify-center gap-2"
+        >
+          {linkText} <PiArrowUpRightBold />
+        </Button>
+      </Link>
     </div>
   );
 }
