@@ -31,6 +31,8 @@ export default function HomeTicketCardComponent({
     return <HomeTicketCardSkeleton />;
   }
 
+  
+
   return (
     <div
       key={order?.ticket?._id}
@@ -48,7 +50,7 @@ export default function HomeTicketCardComponent({
       {/* event, seat and ticketid */}
       <div className="flex items-center gap-[4px] text-[16px] leading-[24px] text-simpleGray700">
         {/* <order.ticket.event.image className="h-[24px] w-[24px] rounded-full object-cover text-[24px]" /> */}
-        <PiShootingStarDuotone size={24} /> {order?.ticket?.event.eventName}
+        <PiShootingStarDuotone size={24} /> {order?.ticket?.event?.eventName}
       </div>
       <div className="flex flex-col">
         <p className="text-[20px] font-bold leading-[20px] text-simpleGray900">

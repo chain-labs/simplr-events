@@ -20,20 +20,23 @@ const useTicketBuy = () => {
   const account = useAccount();
   const USDC = useUSDCContract();
   const MarketplaceContract = useMarketplaceContract();
-  const { data: allowanceData } = useReadContract({
+  const { data: allowanceData, isFetched: allowanceFetched } = useReadContract({
     abi: USDC.abi,
     address: USDC.address,
     functionName: "allowance",
+    args: [account.address as `0x${string}`, MarketplaceContract.address],
   });
 
   const config = useConfig();
   const client = usePublicClient();
 
   useEffect(() => {
-    if (allowanceData) {
+    if (allowanceFetched) {
+      console.log({ allowanceData });
+
       setAllowance(allowanceData as bigint);
     }
-  }, [allowanceData]);
+  }, [allowanceData, allowanceFetched]);
 
   const allowFundsTransfer = async (fund: bigint) => {
     const tx = await writeContract({
@@ -47,13 +50,15 @@ const useTicketBuy = () => {
   };
 
   const buyTicket = async (order: Order, seller: string) => {
+    console.log({ allowance, order: BigInt(order.price) });
+
     if ((allowance as bigint) < BigInt(order.price)) {
       try {
         await allowFundsTransfer(BigInt(order.price));
         setAllowance(BigInt(order.price));
       } catch (error) {
-        console.log("Error setting allowance");
-        return;
+        console.error("Error setting allowance");
+        throw new Error("Failed to allow funds transfer");
       }
     }
     const options = {
@@ -73,7 +78,6 @@ const useTicketBuy = () => {
     };
 
     console.log({ options });
-
     try {
       const sim = await client?.estimateGas({
         ...options,
@@ -93,7 +97,8 @@ const useTicketBuy = () => {
         expiryHours: "24",
       });
     } catch (error) {
-      console.error("Error while buying ticket", error);
+      console.error("Error buying ticket", error);
+      throw new Error("Failed to buy ticket");
     }
   };
 
