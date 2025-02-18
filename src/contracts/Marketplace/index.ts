@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { arbitrumSepolia, base } from "wagmi/chains";
+import { arbitrum, arbitrumSepolia } from "wagmi/chains";
 
 import { envVars } from "@/utils/envVars";
 
@@ -19,7 +19,7 @@ const useMarketplaceContract = () => {
   useEffect(() => {
     const address = isTestNetwork
       ? (CONTRACTS[arbitrumSepolia.id].marketplace as unknown as `0x${string}`)
-      : (CONTRACTS[base.id].marketplace as unknown as `0x${string}`);
+      : (CONTRACTS[arbitrum.id].marketplace as unknown as `0x${string}`);
 
     setContractDetails({ abi, address });
   }, []);

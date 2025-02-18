@@ -9,8 +9,8 @@ export const CONTRACTS = {
   },
   [arbitrum.id]: {
     event: "0x1be5c471CB8e23782e2790e27e1106F785C75676",
-    marketplace: "0xCbeB4D1A275F3c8c6095EbD4a503AFD77228Bb4e",
-    escrow: "0x1190442f6b7505d3edc30c59e5B99EBfdEeF34e9",
+    marketplace: "0x96975883E80448817Ca2e561A00A31c2B63792F5",
+    escrow: "0x673cd7A309C0CBe4DbABd1E6F115509bD1E26d11",
     paymentToken: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
   },
   [base.id]: {

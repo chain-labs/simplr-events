@@ -2,7 +2,7 @@ import React from "react";
 
 import { getWalletClient, waitForTransactionReceipt } from "@wagmi/core";
 import { parseUnits } from "viem";
-import { arbitrumSepolia, base } from "viem/chains";
+import { arbitrum, arbitrumSepolia } from "viem/chains";
 import {
   useAccount,
   useClient,
@@ -73,7 +73,7 @@ const useListTicket = () => {
       // sampled from Marketplace.sol:~line 60
       name: "SimplrMarketplace",
       version: "1.0.0",
-      chainId: envVars.isTestNetwork ? arbitrumSepolia.id : base.id,
+      chainId: envVars.isTestNetwork ? arbitrumSepolia.id : arbitrum.id,
       verifyingContract: MarketplaceContract.address,
     } as const;
 

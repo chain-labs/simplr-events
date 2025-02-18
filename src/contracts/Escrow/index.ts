@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { arbitrum, arbitrumSepolia, base } from "wagmi/chains";
+import { arbitrum, arbitrumSepolia } from "wagmi/chains";
 
 import { envVars } from "@/utils/envVars";
 
@@ -23,7 +23,7 @@ const useEscrowContract = () => {
   useEffect(() => {
     const address = isTestNetwork
       ? (CONTRACTS[arbitrumSepolia.id].escrow as unknown as `0x${string}`)
-      : (CONTRACTS[base.id].escrow as unknown as `0x${string}`);
+      : (CONTRACTS[arbitrum.id].escrow as unknown as `0x${string}`);
 
     setContractDetails({ abi, address });
   }, []);

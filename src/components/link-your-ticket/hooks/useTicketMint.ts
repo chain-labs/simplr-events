@@ -4,14 +4,12 @@ import { encodeFunctionData, keccak256, toBytes } from "viem";
 import { useAccount, useWriteContract } from "wagmi";
 
 import useEventContract from "@/contracts/Event";
-import useKernelClient from "@/hooks/useKernelClient";
 import { Event } from "@/types/event";
 import api from "@/utils/axios";
 import { envVars } from "@/utils/envVars";
 
 const useTicketMint = () => {
   const EventContract = useEventContract();
-  const { kernelClient } = useKernelClient();
   const account = useAccount();
   const { writeContractAsync: mint } = useWriteContract();
 

@@ -466,10 +466,12 @@ export function SellerConfirmation() {
 }
 
 export function SellerCancellingReason({
+  buyer,
   tokenId,
   eventContract,
   setState,
 }: {
+  buyer: string;
   tokenId: string | undefined;
   eventContract: string | undefined;
   setState: (state: stateBuyPageStateType) => void;

@@ -65,7 +65,7 @@ export const TicketStoreProvider: React.FC<TicketProviderProps> = ({
       });
       const ticketsData = response.data as USER_TICKET_RESPONSE_TYPE;
       const eventsResponse = await api.get(
-        `/user/${user?.address}/tickets?network=base`
+        `/user/${user?.address}/tickets?network=arbitrum`
       );
       const eventsData = eventsResponse.data;
 

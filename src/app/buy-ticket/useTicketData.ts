@@ -23,7 +23,7 @@ const useTicketData = (ticketId: string) => {
 
   useEffect(() => {
     if (ticketId)
-      api.get(`/listing/${ticketId}?network=${"base"}`).then(({ data }) => {
+      api.get(`/listing/${ticketId}?network=${"arbitrum"}`).then(({ data }) => {
         const { order, escrow } = data;
         setListing(order);
         setEscrow(escrow);

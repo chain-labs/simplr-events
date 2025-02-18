@@ -28,7 +28,7 @@ function TicketSuggestionCard() {
   const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
-    api.get("/listing/examples?network=base").then((res) => {
+    api.get("/listing/examples?network=arbitrum").then((res) => {
       setOrders(res.data.examples);
     });
   }, []);

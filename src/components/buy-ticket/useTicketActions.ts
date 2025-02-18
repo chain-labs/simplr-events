@@ -9,6 +9,7 @@ import {
 } from "wagmi";
 
 import useEscrowContract from "@/contracts/Escrow";
+import api from "@/utils/axios";
 
 const useTicketActions = () => {
   const [loading, setLoading] = React.useState(false);
@@ -21,7 +22,12 @@ const useTicketActions = () => {
 
   const EscrowContract = useEscrowContract();
 
-  const disputeTicket = async (tokenId: string, eventContract: string) => {
+  const disputeTicket = async (
+    tokenId: string,
+    eventContract: string,
+    buyer: string,
+    dispute: { reason: string; from: "Seller" | "Buyer" }
+  ) => {
     setLoading(true);
     try {
       const options = {
@@ -41,6 +47,13 @@ const useTicketActions = () => {
       });
 
       await waitForTransactionReceipt(config, { hash: tx });
+
+      await api.post("/listing/dispute", {
+        reason: dispute.reason,
+        buyerId: buyer,
+        ticketId: `ticket-${eventContract.toLowerCase()}-${tokenId}`,
+        disputeFrom: dispute.from,
+      });
     } catch (error) {
       console.error(error);
     } finally {
@@ -68,6 +81,11 @@ const useTicketActions = () => {
       });
 
       await waitForTransactionReceipt(config, { hash: tx });
+
+      await api.post("/listing/resolve", {
+        buyerId: account.address,
+        ticketId: `ticket-${eventContract.toLowerCase()}-${tokenId}`,
+      });
     } catch (error) {
       console.error(error);
     } finally {

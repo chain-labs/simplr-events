@@ -56,7 +56,7 @@ export default function Home() {
       image: "/images/angel-larka.png",
       position: "Co-Founder & Senior Engineering Lead",
       socials: {
-        linkedin: "https://www.linkedin.com/in/angel-larka-1b1b1b1b1/",
+        linkedin: "https://www.linkedin.com/in/angel-lakra-1b1b1b1b1/",
       },
     },
     {
@@ -157,7 +157,7 @@ export default function Home() {
                       />
                     ))
                   : [{}, {}, {}].map((_, index) => (
-                      <HomeTicketCardSkeleton key={index} isLoading />
+                      <HomeTicketCardSkeleton key={index} />
                     ))}
               </div>
               <Button variant="tertiary" size="sm" className="block md:hidden">

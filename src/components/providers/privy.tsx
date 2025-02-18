@@ -3,7 +3,7 @@
 import React from "react";
 
 import { PrivyProvider } from "@privy-io/react-auth";
-import { arbitrum, arbitrumSepolia, base } from "viem/chains";
+import { arbitrum, arbitrumSepolia } from "viem/chains";
 
 import { envVars } from "@/utils/envVars";
 import { logo_faces, theme } from "@/utils/theme";
@@ -25,8 +25,8 @@ const Privy = ({ children }: Props) => {
           accentColor: `${theme.colors.brandBlue}` as `#${string}`,
           logo: logo_faces.png.blue,
         },
-        supportedChains: [base],
-        defaultChain: base,
+        supportedChains: [arbitrum],
+        defaultChain: arbitrum,
         embeddedWallets: {
           createOnLogin: "users-without-wallets",
         },

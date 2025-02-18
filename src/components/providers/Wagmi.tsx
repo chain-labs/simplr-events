@@ -2,12 +2,14 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider, createConfig, http } from "wagmi";
-import { arbitrumSepolia, base, mainnet, sepolia } from "wagmi/chains";
+import {
+  arbitrum,
+} from "wagmi/chains";
 
 const config = createConfig({
-  chains: [base],
+  chains: [arbitrum],
   transports: {
-    [base.id]: http(),
+    [arbitrum.id]: http(),
   },
 });
 

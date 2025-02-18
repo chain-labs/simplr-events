@@ -38,7 +38,7 @@ const useHomeData = () => {
 
     api
       .get(
-        `/marketplace?network=${"base"}&account=${account.address?.toLowerCase()}`
+        `/marketplace?network=${"arbitrum"}&account=${account.address?.toLowerCase()}`
       )
       .then(({ data }) => {
         setMyTickets(toOrder(data.userTickets.owned, data.eventMap));
