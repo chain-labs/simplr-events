@@ -157,7 +157,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 h-fit w-full bg-simpleBlue p-[8px] pb-[32px] md:px-[32px] md:py-[16px]">
       <nav className="relative mx-auto flex w-full max-w-[1280px] items-center justify-between">
-        <div>
+        <Link href="/">
           <Image
             src="https://ik.imagekit.io/chainlabs/simplr-events-designs/logo-face/png/simplr-yellow.png?updatedAt=1734096538221"
             alt="logo"
@@ -165,7 +165,7 @@ export default function Header() {
             height={100}
             className="h-[32px] w-auto"
           />
-        </div>
+        </Link>
         {/* desktop */}
         <>
           <ul className="hidden gap-[10px] md:flex">
