@@ -143,12 +143,17 @@ export function TicketDetails({
       {state === "confirmation" && (
         <div className="flex flex-wrap gap-[8px] md:flex-nowrap">
           <Button
-            onClick={() =>
-              confirmBuy(
-                order.ticket.tokenId,
-                order.ticket.event.contractAddress
-              )
-            }
+            onClick={() => {
+              try {
+                confirmBuy(
+                  order.ticket.tokenId,
+                  order.ticket.event.contractAddress
+                );
+                setState("success");
+              } catch (error) {
+                console.error(error);
+              }
+            }}
             isLoading={actionLoading}
           >
             verify & confirm ticket
@@ -158,14 +163,22 @@ export function TicketDetails({
       )}
       {state === "details" && (
         <div className="flex justify-between gap-[8px]">
-          <Button variant="secondary">go back</Button>
-          <Button
-            disabled={disabled}
-            onClick={handleBuy}
-            isLoading={buyLoading}
-          >
-            buy ticket
-          </Button>
+          <Link href="/">
+            <Button variant="secondary">go back</Button>
+          </Link>
+          {!!order.price ? (
+            <Button
+              disabled={disabled}
+              onClick={handleBuy}
+              isLoading={buyLoading}
+            >
+              buy ticket
+            </Button>
+          ) : (
+            <Link href={`/sell-your-ticket?ticket=${order.ticket._id}`}>
+              <Button>sell ticket</Button>
+            </Link>
+          )}
         </div>
       )}
       {state === "sold-out" && <Button>sold out</Button>}
@@ -415,11 +428,15 @@ export function Dispute({
       <Button
         onClick={() => {
           if (selectedReason) {
-            disputeTicket(tokenId, eventContract, account.address as string, {
-              reason: selectedReason ?? "",
-              from: "Buyer",
-            });
-            setState("dispute-confirmation");
+            try {
+              disputeTicket(tokenId, eventContract, account.address as string, {
+                reason: selectedReason ?? "",
+                from: "Buyer",
+              });
+              setState("dispute-confirmation");
+            } catch (error) {
+              console.error(error);
+            }
           }
         }}
         isLoading={actionLoading}

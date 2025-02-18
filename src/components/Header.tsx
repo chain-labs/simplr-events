@@ -13,9 +13,10 @@ import {
   PiWalletDuotone,
   PiXDuotone,
 } from "react-icons/pi";
-import { createWalletClient, custom } from "viem";
-import { useAccount, useConfig, useDisconnect } from "wagmi";
+import { createWalletClient, custom, formatUnits } from "viem";
+import { useAccount, useConfig, useDisconnect, usePublicClient } from "wagmi";
 
+import useUSDCContract from "@/contracts/USDC";
 import api from "@/utils/axios";
 import { cn } from "@/utils/cn";
 import { envVars } from "@/utils/envVars";
@@ -42,7 +43,9 @@ export default function Header() {
   const { user, setUser } = useUser();
   const account = useAccount();
   const { disconnect } = useDisconnect();
-  const config = useConfig();
+  const client = usePublicClient();
+
+  const USDC = useUSDCContract();
 
   const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -88,7 +91,11 @@ export default function Header() {
   };
 
   useEffect(() => {
-    if (typeof window !== "undefined" && account.address) {
+    if (
+      typeof window !== "undefined" &&
+      account.address &&
+      USDC.address !== "0x"
+    ) {
       console.log({ account });
 
       // save user to db
@@ -98,7 +105,17 @@ export default function Header() {
         if (response.data) {
           const { data } = response;
           const { _id, __v, ...user } = data;
-          setUser(user);
+
+          client
+            ?.readContract({
+              address: USDC.address,
+              abi: USDC.abi,
+              functionName: "balanceOf",
+              args: [user?.address ?? ""],
+            })
+            .then((data) => {
+              setUser({ ...user, balance: formatUnits(data as bigint, 6) });
+            });
         } else {
           api
             .post("/user/create", {
@@ -109,7 +126,16 @@ export default function Header() {
             .then((response) => {
               const { data } = response;
               const { _id, __v, ...user } = data.user;
-              setUser(user);
+              client
+                ?.readContract({
+                  address: USDC.address,
+                  abi: USDC.abi,
+                  functionName: "balanceOf",
+                  args: [user?.address ?? ""],
+                })
+                .then((data) => {
+                  setUser({ ...user, balance: formatUnits(data as bigint, 6) });
+                });
             })
             .catch((error) => {
               console.log({ error });
@@ -117,7 +143,7 @@ export default function Header() {
         }
       });
     }
-  }, [account.address]);
+  }, [account.address, USDC.address]);
 
   useEffect(() => {
     const handleClickOutside = (e: any) => {

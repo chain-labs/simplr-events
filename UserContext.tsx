@@ -34,30 +34,20 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const { switchChainAsync } = useSwitchChain();
   const account = useAccount();
 
-  const { data: userBalance } = useReadContract({
-    address: USDC.address,
-    abi: USDC.abi,
-    functionName: "balanceOf",
-    args: [user?.address ?? ""],
-    query: {
-      enabled: !!user?.address,
-    },
-  });
-
   useEffect(() => {
     if (account.chainId !== arbitrum.id) {
       switchChainAsync({ chainId: arbitrum.id });
     }
   }, [account.chainId]);
 
-  useEffect(() => {
-    if (userBalance && user?.address) {
-      setUser({
-        ...user,
-        balance: Number(formatUnits(userBalance as bigint, 6)),
-      });
-    }
-  }, [user?.address, userBalance]);
+  // useEffect(() => {
+  //   if (userBalance && user?.address) {
+  //     setUser({
+  //       ...user,
+  //       balance: Number(formatUnits(userBalance as bigint, 6)),
+  //     });
+  //   }
+  // }, [user?.address, userBalance]);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 
+import { parseUnits } from "viem";
 import { useAccount } from "wagmi";
 
 import { stateBuyPageStateType } from "@/components/buy-ticket/ticket-detail";
@@ -25,7 +26,7 @@ const useTicketData = (ticketId: string) => {
     if (ticketId)
       api.get(`/listing/${ticketId}?network=${"arbitrum"}`).then(({ data }) => {
         const { order, escrow } = data;
-        setListing(order);
+        setListing({ ...order, price: parseUnits(order.price, 6) });
         setEscrow(escrow);
       });
   }, [ticketId]);

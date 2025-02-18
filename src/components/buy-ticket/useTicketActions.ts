@@ -56,6 +56,7 @@ const useTicketActions = () => {
       });
     } catch (error) {
       console.error(error);
+      throw new Error("Failed to dispute ticket");
     } finally {
       setLoading(false);
     }
@@ -88,6 +89,7 @@ const useTicketActions = () => {
       });
     } catch (error) {
       console.error(error);
+      throw new Error("Failed to confirm ticket purchase");
     } finally {
       setLoading(false);
     }
