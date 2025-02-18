@@ -1,7 +1,13 @@
 import React from "react";
 
+import { waitForTransactionReceipt } from "@wagmi/core";
 import { encodeFunctionData, keccak256, toBytes } from "viem";
-import { useAccount, useWriteContract } from "wagmi";
+import {
+  useAccount,
+  useConfig,
+  usePublicClient,
+  useWriteContract,
+} from "wagmi";
 
 import useEventContract from "@/contracts/Event";
 import { Event } from "@/types/event";
@@ -12,6 +18,9 @@ const useTicketMint = () => {
   const EventContract = useEventContract();
   const account = useAccount();
   const { writeContractAsync: mint } = useWriteContract();
+
+  const config = useConfig();
+  const client = usePublicClient();
 
   const uploadNftMetadata = async (
     tokenId: string,
@@ -46,7 +55,7 @@ const useTicketMint = () => {
     try {
       await uploadNftMetadata(tokenId, eventObj, seat, orderNumber);
       const options = {
-        address: eventObj?.contractAddress,
+        address: eventObj?.contractAddress as `0x${string}`,
         abi: EventContract?.abi,
         functionName: "createTicket",
         args: [
@@ -59,44 +68,20 @@ const useTicketMint = () => {
           },
         ] as const,
       };
-      // @ts-expect-error
-      // const userOpHash = await kernelClient?.signUserOperation({
-      //   callData: await kernelClient?.account?.encodeCalls([
-      //     {
-      //       to: eventObj.contractAddress as `0x${string}`,
-      //       data: encodeFunctionData({
-      //         abi: options.abi,
-      //         functionName: options.functionName,
-      //         args: [...options.args],
-      //       }),
-      //     },
-      //   ]),
-      //   callGasLimit: BigInt("1000000"),
-      //   verificationGasLimit: BigInt("10000000"),
-      //   preVerificationGas: BigInt("1000000"),
-      // });
 
       const hash = await mint(options);
 
-      console.log({ hash });
+      const receipt = await waitForTransactionReceipt(config, { hash: hash });
 
-      // const receipt = await kernelClient?.waitForUserOperationReceipt({
-      //   hash: userOpHash,
-      // });
+      await api.post("/ticket/create", {
+        seat: seat,
+        orderNumber: orderNumber,
+        tokenId: tokenId,
+        eventId: eventObj.contractAddress,
+        userId: account.address,
+      });
 
-      // const userOpHash = await kernelClient?.sendUserOperation({
-      //   callData: await kernelClient?.account?.encodeCalls([
-      //     {
-      //       to: eventObj.contractAddress,
-      //       data: encodeFunctionData({
-      //         abi: EventContract.abi,
-      //         functionName: "createTicket",
-      //         args: [args1, args2],
-      //       }),
-      //     },
-      //   ]),
-      // });
-      console.log({ options });
+      console.log({ receipt });
       return tokenId;
     } catch (error) {
       console.error(error);
