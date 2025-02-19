@@ -244,7 +244,6 @@ export function HomeEmptyState({
           variant="primary-blue"
           size="sm"
           className="flex items-center justify-center gap-2"
-          isLoading
         >
           {linkText} <PiArrowUpRightBold />
         </Button>
