@@ -270,8 +270,8 @@ export default function Home() {
                     ) : (
                       <HomeEmptyState
                         title="No escrow tickets found"
-                        redirectLink="/sell-your-ticket"
-                        linkText="Sell your Ticket"
+                        redirectLink="/buy-ticket"
+                        linkText="Buy a Ticket"
                       />
                     )
                   ) : (
