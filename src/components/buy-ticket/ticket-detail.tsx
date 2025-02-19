@@ -143,9 +143,9 @@ export function TicketDetails({
       {state === "confirmation" && (
         <div className="flex flex-wrap gap-[8px] md:flex-nowrap">
           <Button
-            onClick={() => {
+            onClick={async () => {
               try {
-                confirmBuy(
+                await confirmBuy(
                   order.ticket.tokenId,
                   order.ticket.event.contractAddress
                 );
@@ -426,13 +426,18 @@ export function Dispute({
         userInputPlaceholder="Provide another reason..."
       />
       <Button
-        onClick={() => {
+        onClick={async () => {
           if (selectedReason) {
             try {
-              disputeTicket(tokenId, eventContract, account.address as string, {
-                reason: selectedReason ?? "",
-                from: "Buyer",
-              });
+              await disputeTicket(
+                tokenId,
+                eventContract,
+                account.address as string,
+                {
+                  reason: selectedReason ?? "",
+                  from: "Buyer",
+                }
+              );
               setState("dispute-confirmation");
             } catch (error) {
               console.error(error);
@@ -526,9 +531,9 @@ export function SellerCancellingReason({
         userInputPlaceholder="Provide another reason..."
       />
       <Button
-        onClick={() => {
+        onClick={async () => {
           if (selectedReason) {
-            disputeTicket(tokenId, eventContract, buyer, {
+            await disputeTicket(tokenId, eventContract, buyer, {
               reason: selectedReason,
               from: "Seller",
             });

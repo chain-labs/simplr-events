@@ -32,7 +32,6 @@ const useTicketData = (ticketId: string) => {
   }, [ticketId]);
 
   useEffect(() => {
-    console.log("escrow", escrow);
     if (escrow?.isEscrow) {
       if (!escrow.isResolved && !escrow.isDisputed) {
         if (account.address?.toLowerCase() === escrow.seller.toLowerCase()) {
@@ -60,7 +59,7 @@ const useTicketData = (ticketId: string) => {
     } else {
       setState("details");
     }
-  }, [escrow]);
+  }, [escrow, account.address]);
 
   return { listing, escrow, state, setState };
 };
