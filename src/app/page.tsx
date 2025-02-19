@@ -1,33 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  PiLinkedinLogoDuotone,
-  PiRocketLaunchDuotone,
-  PiShootingStarDuotone,
-} from "react-icons/pi";
+import { PiLinkedinLogoDuotone, PiShootingStarDuotone } from "react-icons/pi";
 
 import Container from "@/components/component/container";
 import HomeTicketCardComponent, {
   HomeEmptyState,
   HomeTicketCardSkeleton,
 } from "@/components/home/home-ticket-card-component";
-import useHomeData from "@/components/home/useHomeData";
+import useHomeData, {
+  MarketplaceDataResponse,
+} from "@/components/home/useHomeData";
 import { Button } from "@/components/ui/button";
 import { H2, H5 } from "@/components/ui/heading";
 
 export default function Home() {
-  const {
-    myTickets,
-    sellingTickets,
-    escrowTickets,
-    marketplaceTickets,
-    eventMap,
-    isLoading,
-  } = useHomeData();
+  const { totalData, isLoading } = useHomeData();
   const SingleMyTicketRef = useRef<HTMLDivElement>(null);
   const [widthOfSingleMyTicket, setWidthOfSingleMyTicket] =
     useState<string>("0px");
@@ -113,6 +104,18 @@ export default function Home() {
       transition: { duration: 0.3 },
     },
   };
+  useEffect(() => {
+    console.log({ totalData, isLoading });
+  }, [isLoading, totalData]);
+
+  const data: MarketplaceDataResponse = useMemo(() => {
+    if (totalData) {
+      return JSON.parse(totalData);
+    }
+
+    return {};
+  }, [totalData]);
+
   return (
     <div className="my-[16px] w-full px-[16px] md:mx-auto md:my-[50px] xl:px-0">
       {/* <div className="ml-auto flex w-full max-w-[calc(((100vw-1200px)/2)+1200px)] flex-col gap-[32px] overflow-hidden md:grid md:grid-cols-[auto_auto]"> */}
@@ -148,7 +151,7 @@ export default function Home() {
                 }
               >
                 <H2 className="text-simpleWhite">My Tickets</H2>
-                {!!myTickets.length && (
+                {!!data?.userTickets?.owned.length && (
                   <Button
                     variant="tertiary"
                     size="sm"
@@ -172,7 +175,7 @@ export default function Home() {
                 }
               >
                 <H2 className="text-simpleWhite">Tickets in Escrow</H2>
-                {escrowTickets.length > 4 && (
+                {(data?.userTickets?.escrow ?? []).length > 4 && (
                   <Button
                     variant="tertiary"
                     size="sm"
@@ -199,16 +202,24 @@ export default function Home() {
               >
                 <div className="w-full xl:w-fit" ref={SingleMyTicketRef}>
                   {!isLoading ? (
-                    myTickets.length ? (
-                      myTickets
+                    data?.userTickets?.owned?.length ? (
+                      [...(data.userTickets.owned ?? [])]
                         .splice(
                           0,
-                          expandedSection === "myTickets" ? myTickets.length : 1
+                          expandedSection === "myTickets"
+                            ? data?.userTickets?.owned?.length
+                            : 1
                         )
                         .map((order, index) => (
                           <HomeTicketCardComponent
                             key={index}
-                            order={order}
+                            order={{
+                              ...order,
+                              ticket: {
+                                ...order.ticket,
+                                event: data?.eventMap?.[order.ticket.event],
+                              },
+                            }}
                             isLoading={isLoading}
                           />
                         ))
@@ -225,7 +236,7 @@ export default function Home() {
                     ))
                   )}
                 </div>
-                {!!myTickets.length && (
+                {!!data?.userTickets?.owned.length && (
                   <Button
                     variant="tertiary"
                     size="sm"
@@ -252,18 +263,24 @@ export default function Home() {
                 </H2>
                 <div className="flex flex-col gap-[16px] md:flex-row">
                   {!isLoading ? (
-                    escrowTickets.length ? (
-                      escrowTickets
+                    data?.userTickets?.escrow?.length ? (
+                      [...(data.userTickets.escrow ?? [])]
                         .splice(
                           0,
                           expandedSection === "escrow"
-                            ? escrowTickets.length
+                            ? data?.userTickets?.escrow?.length
                             : 4
                         )
                         .map((order, index) => (
                           <HomeTicketCardComponent
                             key={index}
-                            order={order}
+                            order={{
+                              ...order,
+                              ticket: {
+                                ...order.ticket,
+                                event: data?.eventMap?.[order.ticket.event],
+                              },
+                            }}
                             bgGradient="yellow"
                           />
                         ))
@@ -280,7 +297,7 @@ export default function Home() {
                     ))
                   )}
                 </div>
-                {escrowTickets.length > 4 && (
+                {(data?.userTickets?.escrow ?? []).length > 4 && (
                   <Button
                     variant="tertiary"
                     size="sm"
@@ -310,7 +327,7 @@ export default function Home() {
           >
             <div className="flex w-full max-w-[min(1280px,100%)] items-center justify-between">
               <H2 className="text-simpleWhite">Tickets I&apos;m selling</H2>
-              {sellingTickets.length > 4 && (
+              {(data?.userTickets?.selling ?? []).length > 4 && (
                 <Button
                   variant="tertiary"
                   size="sm"
@@ -322,11 +339,17 @@ export default function Home() {
             </div>
             <div className="flex w-full max-w-[min(calc(((100vw-1280px)/2)+1280px),100%)] flex-col gap-[16px] overflow-x-auto md:flex-row md:pb-[5px]">
               {!isLoading ? (
-                sellingTickets.length ? (
-                  sellingTickets.map((order, index) => (
+                data?.userTickets?.selling?.length ? (
+                  [...(data.userTickets.selling ?? [])].map((order, index) => (
                     <HomeTicketCardComponent
                       key={index}
-                      order={order}
+                      order={{
+                        ...order,
+                        ticket: {
+                          ...order.ticket,
+                          event: data?.eventMap?.[order.ticket.event],
+                        },
+                      }}
                       bgGradient="pink"
                     />
                   ))
@@ -342,7 +365,7 @@ export default function Home() {
                   <HomeTicketCardSkeleton key={index} />
                 ))
               )}
-              {sellingTickets.length > 4 && (
+              {(data?.userTickets?.selling ?? []).length > 4 && (
                 <Button
                   variant="tertiary"
                   size="sm"
@@ -358,7 +381,7 @@ export default function Home() {
         <div className="h-[8px] w-screen translate-x-[-16px] bg-simpleYellow md:h-[24px] md:translate-x-[calc(-1*min(100%,(100vw-1280px)/2))]"></div>
 
         <div className="flex w-full gap-[12px] py-[16px] md:col-span-2">
-          {Object.keys(marketplaceTickets).map((event) => (
+          {Object.keys(data?.marketplaceTickets ?? []).map((event) => (
             <a
               key={event}
               href={`#${event}`}
@@ -366,13 +389,13 @@ export default function Home() {
             >
               <H2 className="flex gap-[8px] text-simpleYellow">
                 <PiShootingStarDuotone size={48} />{" "}
-                {eventMap?.[event].eventName ?? "Event 1"}
+                {data?.eventMap?.[event].eventName ?? "Event 1"}
               </H2>
             </a>
           ))}
         </div>
 
-        {Object.keys(marketplaceTickets).map((event) => (
+        {Object.keys(data?.marketplaceTickets ?? []).map((event) => (
           <div
             key={event}
             id={event}
@@ -381,9 +404,9 @@ export default function Home() {
             <div className="flex w-full max-w-[min(1280px,100%)] items-center justify-between">
               <H2 className="flex gap-[8px] text-simpleWhite">
                 <PiShootingStarDuotone size={48} />{" "}
-                {eventMap?.[event].eventName ?? "Event 1"}
+                {data?.eventMap?.[event].eventName ?? "Event 1"}
               </H2>
-              {marketplaceTickets[event].length > 4 && (
+              {(data?.marketplaceTickets[event] ?? []).length > 4 && (
                 <Button
                   variant="tertiary"
                   size="sm"
@@ -394,17 +417,26 @@ export default function Home() {
               )}
             </div>
             <div className="flex w-full max-w-[min(calc(((100vw-1280px)/2)+1280px),100%)] flex-col gap-[16px] overflow-x-auto md:flex-row md:pb-[5px]">
-              {marketplaceTickets[event]
+              {[...(data?.marketplaceTickets?.[event] ?? [])]
                 .splice(
                   0,
                   expandedSection === event
-                    ? marketplaceTickets[event].length
+                    ? data?.marketplaceTickets?.[event]?.length
                     : 4
                 )
                 .map((order, index) => (
-                  <HomeTicketCardComponent key={index} order={order} />
+                  <HomeTicketCardComponent
+                    key={index}
+                    order={{
+                      ...order,
+                      ticket: {
+                        ...order.ticket,
+                        event: data?.eventMap?.[order.ticket.event],
+                      },
+                    }}
+                  />
                 ))}
-              {marketplaceTickets[event].length > 4 && (
+              {(data?.marketplaceTickets[event] ?? []).length > 4 && (
                 <Button
                   variant="tertiary"
                   size="sm"

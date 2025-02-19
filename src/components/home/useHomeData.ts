@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 
 import { useAccount } from "wagmi";
 
@@ -6,82 +6,70 @@ import { Event } from "@/types/event";
 import { Order, Ticket } from "@/types/ticket";
 import api from "@/utils/axios";
 
+import { useUser } from "../../../UserContext";
+
+type TicketResponse = {
+  ticket: {
+    _id: string;
+    event: string;
+    tokenId: string;
+    seat: string;
+  };
+  price: string;
+  signature: string;
+};
+
+export interface MarketplaceDataResponse {
+  userTickets: {
+    owned: TicketResponse[];
+    escrow: TicketResponse[];
+    selling: TicketResponse[];
+  };
+  marketplaceTickets: Record<string, TicketResponse[]>;
+  eventMap: Record<string, Event>;
+}
+
 const useHomeData = () => {
-  const [myTickets, setMyTickets] = React.useState<Order[]>([]);
-  const [escrowTickets, setEscrowTickets] = React.useState<Order[]>([]);
-  const [sellingTickets, setSellingTickets] = React.useState<Order[]>([]);
-  const [marketplaceTickets, setMarketplaceTickets] = React.useState<
-    Record<string, Order[]>
-  >({});
-  const [eventMap, setEventMap] = React.useState<Record<string, Event>>();
+  const [totalData, setTotalData] = React.useState("");
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
-  const account = useAccount();
+  const { user } = useUser();
 
   useEffect(() => {
-    const toOrder = (data: any, eventMap: Record<string, Event>) => {
-      return data.map((listing: any) => {
-        const order: Order = {
-          price: listing.price,
-          signature: "",
-          ticket: {
-            _id: listing._id,
-            event: eventMap[listing.event],
-            tokenId: listing.tokenId,
-            seat: listing.seat,
-          },
-        };
+    const controller = new AbortController();
 
-        return order;
-      });
+    const fetchData = async () => {
+      try {
+        const marketData = await api.get(
+          `/marketplace?network=${"arbitrum"}&account=${user?.address?.toLowerCase()}`,
+          { signal: controller.signal }
+        );
+
+        console.log({ totalData: JSON.parse(marketData.data) });
+
+        setTotalData(marketData.data);
+
+        // setTotalData(marketData.data);
+      } catch (error: any) {
+        if (!error.isCancelled) {
+          console.error("Error fetching data:", error);
+        }
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    api
-      .get(
-        `/marketplace?network=${"arbitrum"}&account=${account.address?.toLowerCase()}`
-      )
-      .then(({ data }) => {
-        setMyTickets(toOrder(data.userTickets.owned, data.eventMap));
-        setEscrowTickets(toOrder(data.userTickets.escrow, data.eventMap));
-        setSellingTickets(toOrder(data.userTickets.selling, data.eventMap));
+    if (user?.address) {
+      fetchData();
+    }
 
-        const marketPlace: Record<string, Order[]> = {};
-        Object.keys(data.marketplaceTickets).forEach((event: string) => {
-          const currentEvent = data.eventMap[event];
-
-          const currentData = data.marketplaceTickets[event];
-
-          console.log({ currentData, currentEvent });
-
-          currentData.forEach((listing: any) => {
-            const order: Order = {
-              price: listing.price,
-              signature: "",
-              ticket: {
-                _id: listing._id,
-                event: currentEvent,
-                tokenId: listing.tokenId,
-                seat: listing.seat,
-              },
-            };
-            if (!marketPlace[event]) {
-              marketPlace[event] = [];
-            }
-            marketPlace[event].push(order);
-          });
-        });
-        setMarketplaceTickets(marketPlace);
-        setEventMap(data.eventMap);
-        setIsLoading(false);
-      });
-  }, [account.address]);
+    return () => {
+      controller.abort();
+    };
+  }, [user?.address]);
 
   return {
-    myTickets,
-    escrowTickets,
-    sellingTickets,
-    marketplaceTickets,
-    eventMap,
+    totalData,
     isLoading,
   };
 };
