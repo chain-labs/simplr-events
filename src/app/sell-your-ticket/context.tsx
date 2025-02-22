@@ -59,11 +59,6 @@ export const TicketStoreProvider: React.FC<TicketProviderProps> = ({
 
   useEffect(() => {
     const getUserTickets = async () => {
-      const response = await axios.post(envVars.subgraphUrl, {
-        query: USER_TICKETS_QUERY,
-        variables: { userId: `user-${user?.address}` },
-      });
-      const ticketsData = response.data as USER_TICKET_RESPONSE_TYPE;
       const eventsResponse = await api.get(
         `/user/${user?.address}/tickets?network=arbitrum`
       );
