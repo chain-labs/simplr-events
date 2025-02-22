@@ -382,16 +382,16 @@ export default function Home() {
 
         <div className="flex w-full gap-[12px] py-[16px] md:col-span-2">
           {Object.keys(data?.marketplaceTickets ?? []).map((event) => (
-            <a
+            <p
               key={event}
-              href={`#${event}`}
+              // href={`#${event}`}
               className="rounded-[16px] bg-simpleBlack/25 p-[12px] shadow-[inset_0px_-2px_0px_#F2FF49]"
             >
               <H2 className="flex gap-[8px] text-simpleYellow">
                 <PiShootingStarDuotone size={48} />{" "}
                 {data?.eventMap?.[event].eventName ?? "Event 1"}
               </H2>
-            </a>
+            </p>
           ))}
         </div>
 
