@@ -81,7 +81,9 @@ export default function TicketCardComponent({
           className="ml-auto h-[24px] w-[24px] cursor-pointer text-[24px] text-simpleWhite"
           onClick={(e) => {
             e.stopPropagation();
-            onClose && onClose();
+            if (onClose) {
+              onClose();
+            }
           }}
         />
       )}
