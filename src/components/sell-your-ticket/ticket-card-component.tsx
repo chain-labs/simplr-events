@@ -1,11 +1,17 @@
 "use client";
 
-import { PiCheck, PiInfoDuotone, PiXCircleDuotone } from "react-icons/pi";
+import {
+  PiCheck,
+  PiInfoDuotone,
+  PiShootingStarDuotone,
+  PiXCircleDuotone,
+} from "react-icons/pi";
 
 import { Ticket } from "@/types/ticket";
 import { cn } from "@/utils/cn";
 
-type EventCardComponentProps = Ticket & {
+type EventCardComponentProps = {
+  ticketData: Ticket;
   status: "selected" | "grey" | "white" | "grey selected" | "closable";
   onClick?: () => void;
   onClose?: () => void;
@@ -13,15 +19,7 @@ type EventCardComponentProps = Ticket & {
 };
 
 export default function TicketCardComponent({
-  EventIcon,
-  ticketId,
-  seat,
-  orderId,
-  eventName,
-  startDate,
-  endDate,
-  startDay,
-  endDay,
+  ticketData,
   status,
   onClick,
   onClose,
@@ -29,7 +27,7 @@ export default function TicketCardComponent({
 }: EventCardComponentProps) {
   return (
     <div
-      key={ticketId}
+      key={ticketData._id}
       className={cn(
         "grid grid-flow-col gap-[4px] rounded-[16px] p-[16px] text-simpleGray700",
         status === "white" && "bg-simpleWhite",
@@ -44,9 +42,8 @@ export default function TicketCardComponent({
       <div className="flex w-full flex-col gap-[4px]">
         <div className="flex flex-col gap-[8px]">
           <p className="font-regular flex items-center gap-[1ch] text-[16px] leading-[24px] text-[inherit]">
-            {/* @ts-expect-error */}
-            <EventIcon size={24} className={cn("text-[21px]")} />
-            {eventName}
+            <PiShootingStarDuotone size={32} className={cn("text-[32px]")} />
+            {ticketData.event.eventName}
           </p>
           <p
             className={cn(
@@ -56,39 +53,37 @@ export default function TicketCardComponent({
                 : "text-simpleGray900"
             )}
           >
-            Seat {seat}
+            Seat {ticketData.seat}
+          </p>
+          {/* <p className="font-regular flex items-center gap-[1ch] text-[16px] leading-[24px] text-[inherit]">
+            {ticketData.orderNumber}
+          </p> */}
+          <p className="font-regular flex items-center gap-[1ch] text-[16px] leading-[24px] text-[inherit]">
+            {ticketData.event.startDateTime}
           </p>
           <p className="font-regular flex items-center gap-[1ch] text-[16px] leading-[24px] text-[inherit]">
-            {orderId}
+            to {ticketData.event.endDateTime}
           </p>
           <p className="font-regular flex items-center gap-[1ch] text-[16px] leading-[24px] text-[inherit]">
-            {startDate} | Day {startDay} to
-          </p>
-          <p className="font-regular flex items-center gap-[1ch] text-[16px] leading-[24px] text-[inherit]">
-            {endDate} | Day {endDay}
-          </p>
-          <p className="font-regular flex items-center gap-[1ch] text-[16px] leading-[24px] text-[inherit]">
-            {/* @ts-expect-error */}
             <PiInfoDuotone /> Additional Info
           </p>
         </div>
       </div>
       {status === "selected" && (
-        // @ts-expect-error
         <PiCheck className="ml-auto text-[20px] text-simpleWhite" />
       )}
       {status === "grey selected" && (
-        // @ts-expect-error
         <PiCheck className="ml-auto text-[20px] text-simpleBlue" />
       )}
       {status === "closable" && (
-        // @ts-expect-error
         <PiXCircleDuotone
           size={24}
           className="ml-auto h-[24px] w-[24px] cursor-pointer text-[24px] text-simpleWhite"
           onClick={(e) => {
             e.stopPropagation();
-            onClose && onClose();
+            if (onClose) {
+              onClose();
+            }
           }}
         />
       )}

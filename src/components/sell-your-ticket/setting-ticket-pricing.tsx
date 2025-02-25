@@ -1,38 +1,33 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-import { PiMoneyDuotone } from "react-icons/pi";
+import { PiCurrencyCircleDollar, PiMoneyDuotone } from "react-icons/pi";
 
+import { useTicketStore } from "@/app/sell-your-ticket/context";
+import { Event } from "@/types/event";
 import { Ticket } from "@/types/ticket";
 import { cn } from "@/utils/cn";
-import { dummyTickets } from "@/utils/dummyData";
 
 import { ComponentWithLabel } from "../component/component-with-label";
 import Container from "../component/container";
 import EventCardComponent from "../link-your-ticket/event-card-component";
 import SearchWithComponent from "../search-with-component";
 import { Button } from "../ui/button";
-import Dropdown from "../ui/dropdown";
 import { H4 } from "../ui/heading";
 import { Input } from "../ui/input";
 import { PSmall } from "../ui/paragraph";
 import TicketCardComponent from "./ticket-card-component";
-import TicketSearchComponent from "./ticket-search-component";
+import useListTicket from "./useListTicket";
 
 type SettingTicketPricingProps = {
-  setSelectedTickets: Dispatch<SetStateAction<Ticket[]>>;
-  selectedTickets: Ticket[];
   nextStep: () => void;
 };
 
 export default function SettingTicketPricing({
-  setSelectedTickets,
-  selectedTickets,
   nextStep,
 }: SettingTicketPricingProps) {
-  const dummyEvents = dummyTickets;
-  const [selectedEvent, setSelectedEvent] = useState<Ticket>();
+  const [selectedEvent, setSelectedEvent] = useState<Event>();
   const [settingPriceForAllTickets, setSettingPriceForAllTickets] = useState<{
     price: number;
     auto: boolean;
@@ -41,6 +36,54 @@ export default function SettingTicketPricing({
     useState<{
       [key: string]: number;
     }>({});
+
+  const [listLoading, setListLoading] = useState(false);
+
+  const { eventsList, selectedTickets, setSelectedTickets } = useTicketStore();
+
+  const { approveTransfer, signTypedData, listTicket } = useListTicket();
+
+  useEffect(() => {
+    if (settingPriceForAllTickets) {
+      if (
+        !settingPriceForAllTickets.auto &&
+        settingPriceForAllTickets.price !==
+          settingPriceForSelectedTickets[selectedTickets[0]?._id]
+      ) {
+        const newTicketPrices: Record<string, number> = {};
+        selectedTickets.forEach((ticket) => {
+          newTicketPrices[ticket._id] = settingPriceForAllTickets.price;
+        });
+        setSettingPriceForSelectedTickets(newTicketPrices);
+      }
+    }
+  }, [settingPriceForAllTickets]);
+
+  const handleList = async () => {
+    setListLoading(true);
+    // Implement the logic to sell the selected tickets
+    try {
+      for (const ticket of selectedTickets) {
+        await approveTransfer(ticket.event.contractAddress as `0x${string}`);
+        const signature = await signTypedData({
+          tokenId: ticket.tokenId,
+          price: settingPriceForSelectedTickets[ticket._id]?.toString(),
+          event: ticket.event,
+        });
+        await listTicket({
+          price: settingPriceForSelectedTickets[ticket._id]?.toString(),
+          ticket,
+          signature,
+        });
+      }
+
+      nextStep();
+      console.log("Listed tickets");
+    } catch (error) {
+      console.log("Error while listing", { error });
+    }
+  };
+
   return (
     <Container className="max-w-[1000px] md:my-[50px]">
       <div className="grid grid-cols-1 gap-[32px] md:grid-cols-[auto_auto] md:gap-[64px]">
@@ -49,18 +92,16 @@ export default function SettingTicketPricing({
 
           {/* event dropdown */}
           <ComponentWithLabel label="Choose your event">
-            <SearchWithComponent
+            <SearchWithComponent<Event>
               placeholder="Search for event"
-              data={dummyEvents}
+              data={eventsList}
               selectedItems={selectedEvent}
               setSelectedItems={
-                setSelectedEvent as Dispatch<
-                  SetStateAction<Ticket | Ticket[] | undefined>
-                >
+                setSelectedEvent as Dispatch<SetStateAction<Event | undefined>>
               }
               renderComponent={(item, isSelected, onClick) => (
                 <EventCardComponent
-                  {...item}
+                  event={item}
                   status={isSelected ? "selected" : "grey"}
                   onClick={onClick}
                 />
@@ -74,20 +115,20 @@ export default function SettingTicketPricing({
 
           {/* ticket search */}
           <ComponentWithLabel label="Choose the ticket to sell">
-            <SearchWithComponent
+            <SearchWithComponent<Ticket>
               selectedItems={selectedTickets}
               setSelectedItems={
-                setSelectedTickets as Dispatch<
-                  SetStateAction<Ticket | Ticket[] | undefined>
-                >
+                setSelectedTickets as Dispatch<SetStateAction<Ticket[]>>
               }
-              data={dummyTickets.filter(
-                (ticket) => ticket.eventName === selectedEvent?.eventName
+              data={selectedTickets.filter(
+                (ticket) =>
+                  ticket?.event?.eventName === selectedEvent?.eventName
               )}
               placeholder="Search for ticket"
               renderComponent={(item, isSelected, onClick) => (
                 <TicketCardComponent
-                  {...item}
+                  key={item._id}
+                  ticketData={item}
                   status={isSelected ? "selected" : "grey"}
                   onClick={onClick}
                 />
@@ -108,10 +149,7 @@ export default function SettingTicketPricing({
                 placeholder={
                   settingPriceForAllTickets.auto ? "Auto" : "Enter price"
                 }
-                icon={
-                  // @ts-expect-error
-                  <PiMoneyDuotone className="text-simpleGray500" />
-                }
+                icon={<PiMoneyDuotone className="text-simpleGray500" />}
                 iconPosition="left"
                 value={
                   settingPriceForAllTickets.auto
@@ -124,9 +162,6 @@ export default function SettingTicketPricing({
                     price: Number(e.target.value),
                     auto: false,
                   }));
-                  setSelectedTickets((prev) =>
-                    prev.map((prevTicket) => ({ ...prevTicket, price: e.target.value }))
-                  );
                 }}
                 min={1}
               />
@@ -147,12 +182,13 @@ export default function SettingTicketPricing({
                   <>
                     {/* Ticket */}
                     <TicketCardComponent
-                      key={ticket.id}
+                      key={ticket._id}
+                      ticketData={ticket}
                       status="closable"
                       onClose={() =>
                         setSelectedTickets((prev) =>
                           prev.filter(
-                            (prevTicket) => prevTicket.id !== ticket.id
+                            (prevTicket) => prevTicket._id !== ticket._id
                           )
                         )
                       }
@@ -164,34 +200,26 @@ export default function SettingTicketPricing({
                       type="number"
                       placeholder="Enter price"
                       icon={
-                        // @ts-expect-error
-                        <PiMoneyDuotone className="text-simpleGray500" />
+                        <PiCurrencyCircleDollar className="text-simpleGray500" />
                       }
                       value={
                         settingPriceForAllTickets.auto
-                          ? settingPriceForSelectedTickets[ticket.id]
+                          ? settingPriceForSelectedTickets[ticket._id]
                           : settingPriceForAllTickets.price
                       }
                       onChange={(e) => {
                         setSettingPriceForSelectedTickets((prev) => ({
                           ...prev,
-                          [ticket.id]: Number(e.target.value),
+                          [ticket._id]: Number(e.target.value),
                         }));
                         setSettingPriceForAllTickets((prev) => ({
                           ...prev,
                           auto: true,
                         }));
-                        setSelectedTickets((prev) =>
-                          prev.map((prevTicket) =>
-                            prevTicket.id === ticket.id
-                              ? { ...prevTicket, price: e.target.value }
-                              : prevTicket
-                          )
-                        );
                       }}
                       valid={
                         settingPriceForAllTickets.auto
-                          ? !!settingPriceForSelectedTickets[ticket.id]
+                          ? !!settingPriceForSelectedTickets[ticket._id]
                           : !!settingPriceForAllTickets.price
                       }
                       iconPosition="left"
@@ -209,9 +237,13 @@ export default function SettingTicketPricing({
                 <Button
                   className="mx-auto"
                   disabled={
-                    !selectedTickets.length || !Number(selectedTickets[0]?.price)
+                    !selectedTickets.length ||
+                    !Number(
+                      settingPriceForSelectedTickets[selectedTickets[0]._id]
+                    )
                   }
-                  onClick={nextStep}
+                  isLoading={listLoading}
+                  onClick={handleList}
                 >
                   sell ticket
                 </Button>
@@ -223,7 +255,8 @@ export default function SettingTicketPricing({
           <Button
             className="col-span-2 ml-auto"
             disabled={!selectedTickets.length}
-            onClick={nextStep}
+            onClick={handleList}
+            isLoading={listLoading}
           >
             {selectedTickets.length > 1 ? "confirm" : "select"}
           </Button>

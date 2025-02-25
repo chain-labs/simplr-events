@@ -1,20 +1,38 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
-import { PiLinkedinLogoDuotone } from "react-icons/pi";
-import SimpleBar from "simplebar-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { PiLinkedinLogoDuotone, PiShootingStarDuotone } from "react-icons/pi";
 
 import Container from "@/components/component/container";
-import HomeTicketCardComponent from "@/components/home/home-ticket-card-component";
+import HomeTicketCardComponent, {
+  HomeEmptyState,
+  HomeTicketCardSkeleton,
+} from "@/components/home/home-ticket-card-component";
+import useHomeData, {
+  MarketplaceDataResponse,
+} from "@/components/home/useHomeData";
 import { Button } from "@/components/ui/button";
-import { H2, H4, H5 } from "@/components/ui/heading";
-import { dummyTickets } from "@/utils/dummyData";
+import { H2, H5 } from "@/components/ui/heading";
 
 export default function Home() {
-  const data = dummyTickets;
-  const escrow = data.slice(0, 4);
-  const selling = data.slice(0, 4);
+  const { totalData, isLoading } = useHomeData();
+  const SingleMyTicketRef = useRef<HTMLDivElement>(null);
+  const [widthOfSingleMyTicket, setWidthOfSingleMyTicket] =
+    useState<string>("0px");
+
+  useLayoutEffect(() => {
+    if (SingleMyTicketRef.current) {
+      const resizeObserver = new ResizeObserver(() => {
+        setWidthOfSingleMyTicket(`${SingleMyTicketRef.current?.offsetWidth}px`);
+      });
+      resizeObserver.observe(SingleMyTicketRef.current);
+      return () => resizeObserver.disconnect();
+    }
+  }, [SingleMyTicketRef]);
+
   const team = [
     {
       name: "Mihirsinh Parmar",
@@ -25,11 +43,11 @@ export default function Home() {
       },
     },
     {
-      name: "Angel Larka",
+      name: "Angel Lakra",
       image: "/images/angel-larka.png",
       position: "Co-Founder & Senior Engineering Lead",
       socials: {
-        linkedin: "https://www.linkedin.com/in/angel-larka-1b1b1b1b1/",
+        linkedin: "https://www.linkedin.com/in/angel-lakra-1b1b1b1b1/",
       },
     },
     {
@@ -49,80 +67,399 @@ export default function Home() {
       },
     },
   ];
-  return (
-    <div className="my-[16px] w-full px-[16px] md:mx-auto md:my-[50px] md:px-0">
-      {/* <div className="ml-auto flex w-full max-w-[calc(((100vw-1200px)/2)+1200px)] flex-col gap-[32px] overflow-hidden md:grid md:grid-cols-[auto_auto]"> */}
-      <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-[32px] md:grid md:grid-cols-[auto_auto]">
-        <div className="col-span-2 grid w-full max-w-[1280px] grid-cols-[auto_auto] gap-[16px] bg-black">
-          {/* my tickets */}
-          <div className="flex w-auto flex-col gap-[16px] md:w-fit">
-            <div className="flex w-full items-center justify-between">
-              <H2 className="text-simpleWhite">My Tickets</H2>
-              <Button variant="ghost" size="sm" className="hidden md:block">
-                View All
-              </Button>
-            </div>
-            <div className="w-full md:w-fit">
-              <HomeTicketCardComponent ticket={data[0]} />
-            </div>
-            <Button variant="tertiary" size="sm" className="block md:hidden">
-              View All
-            </Button>
-          </div>
 
-          {/* escrow */}
-          <div className="flex flex-col gap-[16px] bg-slate-500">
-            <div className="flex items-center justify-between">
-              <H2 className="text-simpleWhite">Tickets in Escrow</H2>
-              <Button variant="ghost" size="sm" className="hidden md:block">
-                View All
-              </Button>
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const handleViewAll = (section: string) => {
+    if (expandedSection === section) {
+      setExpandedSection(null);
+    } else {
+      setExpandedSection(section);
+    }
+  };
+
+  // Animation variants
+  const containerVariants = {
+    grid: {
+      gridTemplateColumns: "auto auto",
+      gap: "32px",
+    },
+    expanded: {
+      gridTemplateColumns: "1fr",
+      gap: "32px",
+    },
+  };
+
+  const sectionVariants = {
+    visible: {
+      opacity: 1,
+      height: "fit-content",
+      maxWidth: "1280px",
+      width: "auto",
+      transition: { duration: 0.3 },
+    },
+    hidden: {
+      opacity: 0,
+      height: 0,
+      width: 0,
+      transition: { duration: 0.3 },
+    },
+  };
+  useEffect(() => {
+    console.log({ totalData, isLoading });
+  }, [isLoading, totalData]);
+
+  const data: MarketplaceDataResponse = useMemo(() => {
+    if (totalData) {
+      return JSON.parse(totalData);
+    }
+
+    return {};
+  }, [totalData]);
+
+  return (
+    <div className="my-[16px] w-full px-[16px] md:mx-auto md:my-[50px] xl:px-0">
+      {/* <div className="ml-auto flex w-full max-w-[calc(((100vw-1200px)/2)+1200px)] flex-col gap-[32px] overflow-hidden md:grid md:grid-cols-[auto_auto]"> */}
+      <motion.div
+        className="mx-auto flex w-full max-w-[1280px] flex-col gap-[32px] md:grid"
+        variants={containerVariants}
+        animate={expandedSection ? "expanded" : "default"}
+        transition={{ duration: 0.3 }}
+      >
+        <AnimatePresence>
+          <motion.div className="flex flex-col gap-[16px]">
+            <motion.div className="flex w-full max-w-[1280px] gap-[16px]">
+              {/* my tickets header */}
+              <motion.div
+                className="flex items-center justify-between"
+                variants={{
+                  ...sectionVariants,
+                  visible: {
+                    ...sectionVariants.visible,
+                    width: widthOfSingleMyTicket,
+                    minWidth:
+                      expandedSection === "myTickets"
+                        ? "100%"
+                        : widthOfSingleMyTicket,
+                  },
+                }}
+                animate={
+                  expandedSection === "myTickets"
+                    ? "visible"
+                    : expandedSection
+                      ? "hidden"
+                      : "visible"
+                }
+              >
+                <H2 className="text-simpleWhite">My Tickets</H2>
+                {!!data?.userTickets?.owned.length && (
+                  <Button
+                    variant="tertiary"
+                    size="sm"
+                    className="hidden md:block"
+                    onClick={() => handleViewAll("myTickets")}
+                  >
+                    {expandedSection === "myTickets" ? "Close" : "View All"}
+                  </Button>
+                )}
+              </motion.div>
+              {/* escrow header*/}
+              <motion.div
+                className="hidden w-full items-center justify-between md:flex"
+                variants={sectionVariants}
+                animate={
+                  expandedSection === "escrow"
+                    ? "visible"
+                    : expandedSection
+                      ? "hidden"
+                      : "visible"
+                }
+              >
+                <H2 className="text-simpleWhite">Tickets in Escrow</H2>
+                {(data?.userTickets?.escrow ?? []).length > 4 && (
+                  <Button
+                    variant="tertiary"
+                    size="sm"
+                    className="hidden md:block"
+                    onClick={() => handleViewAll("escrow")}
+                  >
+                    {expandedSection === "escrow" ? "Close" : "View All"}
+                  </Button>
+                )}
+              </motion.div>
+            </motion.div>
+
+            <div className="flex w-full max-w-[min(calc(((100vw-1280px)/2)+1280px),100%)] flex-col gap-[32px] overflow-x-auto md:flex-row md:gap-[16px]">
+              <motion.div
+                className="flex flex-col gap-[16px] md:w-fit"
+                variants={sectionVariants}
+                animate={
+                  expandedSection === "myTickets"
+                    ? "visible"
+                    : expandedSection
+                      ? "hidden"
+                      : "visible"
+                }
+              >
+                <div className="w-full xl:w-fit" ref={SingleMyTicketRef}>
+                  {!isLoading ? (
+                    data?.userTickets?.owned?.length ? (
+                      [...(data.userTickets.owned ?? [])]
+                        .splice(
+                          0,
+                          expandedSection === "myTickets"
+                            ? data?.userTickets?.owned?.length
+                            : 1
+                        )
+                        .map((order, index) => (
+                          <HomeTicketCardComponent
+                            key={index}
+                            order={{
+                              ...order,
+                              ticket: {
+                                ...order.ticket,
+                                event: data?.eventMap?.[order.ticket.event],
+                              },
+                            }}
+                            isLoading={isLoading}
+                          />
+                        ))
+                    ) : (
+                      <HomeEmptyState
+                        title="No tickets found"
+                        redirectLink="/link-your-ticket"
+                        linkText="Link your Ticket"
+                      />
+                    )
+                  ) : (
+                    [{}].map((_, index) => (
+                      <HomeTicketCardSkeleton key={index} />
+                    ))
+                  )}
+                </div>
+                {!!data?.userTickets?.owned.length && (
+                  <Button
+                    variant="tertiary"
+                    size="sm"
+                    className="block md:hidden"
+                  >
+                    View All
+                  </Button>
+                )}
+              </motion.div>
+
+              <motion.div
+                className="flex w-full flex-col gap-[16px] overflow-x-auto md:pb-[5px]"
+                variants={sectionVariants}
+                animate={
+                  expandedSection === "escrow"
+                    ? "visible"
+                    : expandedSection
+                      ? "hidden"
+                      : "visible"
+                }
+              >
+                <H2 className="text-simpleWhite md:hidden">
+                  Tickets in Escrow
+                </H2>
+                <div className="flex flex-col gap-[16px] md:flex-row">
+                  {!isLoading ? (
+                    data?.userTickets?.escrow?.length ? (
+                      [...(data.userTickets.escrow ?? [])]
+                        .splice(
+                          0,
+                          expandedSection === "escrow"
+                            ? data?.userTickets?.escrow?.length
+                            : 4
+                        )
+                        .map((order, index) => (
+                          <HomeTicketCardComponent
+                            key={index}
+                            order={{
+                              ...order,
+                              ticket: {
+                                ...order.ticket,
+                                event: data?.eventMap?.[order.ticket.event],
+                              },
+                            }}
+                            bgGradient="yellow"
+                          />
+                        ))
+                    ) : (
+                      <HomeEmptyState
+                        title="No escrow tickets found"
+                        redirectLink="/buy-ticket"
+                        linkText="Buy a Ticket"
+                      />
+                    )
+                  ) : (
+                    [{}, {}, {}].map((_, index) => (
+                      <HomeTicketCardSkeleton key={index} />
+                    ))
+                  )}
+                </div>
+                {(data?.userTickets?.escrow ?? []).length > 4 && (
+                  <Button
+                    variant="tertiary"
+                    size="sm"
+                    className="block md:hidden"
+                  >
+                    View All
+                  </Button>
+                )}
+              </motion.div>
             </div>
-            <SimpleBar>
-              {({ scrollableNodeRef, contentNodeRef }) => {
-                // Now you have access to scrollable and content nodes
-                return (<div></div>) as JSX.Element;
-              }}
-              <Button variant="tertiary" size="sm" className="block md:hidden">
-                View All
-              </Button>
-            </SimpleBar>
-          </div>
-        </div>
+          </motion.div>
+        </AnimatePresence>
+        <div className="flex w-full flex-col gap-[16px]"></div>
 
         {/* tickets im selling */}
-        <div className="flex w-full flex-col gap-[16px] md:col-span-2">
-          <div className="flex w-full max-w-[min(1280px,100%)] items-center justify-between">
-            <H2 className="text-simpleWhite">Tickets I'm selling</H2>
-            <Button variant="ghost" size="sm" className="hidden md:block">
-              View All
-            </Button>
-          </div>
-          <div className="flex w-full flex-col gap-[16px] md:flex-row">
-            {selling.map((ticket, index) => (
-              <HomeTicketCardComponent
-                key={index}
-                ticket={ticket}
-                bgGradient="pink"
-              />
-            ))}
-            <Button variant="tertiary" size="sm" className="block md:hidden">
-              View All
-            </Button>
-          </div>
+        <AnimatePresence>
+          <motion.div
+            className="flex w-full flex-col gap-[16px] md:col-span-2"
+            variants={sectionVariants}
+            animate={
+              expandedSection === "sellingTickets"
+                ? "visible"
+                : expandedSection
+                  ? "hidden"
+                  : "visible"
+            }
+          >
+            <div className="flex w-full max-w-[min(1280px,100%)] items-center justify-between">
+              <H2 className="text-simpleWhite">Tickets I&apos;m selling</H2>
+              {(data?.userTickets?.selling ?? []).length > 4 && (
+                <Button
+                  variant="tertiary"
+                  size="sm"
+                  className="hidden md:block"
+                >
+                  View All
+                </Button>
+              )}
+            </div>
+            <div className="flex w-full max-w-[min(calc(((100vw-1280px)/2)+1280px),100%)] flex-col gap-[16px] overflow-x-auto md:flex-row md:pb-[5px]">
+              {!isLoading ? (
+                data?.userTickets?.selling?.length ? (
+                  [...(data.userTickets.selling ?? [])].map((order, index) => (
+                    <HomeTicketCardComponent
+                      key={index}
+                      order={{
+                        ...order,
+                        ticket: {
+                          ...order.ticket,
+                          event: data?.eventMap?.[order.ticket.event],
+                        },
+                      }}
+                      bgGradient="pink"
+                    />
+                  ))
+                ) : (
+                  <HomeEmptyState
+                    title="No tickets to sell"
+                    redirectLink="/sell-your-ticket"
+                    linkText="Sell your Ticket"
+                  />
+                )
+              ) : (
+                [{}, {}, {}].map((_, index) => (
+                  <HomeTicketCardSkeleton key={index} />
+                ))
+              )}
+              {(data?.userTickets?.selling ?? []).length > 4 && (
+                <Button
+                  variant="tertiary"
+                  size="sm"
+                  className="block md:hidden"
+                >
+                  View All
+                </Button>
+              )}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="h-[8px] w-screen translate-x-[-16px] bg-simpleYellow md:h-[24px] md:translate-x-[calc(-1*min(100%,(100vw-1280px)/2))]"></div>
+
+        <div className="flex w-full gap-[12px] py-[16px] md:col-span-2">
+          {Object.keys(data?.marketplaceTickets ?? []).map((event) => (
+            <p
+              key={event}
+              // href={`#${event}`}
+              className="rounded-[16px] bg-simpleBlack/25 p-[12px] shadow-[inset_0px_-2px_0px_#F2FF49]"
+            >
+              <H2 className="flex gap-[8px] text-simpleYellow">
+                <PiShootingStarDuotone size={48} />{" "}
+                {data?.eventMap?.[event].eventName ?? "Event 1"}
+              </H2>
+            </p>
+          ))}
         </div>
+
+        {Object.keys(data?.marketplaceTickets ?? []).map((event) => (
+          <div
+            key={event}
+            id={event}
+            className="flex w-full flex-col gap-[16px] md:col-span-2"
+          >
+            <div className="flex w-full max-w-[min(1280px,100%)] items-center justify-between">
+              <H2 className="flex gap-[8px] text-simpleWhite">
+                <PiShootingStarDuotone size={48} />{" "}
+                {data?.eventMap?.[event].eventName ?? "Event 1"}
+              </H2>
+              {(data?.marketplaceTickets[event] ?? []).length > 4 && (
+                <Button
+                  variant="tertiary"
+                  size="sm"
+                  className="hidden md:block"
+                >
+                  View All
+                </Button>
+              )}
+            </div>
+            <div className="flex w-full max-w-[min(calc(((100vw-1280px)/2)+1280px),100%)] flex-col gap-[16px] overflow-x-auto md:flex-row md:pb-[5px]">
+              {[...(data?.marketplaceTickets?.[event] ?? [])]
+                .splice(
+                  0,
+                  expandedSection === event
+                    ? data?.marketplaceTickets?.[event]?.length
+                    : 4
+                )
+                .map((order, index) => (
+                  <HomeTicketCardComponent
+                    key={index}
+                    order={{
+                      ...order,
+                      ticket: {
+                        ...order.ticket,
+                        event: data?.eventMap?.[order.ticket.event],
+                      },
+                    }}
+                  />
+                ))}
+              {(data?.marketplaceTickets[event] ?? []).length > 4 && (
+                <Button
+                  variant="tertiary"
+                  size="sm"
+                  className="block md:hidden"
+                >
+                  View All
+                </Button>
+              )}
+            </div>
+          </div>
+        ))}
 
         {/* meet the team */}
         <div className="col-span-2 flex w-full max-w-[min(1280px,100%)] flex-col gap-[16px] overflow-hidden">
           <div className="flex w-full items-center justify-between">
             <H2 className="text-simpleWhite">Meet The Team</H2>
           </div>
-          <div className="flex flex-col gap-[16px] overflow-x-auto md:flex-row md:justify-between">
+          <div className="flex w-full max-w-[min(calc(((100vw-1280px)/2)+1280px),100%)] flex-col gap-[16px] overflow-x-auto md:flex-row md:pb-[5px]">
             {team.map((member, index) => (
               <Container
                 key={member.name}
-                className="md:full m-0 flex h-full w-full flex-grow-0 flex-col items-start justify-start gap-[16px] p-[32px] md:mx-0 md:p-[32px]"
-                parentClassName="flex justify-start items-start"
+                className="md:full m-0 flex h-full w-full flex-grow flex-col items-start justify-start gap-[16px] p-[32px] md:mx-0 md:p-[32px]"
+                parentClassName="flex justify-start items-start w-full"
               >
                 <img
                   src={member.image}
@@ -134,7 +471,6 @@ export default function Home() {
                   {member.position}
                 </p>
                 <Link href={member.socials.linkedin} className="w-fit">
-                  {/* @ts-expect-error */}
                   <PiLinkedinLogoDuotone
                     className="text-simpleBlue"
                     size={24}
@@ -144,7 +480,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

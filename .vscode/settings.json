@@ -16,5 +16,25 @@
     "**/utils/**/*.ts": "${filename} @ Utility",
     "**/types/**/*.ts": "${filename} @ Type",
     "**/stores/**/*.ts": "${filename} @ Store",
-  }
+  },
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#1a4ac0",
+    "activityBar.background": "#1a4ac0",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#e85781",
+    "activityBarBadge.foreground": "#15202b",
+    "commandCenter.border": "#e7e7e799",
+    "sash.hoverBorder": "#1a4ac0",
+    "statusBar.background": "#143993",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#1a4ac0",
+    "statusBarItem.remoteBackground": "#143993",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "titleBar.activeBackground": "#143993",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#14399399",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  },
+  "peacock.color": "#143993"
 }

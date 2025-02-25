@@ -10,7 +10,7 @@ export function useDataFilter<T extends FilterableItem>(items: T[]) {
   const [filters, setFilters] = useState<FilterConfig<T>>({});
 
   const filteredData = useMemo(() => {
-    return items.filter((item) => {
+    return items?.filter((item) => {
       if (Object.keys(filters).length === 0) return true;
 
       return Object.entries(filters).every(([key, value]) => {
@@ -34,11 +34,17 @@ export function useDataFilter<T extends FilterableItem>(items: T[]) {
     }));
   };
 
-  const removeFilterElement = <K extends keyof T>(field: K, elementToRemove: FilterValue) => {
+  const removeFilterElement = <K extends keyof T>(
+    field: K,
+    elementToRemove: FilterValue
+  ) => {
     setFilters((prev) => {
       const currentValue = prev[field];
-      if (typeof currentValue === 'string' && typeof elementToRemove === 'string') {
-        const newValue = currentValue.replace(elementToRemove, '').trim();
+      if (
+        typeof currentValue === "string" &&
+        typeof elementToRemove === "string"
+      ) {
+        const newValue = currentValue.replace(elementToRemove, "").trim();
         return {
           ...prev,
           [field]: newValue || undefined, // Remove the field if empty

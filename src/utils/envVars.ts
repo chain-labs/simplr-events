@@ -19,5 +19,22 @@ export const envVars = {
     "NEXT_PUBLIC_ZERODEV_ID",
     process.env.NEXT_PUBLIC_ZERODEV_ID
   ),
+  isTestNetwork:
+    process.env.NEXT_PUBLIC_IS_TEST_NETWORK?.toLowerCase() === "true",
+  apiEndpoint: verifyEnvVar(
+    "NEXT_PUBLIC_API_ENDPOINT",
+    process.env.NEXT_PUBLIC_API_ENDPOINT
+  ),
+  etherspotApi: verifyEnvVar(
+    "NEXT_PUBLIC_ETHERSPOT_API",
+    process.env.NEXT_PUBLIC_ETHERSPOT_API
+  ),
+  subgraphUrl: verifyEnvVar(
+    "NEXT_PUBLIC_SUBGRAPH_URL",
+    process.env.NEXT_PUBLIC_SUBGRAPH_URL
+  ),
+  nftMetadataPrefix:
+    process.env.NEXT_PUBLIC_NFT_METADATA_PREFIX ??
+    process.env.NEXT_PUBLIC_API_ENDPOINT,
   // Add other environment variables here as needed
 };

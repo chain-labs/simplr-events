@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { usePrivy } from "@privy-io/react-auth";
+import axios from "axios";
 import {
   PiCaretDown,
   PiHouseDuotone,
@@ -11,9 +13,15 @@ import {
   PiWalletDuotone,
   PiXDuotone,
 } from "react-icons/pi";
+import { createWalletClient, custom, formatUnits } from "viem";
+import { useAccount, useConfig, useDisconnect, usePublicClient } from "wagmi";
 
+import useUSDCContract from "@/contracts/USDC";
+import api from "@/utils/axios";
 import { cn } from "@/utils/cn";
+import { envVars } from "@/utils/envVars";
 
+import { useUser } from "../../UserContext";
 import { Button } from "./ui/button";
 import { LabelSmall } from "./ui/label";
 import { PMedium } from "./ui/paragraph";
@@ -26,19 +34,119 @@ export default function Header() {
   const MobileWalletModelRef = useRef<HTMLDivElement>(null);
   const Links = [
     { name: "home", href: "/" },
-    { name: "link your ticket", href: "/link-your-ticket" },
+    { name: "link your ticket", href: "/link-your-ticket", auth: true },
     { name: "buy", href: "/buy-ticket" },
     { name: "sell", href: "/sell-your-ticket" },
   ];
 
-  const account = {
-    isConnected: true,
-    wallet: "$250,000.0000",
-    email: "testtesttesttesttest@example.com",
+  const privy = usePrivy();
+  const { user, setUser } = useUser();
+  const account = useAccount();
+  const { disconnect } = useDisconnect();
+  const client = usePublicClient();
+
+  const USDC = useUSDCContract();
+
+  const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    // try {
+    //   await privy.login();
+    //   // save user to db
+    //   // const response = await axios.post(`${envVars.apiEndpoint}/user/create`, {})
+    // } catch (error) {
+    //   console.error("Error while logging in", error);
+    // }
+
+    try {
+      if (typeof window.ethereum !== "undefined") {
+        const [address] = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        const client = createWalletClient({
+          transport: custom(window.ethereum),
+        });
+        console.log("Wallet connected:", address);
+        return client;
+      } else {
+        console.log("Please install MetaMask");
+      }
+    } catch (error) {
+      console.error("Error while connecting wallet", error);
+    }
+  };
+
+  const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    // try {
+    //   await privy.logout();
+    // } catch (error) {
+    //   console.error("Error while logging out", error);
+    // }
+
+    try {
+      disconnect();
+    } catch (error) {
+      console.error("Error while disconnecting wallet", error);
+    }
   };
 
   useEffect(() => {
-    let handleClickOutside = (e: any) => {
+    if (
+      typeof window !== "undefined" &&
+      account.address &&
+      USDC.address !== "0x"
+    ) {
+      console.log({ account });
+
+      // save user to db
+      api.get(`/user/${account.address}`).then((response) => {
+        console.log({ userData: response });
+
+        if (response.data) {
+          const { data } = response;
+          const { _id, __v, ...user } = data;
+
+          client
+            ?.readContract({
+              address: USDC.address,
+              abi: USDC.abi,
+              functionName: "balanceOf",
+              args: [user?.address ?? ""],
+            })
+            .then((data) => {
+              setUser({ ...user, balance: formatUnits(data as bigint, 6) });
+            });
+        } else {
+          api
+            .post("/user/create", {
+              name: window.prompt("Enter your name"),
+              email: window.prompt("Enter your email"),
+              address: account?.address,
+            })
+            .then((response) => {
+              const { data } = response;
+              const { _id, __v, ...user } = data.user;
+              client
+                ?.readContract({
+                  address: USDC.address,
+                  abi: USDC.abi,
+                  functionName: "balanceOf",
+                  args: [user?.address ?? ""],
+                })
+                .then((data) => {
+                  setUser({ ...user, balance: formatUnits(data as bigint, 6) });
+                });
+            })
+            .catch((error) => {
+              console.log({ error });
+            });
+        }
+      });
+    }
+  }, [account.address, USDC.address]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: any) => {
       if (MobileMenuRef.current && !MobileMenuRef.current.contains(e.target)) {
         setHamMenuOpen(false);
       }
@@ -75,7 +183,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 h-fit w-full bg-simpleBlue p-[8px] pb-[32px] md:px-[32px] md:py-[16px]">
       <nav className="relative mx-auto flex w-full max-w-[1280px] items-center justify-between">
-        <div>
+        <Link href="/">
           <Image
             src="https://ik.imagekit.io/chainlabs/simplr-events-designs/logo-face/png/simplr-yellow.png?updatedAt=1734096538221"
             alt="logo"
@@ -83,24 +191,28 @@ export default function Header() {
             height={100}
             className="h-[32px] w-auto"
           />
-        </div>
+        </Link>
         {/* desktop */}
         <>
           <ul className="hidden gap-[10px] md:flex">
-            {Links.map((link) => (
-              <li
-                key={link.href}
-                className="inline-block text-sm font-semibold text-[#333] transition-colors duration-300 hover:text-[#000]"
-              >
-                <Link href={link.href}>
-                  <Button variant="ghost" size="sm">
-                    {link.name}
-                  </Button>
-                </Link>
-              </li>
-            ))}
+            {Links.map((link) => {
+              return (
+                (link.auth ? link.auth && account.address : true) && (
+                  <li
+                    key={link.href}
+                    className="inline-block text-sm font-semibold text-[#333] transition-colors duration-300 hover:text-[#000]"
+                  >
+                    <Link href={link.href}>
+                      <Button variant="ghost" size="sm">
+                        {link.name}
+                      </Button>
+                    </Link>
+                  </li>
+                )
+              );
+            })}
           </ul>
-          {account.isConnected && (
+          {account.address && (
             <div className="relative hidden md:block">
               <Button
                 variant="ghost"
@@ -111,11 +223,8 @@ export default function Header() {
                     : () => setWalletModelOpen(true)
                 }
               >
-                {/* @ts-expect-error */}
-                <PiWalletDuotone size={24} />
-                {account.wallet}
+                <PiWalletDuotone size={24} />${user?.balance}
                 {
-                  // @ts-expect-error
                   <PiCaretDown
                     size={16}
                     className={cn(
@@ -133,13 +242,13 @@ export default function Header() {
                   <div className="flex flex-col items-center justify-center gap-[8px] whitespace-nowrap text-left text-simpleGray700">
                     <LabelSmall>Your Email:</LabelSmall>
                     <PMedium className="text-[16px] font-bold leading-[26px] tracking-[0.02em]">
-                      {account.email}
+                      {user?.email}
                     </PMedium>
                   </div>
                   <div className="flex flex-col items-center justify-center gap-[8px] whitespace-nowrap text-left text-simpleGray700">
                     <LabelSmall>Your wallet Balance:</LabelSmall>
                     <PMedium className="text-[20px] font-bold leading-[26px] tracking-[0.02em]">
-                      {account.wallet}
+                      ${user?.balance}
                     </PMedium>
                   </div>
                   <Button variant="primary" size="sm">
@@ -153,12 +262,12 @@ export default function Header() {
             <Button variant="outline" size="sm">
               contact us
             </Button>
-            {account.isConnected ? (
-              <Button variant="outline" size="sm">
+            {account.address ? (
+              <Button variant="outline" size="sm" onClick={handleLogout}>
                 log out
               </Button>
             ) : (
-              <Button variant="primary" size="sm">
+              <Button variant="primary" size="sm" onClick={handleLogin}>
                 sign in
               </Button>
             )}
@@ -167,7 +276,7 @@ export default function Header() {
 
         {/* Mobile */}
         <div className="flex items-center justify-center gap-2 md:hidden">
-          {!account.isConnected ? (
+          {!account.address ? (
             <Button
               variant="primary"
               size="lg"
@@ -178,7 +287,6 @@ export default function Header() {
           ) : (
             <Link href="/">
               <Button className="grid h-[48px] w-[48px] place-items-center rounded-full p-0">
-                {/* @ts-expect-error */}
                 <PiHouseDuotone size={24} />
               </Button>
             </Link>
@@ -188,10 +296,8 @@ export default function Header() {
             className="grid h-[48px] w-[48px] place-items-center rounded-full p-0"
           >
             {hamMenuOpen ? (
-              // @ts-expect-error
               <PiXDuotone size={24} />
             ) : (
-              // @ts-expect-error
               <PiListDuotone size={24} />
             )}
           </Button>
@@ -202,7 +308,7 @@ export default function Header() {
             ref={MobileMenuRef}
             className="absolute top-full mt-[8px] block w-full rounded-[24px] bg-simpleYellow p-[16px] md:hidden"
           >
-            <ol className="flex flex-col gap-[8px]">
+            <ul className="flex flex-col gap-[8px]">
               {Links.map((link) => (
                 <li key={link.href}>
                   <Button
@@ -215,7 +321,7 @@ export default function Header() {
                 </li>
               ))}
 
-              {account.isConnected && (
+              {account.address && (
                 <>
                   <div className="h-[1px] w-full bg-simpleBlack opacity-25"></div>
                   <div className="md:hidden">
@@ -228,11 +334,9 @@ export default function Header() {
                           : () => setWalletModelOpen(true)
                       }
                     >
-                      {/* @ts-expect-error */}
                       <PiWalletDuotone size={24} />
-                      {account.wallet}
+                      {"1 USD"}
                       {
-                        // @ts-expect-error
                         <PiCaretDown
                           size={16}
                           className={cn(
@@ -250,13 +354,13 @@ export default function Header() {
                         <div className="flex flex-col items-center justify-center gap-[8px] whitespace-nowrap text-left text-simpleGray700">
                           <LabelSmall>Your Email:</LabelSmall>
                           <PMedium className="text-[16px] font-bold leading-[26px] tracking-[0.02em]">
-                            {account.email}
+                            {privy.user?.email?.address}
                           </PMedium>
                         </div>
                         <div className="flex flex-col items-center justify-center gap-[8px] whitespace-nowrap text-left text-simpleGray700">
                           <LabelSmall>Your wallet Balance:</LabelSmall>
                           <PMedium className="text-[20px] font-bold leading-[26px] tracking-[0.02em]">
-                            {account.wallet}
+                            {"1 USD"}
                           </PMedium>
                         </div>
                         <Button variant="primary" size="sm">
@@ -277,7 +381,7 @@ export default function Header() {
                 >
                   contact us
                 </Button>
-                {account.isConnected && (
+                {account.address && (
                   <Button
                     variant="secondary"
                     size="sm"
@@ -287,7 +391,7 @@ export default function Header() {
                   </Button>
                 )}
               </li>
-            </ol>
+            </ul>
           </div>
         )}
       </nav>
