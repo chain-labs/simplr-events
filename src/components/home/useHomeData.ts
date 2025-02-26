@@ -59,9 +59,7 @@ const useHomeData = () => {
       }
     };
 
-    if (user?.address) {
-      fetchData();
-    }
+    fetchData();
 
     return () => {
       controller.abort();

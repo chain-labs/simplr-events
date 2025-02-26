@@ -81,6 +81,8 @@ export default function SettingTicketPricing({
       console.log("Listed tickets");
     } catch (error) {
       console.log("Error while listing", { error });
+    } finally {
+      setListLoading(false);
     }
   };
 
