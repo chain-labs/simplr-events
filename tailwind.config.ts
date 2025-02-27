@@ -36,8 +36,35 @@ export default {
         simplePurple: theme.colors.brandPurple,
       },
       fontFamily: {
-        gambarino: ['"Gambarino"', "serif"],
-        switzer: ['"Switzer"', "sans-serif"],
+        gambarino: ["Gambarino", "serif"],
+        switzer: ["Switzer", "sans-serif"],
+      },
+      keyframes: {
+        "shadow-rotate": {
+          "0%": {
+            "box-shadow":
+              "inset 2px 4px 4px rgba(250, 255, 211, 0.75), inset -2px -4px 4px rgba(99, 104, 0, 0.25)",
+          },
+          "25%": {
+            "box-shadow":
+              "inset 4px 2px 4px rgba(250, 255, 211, 0.75), inset -4px -2px 4px rgba(99, 104, 0, 0.25)",
+          },
+          "50%": {
+            "box-shadow":
+              "inset 2px -4px 4px rgba(250, 255, 211, 0.75), inset -2px 4px 4px rgba(99, 104, 0, 0.25)",
+          },
+          "75%": {
+            "box-shadow":
+              "inset -2px -4px 4px rgba(250, 255, 211, 0.75), inset 2px 4px 4px rgba(99, 104, 0, 0.25)",
+          },
+          "100%": {
+            "box-shadow":
+              "inset 2px 4px 4px rgba(250, 255, 211, 0.75), inset -2px -4px 4px rgba(99, 104, 0, 0.25)",
+          },
+        },
+      },
+      animation: {
+        "shadow-rotate": "shadow-rotate 2s linear infinite",
       },
     },
   },
