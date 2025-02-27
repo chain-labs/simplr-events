@@ -399,7 +399,7 @@ export default function Home() {
           <div
             key={event}
             id={event}
-            className="relative ml-[calc(-1*min(100%,(100vw-1280px)/2))] flex w-full flex-col gap-[16px] pl-[calc(min(100%,(100vw-1280px)/2))] md:col-span-2"
+            className="relative xl:ml-[calc(-1*min(100%,(100vw-1280px)/2))] flex w-full flex-col gap-[16px] pl-[calc(min(100%,(100vw-1280px)/2))] md:col-span-2"
           >
             <div className="flex w-full max-w-[min(1280px,100%)] items-center justify-between">
               <H2 className="flex gap-[8px] text-simpleWhite">
