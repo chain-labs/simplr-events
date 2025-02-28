@@ -382,16 +382,16 @@ export default function Home() {
 
         <div className="flex w-full gap-[12px] py-[16px] md:col-span-2">
           {Object.keys(data?.marketplaceTickets ?? []).map((event) => (
-            <p
+            <a
               key={event}
-              // href={`#${event}`}
+              href={`#${event}`}
               className="rounded-[16px] bg-simpleBlack/25 p-[12px] shadow-[inset_0px_-2px_0px_#F2FF49]"
             >
               <H2 className="flex gap-[8px] text-simpleYellow">
                 <PiShootingStarDuotone size={48} />{" "}
                 {data?.eventMap?.[event].eventName ?? "Event 1"}
               </H2>
-            </p>
+            </a>
           ))}
         </div>
 
@@ -399,7 +399,7 @@ export default function Home() {
           <div
             key={event}
             id={event}
-            className="flex w-full flex-col gap-[16px] md:col-span-2"
+            className="relative xl:ml-[calc(-1*min(100%,(100vw-1280px)/2))] flex w-full flex-col gap-[16px] pl-[calc(min(100%,(100vw-1280px)/2))] md:col-span-2"
           >
             <div className="flex w-full max-w-[min(1280px,100%)] items-center justify-between">
               <H2 className="flex gap-[8px] text-simpleWhite">

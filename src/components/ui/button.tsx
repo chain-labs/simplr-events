@@ -42,20 +42,23 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variants = {
       primary:
-        "bg-simpleYellow text-simpleBlack shadow-[inset_2px_4px_4px_#FAFFD3BF,_inset_-2px_-4px_4px_#63680040]",
+        "bg-simpleYellow text-simpleBlack shadow-[inset_2px_4px_4px_#FAFFD3BF,_inset_-2px_-4px_4px_#63680040] hover:animate-shadow-rotate disabled:hover:animate-none transition-shadow",
       secondary:
-        "bg-[#FFFFFF03] text-simpleBlack shadow-[inset_2px_4px_4px_#D3E1FFBF,_inset_-2px_-4px_4px_#00096840,_inset_0_0_0_2px_#050505]",
+        "bg-[#FFFFFF03] text-simpleBlack shadow-[inset_2px_4px_4px_#D3E1FFBF,_inset_-2px_-4px_4px_#00096840,_inset_0_0_0_2px_#050505] hover:animate-shadow-rotate disabled:hover:animate-none transition-shadow",
       outline:
-        "bg-[#FFFFFF03] text-simpleWhite shadow-[inset_2px_4px_4px_#FAFFD3BF,_inset_-2px_-4px_4px_#63680040,_inset_0_0_0_2px_#ffffff]",
-      ghost: "text-simpleWhite bg-[#FFFFFF03]",
+        "bg-[#FFFFFF03] text-simpleWhite shadow-[inset_2px_4px_4px_#FAFFD3BF,_inset_-2px_-4px_4px_#63680040,_inset_0_0_0_2px_#ffffff] hover:animate-shadow-rotate disabled:hover:animate-none transition-shadow",
+      ghost:
+        "text-simpleWhite bg-[#FFFFFF03] hover:bg-[#FFFFFF0A] transition-colors",
       "primary-danger":
-        "bg-simpleRed text-simpleWhite shadow-[inset_2px_4px_4px_#FFD3D3BF,_inset_-2px_-4px_4px_#96000040]",
+        "bg-simpleRed text-simpleWhite shadow-[inset_2px_4px_4px_#FFD3D3BF,_inset_-2px_-4px_4px_#96000040] hover:animate-shadow-rotate disabled:hover:animate-none transition-shadow",
       "outline-danger":
-        "bg-[#FFFFFF03] text-simpleRed shadow-[inset_2px_4px_4px_#D3E1FFBF,_inset_-2px_-4px_4px_#00096840,_inset_0_0_0_2px_#FF4242]",
+        "bg-[#FFFFFF03] text-simpleRed shadow-[inset_2px_4px_4px_#D3E1FFBF,_inset_-2px_-4px_4px_#00096840,_inset_0_0_0_2px_#FF4242] hover:animate-shadow-rotate disabled:hover:animate-none transition-shadow",
       "primary-blue":
-        "bg-simpleBlue text-simpleWhite shadow-[inset_2px_4px_4px_#D3E1FFBF,_inset_-2px_-4px_4px_#00096840]",
-      tertiary: "bg-[#0000001A] text-simpleWhite",
-      "tertiary-dark": "bg-[#FFFFFF26] text-simpleBlack",
+        "bg-simpleBlue text-simpleWhite shadow-[inset_2px_4px_4px_#D3E1FFBF,_inset_-2px_-4px_4px_#00096840] hover:animate-shadow-rotate disabled:hover:animate-none transition-shadow",
+      tertiary:
+        "bg-[#0000001A] text-simpleWhite hover:bg-[#00000026] transition-colors",
+      "tertiary-dark":
+        "bg-[#FFFFFF26] text-simpleBlack hover:bg-[#FFFFFF33] transition-colors",
     };
 
     const sizes = {
