@@ -134,6 +134,8 @@ export default function Header() {
         console.log({ userData: response });
 
         if (response.data) {
+          setOpenEmailNameModal(false);
+
           // User found in database - set user data
           const { data } = response;
           const { _id, __v, ...user } = data;
